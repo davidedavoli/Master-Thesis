@@ -1,0 +1,209 @@
+% !TEX root = Conjecture.tex
+%!TeX spellcheck = en-US
+
+\section{All Functions in $\POR$ are $\Sigma^b_1$-Representable in $\RS$}
+\label{sec:TaskA}
+
+
+In this section we show that each polynomial-time oracle function
+is $\Sigma^b_1$-representable in our theory $\RS$.
+%
+To this end, we extend the standard definition
+of $\Sigma^b_1$-representability
+so to fit our class of string functions
+and the probabilistic word language $\Lpw$.
+
+
+
+%%% defn
+%%% Sigma^b_1-Representability
+\begin{defn}[$\Sigma^b_1$-Representability]\label{df:representability}
+A function $f:\Ss^j \times \Os \rightarrow
+\Ss$ is \emph{$\Sigma^b_1$-representable} in
+$\RS$ if and only if there is
+a $\Sigma^b_1$-formula
+$G(\vec{x},y)$ in $\Lpw$ such that:
+\begin{enumerate}
+\itemsep0em
+\item $\RS\vdash\forall\vec{x}.\exists y.G(\vec{x},y)$
+\item $\RS\vdash \forall \vec{x}.\forall y.\forall z.
+\big(G(\vec{x},y)\wedge
+G(\vec{x},z) \rightarrow y=z\big)$
+\item For all $n_1,\dots, n_j,m\in \Ss$,
+and $\omega \in \Os$,
+$f(n_1,\dots, n_j,\omega)=m$
+if and only if $\omega\in\llbracket G({n_1},
+\dots, {n_j},{m})\rrbracket$.
+\end{enumerate}
+\end{defn}
+
+This definition extends Buss' representability condition,
+adding a constraint which links the formula's
+qualitative semantics to the additional functional parameter of the $\POR$ function algebra.
+%
+This constraint --- the third one --- is the characterizing feature of this definition. Indeed, it captures the main peculiarity of probabilistic computation: evaluation is a stochastic process so the semantics of a program is a function mapping an input to a probability distribution which reflects all the possible outcomes of the computation.
+%
+The main result of this section is Theorem \ref{theorem1}. We do not show an entire and comprehensive proof of the result, because I did not directly work on it. However, we will show an exhaustive sketch of the proof given in \cite{RBA}.
+%
+The proof relies on a
+well-known result by Parikh.
+
+%%%
+\begin{prop}[{``Parikh''~\cite{Parikh71}}]\label{prop:Parikh}
+Let $F(\vec{x},y)$ be a bounded formula in $\Lpw$
+such that $\RS\vdash(\forall \vec{x})(\exists y)F(\vec{x},y)$.
+Then, there is a term $t$ such that
+$\RS \vdash \forall \vec{x}.\exists y\preceq t(\vec{x}).F(\vec{x},y)$.
+\end{prop}
+\noindent
+Actually, Parikh's theorem is usually presented
+in the context of Buss' bounded theories, stating that, if $B$ is a first-order formula with variables interpreted over Natural Numbers,
+then if $S^i_2 \vdash \forall \vec{x}.\exists y.
+B$, there is a term $t(\vec{x})$
+such that  $S^i_2\vdash\forall\vec{x}.\exists y\leq
+t(\vec{x}).B(\vec{x},y)$,~\cite{Buss86,Buss98}.
+However, due to~\cite{FerreiraOitavem},
+Buss' \emph{syntactic} proof holds for
+Ferreira's
+$\Sigma^b_1$-NIA~\cite{Ferreira88} as well. Finally,
+the same result holds for
+$\RS$, because the set of its axioms does not contain
+any specific rule concerning $\Flip(\cdot)$
+and so is defined exactly upon the same axioms
+of Ferreira's $\Sigma^b_1$-NIA~\cite{Ferreira90}.
+
+
+%%% THEOREM
+%%% theorem1
+\begin{theorem}\label{theorem1}
+Every $f\in \POR$ is $\Sigma^b_1$-representable in
+$\RS$.
+\end{theorem}
+% Proof Sketch
+\begin{proof}[Proof Sketch]
+The proof is by induction on the
+structure of functions in $\POR$.
+
+%% Basic function
+
+
+\emph{Base case.}
+Each basic function
+is $\Sigma^b_1$-representable in $\RS$.
+
+\begin{itemize}
+%% f=E
+\item
+$f=E$ is $\Sigma^b_1$-represented
+in $\RS$ by the formula:
+$$
+G_E(x,y) := x = x \wedge y=\epsilon.
+$$
+
+\begin{enumerate}
+\item Given $x$, it suffices to take $y=1$ as a witness of the existential quantifier.
+\item Uniqueness is a consequence of identity's transitivity.
+
+\item The quantitative claim comes is a consequence of Definition \ref{def:quantsem}.
+
+\end{enumerate}
+
+All the base case are similar to this one, apart from $\query$, which is shown below:
+
+
+
+
+%% f = query
+\bigskip
+$f=\query$ is
+$\Sigma^b_1$-represented in $\RS$
+by the formula:
+$$
+G_{\query}(x,y) := \big(\Flip(x) \wedge y=\one\big) \vee
+\big(\neg\Flip(x) \wedge y=\zero\big).
+$$
+Notice that this proof relies on the fact that every $f\in \POR$
+is capable of invoking exactly \emph{one} oracle.
+\begin{enumerate}
+% Existence
+\item Existence is proved by cases: if $\RS\vdash\Flip(x)$,
+let $y=\one$.
+By the reflexivity of identity
+$\RS\vdash\one=\one$ holds,
+so also $\RS\vdash \Flip(x) \wedge \one=\one$.
+In this case we conclude that:
+$$
+\RS
+\vdash \exists y.((\Flip(x)
+\wedge y=\one) \vee
+(\neg\Flip(x) \wedge y=\zero)).
+$$
+%
+If $\RS\vdash \neg \Flip(x)$, the proof is analogous.
+%% Uniqueness
+\item Uniqueness is established relying on the
+transitivity of identity.
+
+%% Semantics
+\item Finally, we need to show that for every
+$n,m\in \Ss$ and $\omega^*\in \Os$,
+$\query(n,\omega^*)=m$
+if and only if
+$\omega^* \in \llbracket G_{\query}({n},{m})\rrbracket$.
+%$\omega^* \in \big\llbracket  \big(\Flip({n}) \wedge {m}=\one\big) \vee \big(\neg\Flip({n}) \wedge {m}=\zero\big)\big\rrbracket$.
+
+Suppose $m=\oone$.
+Then it holds that $\query(n,\omega^*)=\oone$,
+which is equivalent to $\omega^*(n)=\oone$, thus:
+\small
+\begin{align*}
+\big\llbracket\big(\Flip({n}) \wedge
+{m}=\one\big) \vee \big(\neg\Flip({n})
+\wedge {m}=\zero\big)\big\rrbracket
+&=
+\llbracket \Flip({n}) \wedge {m}=\one\rrbracket \cup
+\llbracket \neg\Flip({n}) \wedge
+{m} = \zero\rrbracket \\
+%
+&= \big(\llbracket \Flip({n})\rrbracket \cap
+\llbracket \one =\one\rrbracket \big)
+\cup \big(\llbracket \neg\Flip({n})\rrbracket
+\cap \llbracket \one =\zero\rrbracket\big) \\
+%
+&=  \big(\llbracket \Flip({n})\rrbracket
+\cap \Os \big) \cup (\llbracket \neg \Flip({n})
+\rrbracket \cap \emptyset \big) \\
+%
+&= \llbracket \Flip({n})\rrbracket \\
+%
+&= \{\omega \in\Os \ | \ \omega(n)=\oone\}.
+\end{align*}
+\normalsize
+Clearly, $\omega^*\in \big\llbracket\big(\Flip({n})
+\wedge {m}=\one\big)
+\vee \big(\neg\Flip({n}) \wedge
+{m}=\zero\big)\big\rrbracket$.
+The case $m=\zzero$ and the opposite direction
+are proved similarly.
+\end{enumerate}
+
+\end{itemize}
+
+%%% Inductive case.
+\emph{Inductive case.}
+The discussion of this cases is out of the scope of this
+work. However, The proofs of claims 1 and 2 follow the same approach
+described by Ferreira in \cite{Ferreira88, Ferreira90}.
+In particular this can be done because, from a \emph{syntactical}
+point of view, $\RS$ axioms and Ferreira's are exactly the same. This allows us to reuse Parikh's Proposition \cite{Parikh71} (rewritten in Proposition \ref{prop:Parikh}) to fit the induction hypothesis into the $\Sigma^b_1$ representability condition of the claims. Indeed, the induction hypothesis does not pose any bound over $y$'s size. But according to Proposition \ref{prop:Parikh} this can be done. So, for instance, the case of composition, the $\Sigma^b_1$ formula is:
+$$
+G(x,y) := \exists z_1\preceq t_{h_1}(\vec{x}).
+\dots \exists z_k\preceq t_{h_k}(\vec{x}).
+\big(G_{h_1}(\vec{x},z_1) \wedge \dots
+\wedge G_{h_k}(\vec{x},z_k) \wedge
+G_g(z_1,\dots, z_k,y)\big).
+$$
+
+where the existence of $h_1,\ldots,h_k$ is a consequence of Parikh's Proposition.
+
+\end{proof}

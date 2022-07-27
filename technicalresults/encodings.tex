@@ -1,0 +1,1058 @@
+%!TeX spellcheck = en-US
+\section{Encodings}
+\label{sub:encoding}
+In the proof sketch of Lemma \ref{lemma:polyFtoCob}, we discussed that we can
+show the inclusion of $\polyF$ in $\POR$ building a function which
+manipulates the encoding of a machine's configuration followings
+behavior described by $\delta$.
+This work requires the definition of appropriate encodings
+of these structures by means of strings, together with the
+definition of manipulating functions which can be used to
+emulate upon these encodings all the operations of a FSTM.
+%
+Among the literature, there are many construction of similar
+encodings, so that they are rarely taken re-defined extensively.
+While it is usually more common to refer to the possibility to
+encode certain data structures within a set (typically $\Nat$)
+in an non-constructive fashion.
+%
+The reasons why we are re-defining a complete encoding for numbers,
+lists and other data structures on the set $\Ss$
+despite the complicatedness of this process is that
+we want our proof to be as self-contained and
+detailed as possible, in order to establish in the most
+convincing way our results.
+%
+For this reason, this section is aimed to
+show that $\POR^-$ is expressive enough to represent all the data
+structures which are needed to support the simulation of FSTM in $\POR$.
+%
+In particular, in the first section we will show
+how we will represent the data, then in the following section,
+we will show how we can use $\POR^-$ to define functions
+which can be used to manipulate data encodings in order to
+implement complex behaviors such as the simulation of a FSTM.
+
+\subsection{Statical encodings}
+\label{subsub:encodings}
+
+
+Before getting into more complex encodings, we start with a toy problem:
+the encoding of the constant strings. We did not mention such values before,
+but they are needed, for instance, as a notational support,
+because they allow us to write string values directly into $\POR^-$ function
+rather than writing explicitly the functions computing them.
+It may seem superfluous
+to show that there is a $\POR^-$ function for all the constant strings,
+but it will be useful to
+introduce the same pattern which we will follow later for the definition of more
+complex encodings.
+
+\begin{defn}[Encoding of Constants]
+  We define the injection $\ovverline \cdot \Ss:  \Ss \longrightarrow \Ss$ as
+  follows:
+  \[
+  \ovverline \sigma \Ss:= \sigma.
+  \]
+\end{defn}
+\noindent
+For sake of readability, from now on, the notation $\underline \cdot_\Ss$
+will be omitted.
+%
+This definition, by itself does not carry any information concerning the possibility to adopt it within $\POR$. To this aim, we show that this encoding is suitable for $\POR^-$,
+which means that for every $s \in \Ss$ there is
+$\POR^-$ function computing exactly $\ovverline \sigma \Ss$.
+If we show that a similar result holds, then defining a $\POR^-$ function we are allowed to use string expressions as parameters, because strings can be computed by $\POR^-$ functions and because $\POR^-$ is closed under composition.
+
+\begin{remark}[Representability of $\Ss$ in $\POR^-$]
+  $\forall \sigma \in \Ss. \exists f_\sigma \in \POR. \forall x\in \Ss.\forall  \omega \in \Os.
+  f_\sigma(x, \omega)= \ovverline \sigma \Ss$
+\end{remark}
+\begin{proof}
+  Take as $f_\sigma$:
+  \begin{align*}
+    {f_{\eepsilon}}(x, \omega) &:= E(x, \omega): \\
+    {f_{\tau\bool}}(x, \omega)&:= \Sf_\bool(f_\tau(x, \omega),\omega).
+  \end{align*}
+  The claim can be obtained by induction on $\sigma$.
+\end{proof}
+
+
+We choose to represent the natural number $n$ as a string composed by $n+1$
+$\one$s
+\footnote{We took this decision because we do not want $\eepsilon$ to be neither
+the encoding of a natural number nor of any other value (indexes, Booleans, tuples, ...).
+This will allow us to use it as return value in case of errors, if necessary.},
+in this way, definitions of arithmetical functions will be simpler.
+
+\begin{defn}[Encoding of Natural numbers]
+  We define the injection $\ovverline \cdot \Nat:  \Nat \longrightarrow \Ss$ as
+  follows:
+  \[
+  \ovverline n \Nat:= \one^{n+1}.
+  \]
+\end{defn}
+
+This encoding is suitable for $\POR^-$, because we can show that each string
+which is the encoding of a natural number can be represented by a term in $\POR^-$,
+formally:
+
+\begin{remark}[Representability of $\Nat$ in $\POR^-$]
+  $\forall n \in \Nat. \exists f_n \in \POR. \forall x, \omega.
+  f_n(x, \omega)= \ovverline n \Nat$
+\end{remark}
+\begin{proof}
+  Take as $f_n$:
+  \begin{align*}
+    {f_0}(x, \omega) &:= \Sf_\one(E(x, \omega),\omega); \\
+    {f_{n+1}}(x, \omega)&:= \Sf_\one(f_n(x, \omega),\omega).
+  \end{align*}
+  The claim can be obtained by induction on $n$.
+\end{proof}
+
+In Computer Science, conventionally, the true Boolean value
+is usually represented with $\one$ and
+the false value is represented with $\zero$.
+We will follow this convention.
+
+\begin{defn}[Encoding of Boolean values]
+  We define the injection $\ovverline \cdot \Bool:  \Bool \longrightarrow \Ss$
+  as follows:
+  \begin{align*}
+    \ovverline \zero \Bool &:= \zero\\
+    \ovverline \one \Bool &:= \one.
+  \end{align*}
+\end{defn}
+
+\begin{remark}[Representability of $\Bool$ in $\POR^-$]
+  $\forall \bool \in \Bool. \exists f_\bool \in \POR. \forall x, \omega.
+  f_\bool(x, \omega)= \ovverline n \Bool$
+\end{remark}
+\begin{proof}
+  Take as $f_n$:
+  \begin{align*}
+    {f_{\zero}}(x, \omega)&:= \Sf_\zero(E(x, \omega),\omega)\\
+    {f_\one}(x, \omega) &:= \Sf_\one(E(x, \omega),\omega).
+  \end{align*}
+  The claim is correct by definition of the functions $f_\zero$ and $f_\one$.
+\end{proof}
+
+
+In order to encode in $\POR^-$ any polynomial FSTM,
+we need to represent some complex data structures: we argued
+that for each $f \in \polyF$, there is a function $g$ implementing it.
+This can be done by defining a general schema for $g$ which depends
+on a representation of the machine transition function $\delta$. In
+this way, changing only the function which encodes $\delta$, we are be able to
+decouple the encoding of the machine's mechanics, by the machine's transition function.
+
+To encode the information contained in the finite function $\delta$
+(which can be considered a big but finite table), we need to define some
+compositional data structures.
+From a set theoretic point of view, functions are sets of tuples so, for sake of simplicity, we chose to
+represent these different data structures --- namely sets, lists, tuples and functions ---
+uniformly as lists, which generalize all of them.
+
+
+\subsubsection{{Lists}}
+
+
+In order to represent lists, we will adapt an encoding
+from Odifreddi's \emph{Classical Recursion Theory}~\cite[p. 183]{Odifreddi}
+which was introduced as a representation of tuples.
+%
+Before doing so, we would like to formally define the set of lists, in order
+to clarify which kind of data we will be working~on.
+
+\begin{defn}[Lists of strings]
+  \label{def:enclists}
+  We say that $l$ is a list of strings if and only if $l \in \Ll$, where
+  $\Ll := \bigcup_{i\in \Nat} \Ss^i$.
+\end{defn}
+
+Before presenting the encoding, we need to introduce two auxiliary functions,
+the \emph{doubling} function $\mathcal{D}$ and the \emph{halving} function $\mathcal{H}$,
+such epithets are due to the fact that they respectively double and halve the length
+of their input. The function $\mathcal{D}$ interleaves
+the bits in its input with $\one$s and $\mathcal{H}$
+removes those characters.
+
+The $\mathcal{D}$ function can be seen as the mapping of a string $\sigma$ through an
+encoding $\Bool \longrightarrow \Bool^2$, and $\mathcal{H}$ is the
+left-inverse of $\mathcal{D}$.
+In this way we can represent lists as sequences of characters
+$c \in \Bool^2$. Two of those four characters are used to encode the
+values in $\Bool$ which compose members of list, while
+one of the two remaining characters (we chose $\zero\zero$) is used
+as separator. This way we will be able to embed multiple strings in a single
+sequence of bits encoding a list and to extract the values contained in it.
+
+\begin{defn}[List Element Encoding and Decoding Functions]
+  \label{def:df}
+Encoding and decoding functions
+are defined as follows:
+\begin{align*}
+\mathcal D(\sigma\zero) &:= \mathcal D(\sigma)\one\zero \\
+%
+\mathcal D(\sigma\one) &:= \mathcal D(\sigma)\one\one. \\
+\\
+%
+\mathcal H(\sigma\one\zero) \ &{:=} \
+\mathcal H(\sigma)\zero \\
+%
+\mathcal H(\sigma\one\one) \ &{:=} \ \mathcal H(\sigma)\one.
+\end{align*}
+\end{defn}
+%
+%
+\noindent
+
+We can define the encoding
+of lists as follows:
+
+
+%% defn
+%% Tuple Constructors
+\begin{defn}[List Encoding]
+For every $n \in \Nat$, the family of list encoding injections
+$\listenc {\cdot, \ldots, \cdot}{n}: \Ss^n \longrightarrow \Ss$
+is defined
+as described below:
+$$
+\listenc {x_1, \ldots, x_n}{n}
+:= {\zero\zero \mathcal{D} (x_n)
+\zero\zero
+\dots \zero \zero \mathcal{D}(x_1) \zero\zero
+\mathcal{D}(x_1)\zero\zero\mathcal{D}(\ovverline{n}\Nat)
+\zero\zero}.
+$$
+\end{defn}
+%
+%
+Following the pattern which we used for the previous encodings we should show
+that all the values which encode tuples can be represented by functions in
+$\POR^-$. To do so, we need to show that natural correspondent of $\mathcal{D}$ and $\mathcal{H}$
+are in $\POR^-$, together
+with the fact that the function which computes the concatenation is in $\POR^-$, too.
+
+\begin{defn}[String Concatenation function]
+  \label{def:concat}
+  \begin{align*}
+    \mathit{concat}(x, \eepsilon, \omega) &:= x;\\
+    \mathit{concat}(x, y\bool, \omega) &:= \Sf_\bool(\mathit{concat}(x, y, \omega), \omega)|_{xy\bool}.
+  \end{align*}
+\end{defn}
+
+\begin{lemma}[String concatenation is in $\POR^-$]
+  Formally: $\mathit{concat} \in \POR\land \forall x_1, x_2 \in \Ss.\forall \omega \in \Os. \mathit{concat}(x_1, x_2, \omega)=x_1x_2$.
+\end{lemma}
+\begin{proof}
+  Such function is defined by bounded recursion, so the result can be proven
+  by induction on $x_2$.
+\end{proof}
+
+\begin{lemma}[$\mathcal{D}$ is in $\POR^-$]
+  \label{lemma:dfinpor}
+  There is a function $\mathit{doub}$ in $\POR^-$ such that
+  $\forall x \in \Ss, \forall \omega \in \Os. \mathit{doub}(x, \omega)=\mathcal D(x)$.
+\end{lemma}
+\begin{proof}
+
+  It can be shown that the
+  {doubling function,
+  $\mathit{doub}$,} can be defined by bounded recursion:
+  \begin{align*}
+  \mathit{doub}(\eepsilon,\omega) &:= \eepsilon ;\\
+  %
+  \mathit{doub}(y\one,\omega) &:=
+  {\Sf_\one(\Sf_\one(\mathit{doub}(y,\omega),
+  \omega))}|_{(\one\one)\times (y\one)}; \\
+  %
+  \mathit{doub}(y\zero,\omega) &:=
+  {\Sf_\zero(\Sf_\one
+  (\mathit{doub}(y,\omega),\omega))}|_{(\one\one)\times
+  (y\one)}.
+  \end{align*}
+\end{proof}
+%
+\begin{remark}
+  \label{rem:listrepr}
+  All the finite lists can be represented by functions in $\POR^-$. Namely:
+  $\forall l \in \Ll. \exists f_l \in \POR. \forall x \in \Ss, \omega \in \Os.
+  f_l(x, \omega) = \listenc l {|l|}$.
+\end{remark}
+\begin{proof}
+  This comes form the fact that $\listenc l n$ can be defined by composition
+  of functions which are in $\POR^-$, namely
+  constant functions (e.g. $f_{\zero\zero}$),  $\mathit{concat}$, $f_n$, $D_f$.
+\end{proof}
+
+We can also state representability results dealing with
+functions and sets, instead of lists. We will not state a similar result for tuples directly
+because, according to Definition \ref{def:enclists}, tuples are \emph{exactly}
+specific cases of lists.
+%
+Concerning sets and functions, we can represents sets as specific
+lists with at most
+one copy per element, and finite functions from $\Ss$ to $\Ss$ (but not only)
+with their graph using lists as generalized couples and sets as well.
+%
+\begin{defn}[Finite Set Encoding]
+  \label{def:setenc}
+The family of set encoding injections
+$\ovverline \cdot {\mathcal P_\mathit{fin}(\Ss)}:   \mathcal P_\mathit{fin}(\Ss) \longrightarrow \Ss$
+is defined as the family of function described below:
+$$
+\ovverline {\{x_1,\ldots, x_n\}} {\mathcal P_\mathit{fin}(\Ss)}
+:= \listenc {x_1,\ldots, x_n} {n}.
+$$
+where $x_1, \ldots, x_n$ are taken in ascending order according to the value
+of the natural number encoded by $\one x_i$. This definition il well-founded
+because sets do not contain repetitions.
+\end{defn}
+
+\begin{defn}[Function Encoding]
+  \label{def:funenc}
+The family of Finite Function Encoding injections
+$\ovverline \cdot {\Ss^\Ss}: \Ss^\Ss \longrightarrow \Ss$
+is defined as the family of functions described below:
+$$
+\ovverline {\{\langle x_1, y_1\rangle,\ldots, \langle x_n, y_n\rangle\}} {\Ss^\Ss}
+:= \listenc {\listenc {x_1, y_1} 2,\ldots, \listenc {x_n, y_n} 2} {n}.
+$$
+\end{defn}
+
+\begin{cor}
+  \label{cor:funsetrepr}
+  Each finite function from $\Ss$ to $\Ss$ and each set included in $\Ss$ can
+  be represented by functions in $\POR^-$. Namely:
+  \[
+  \forall g \in \mathcal P_\mathit{fin}(\Ss^\Ss).
+  \exists f_g \in \POR. \forall x \in \Ss, \omega \in \Os.
+   f_g(x, \omega) = \ovverline g {\Ss^\Ss}
+  \]
+  \[
+  \forall s \in \mathcal P_\mathit{fin}(\Ss).
+  \exists f_s \in \POR. \forall x \in \Ss, \omega \in \Os.
+   f_s(x, \omega) = \ovverline s {P_\mathit{fin}(\Ss)}.
+  \]
+\end{cor}
+\begin{proof}
+  This claim is a direct consequence of Definitions \ref{def:funenc} and \ref{def:setenc}
+  and of Remark \ref{rem:listrepr}.
+\end{proof}
+
+Another result which we need to state is that the graph of any function
+$\delta:\Qs \times {\hat \Sigma} \times
+\{\zero, \one\} \longrightarrow \Qs
+\times {\hat \Sigma} \times \{L,R\}$
+can be represented by a term in $\Ss$. Formally:
+
+\begin{cor}[Representability of $\delta$]
+  \label{cor:deltarepr}
+  There is an injection $f: (\Qs \times {\hat \Sigma} \times
+  \{\zero, \one\} \longrightarrow \Qs
+  \times {\hat \Sigma} \times \{L,R\}) \longrightarrow \Ss$.
+\end{cor}
+\begin{proof}
+  We have suggested that the constants $L$ and $R$ can be represented by means of
+  $\zero$ and $\one$ respectively, this describes an injection
+  $i_1:\{L, R\} \longrightarrow \Ss$.
+  Similarly, we have suggested that we can be represented through their indexes.
+  This identifies an injection $i_2: \Qs \longrightarrow \Nat$,
+  we have also shown that there exists a natural injection
+  $\ovverline \cdot \Nat:\Nat \longrightarrow \Ss$; so, the composition of
+  $i_2$ and $\ovverline \cdot \Nat$ is an injection $\Qs\longrightarrow \Ss$.
+  Since ${\hat \Sigma}$ is a finite set, it is countable too, so there is a bijection
+  $i_3: {\hat \Sigma} \longrightarrow \Nat$, which composed with $\ovverline \cdot \Nat$
+  yields another injection ${\hat \Sigma} \longrightarrow \Ss$.
+  These observations, together with Remark \ref{rem:listrepr} prove that
+  there is an injection
+  $i_4:\left(\Qs \times {\hat \Sigma} \times \{\zero, \one\}\right) \longrightarrow \Ss$
+  and another injection
+  $i_5:\left(\Qs \times {\hat \Sigma} \times \{L, R\}\right) \longrightarrow \Ss$.
+  Finally, the composition of these injection with the one described by
+  Corollary \ref{cor:funsetrepr} yields the desired injection.
+\end{proof}
+
+With this result we have shown that we can encode all the information contained
+in a FSTM transition function in a string. Together with the previous result, we need to state
+that even all the possible machine configuration can be encoded by means of strings.
+Namely, that there exists an injection
+from an exhaustive representation of a FSTM's
+configuration and $\Ss$ because we want to simulate
+FSTMs by manipulating the encoding of their configurations.
+
+
+\begin{cor}[(Partial) Representability of Machine's Configurations]
+  \label{cor:confrepr}
+  There is an injection $f: ({\hat \Sigma}^* \times \Qs \times {\hat \Sigma}^* \times {\hat \Sigma}^*)
+  \longrightarrow  \Ss$.
+\end{cor}
+\begin{proof}
+  As for the proof of Corollary \ref{cor:deltarepr}, we observe that there is
+  an injection $i_2: \Qs \longrightarrow \Nat$.
+  Since ${\hat \Sigma}$ is a finite set, it is countable too, so there is a bijection
+  $i_3: {\hat \Sigma} \longrightarrow \Nat$, which composed with $\ovverline \cdot \Nat$
+  yields another injection ${\hat \Sigma} \longrightarrow \Ss$. There is another
+  injection $\underline \cdot_\Tt: {\hat \Sigma}^* \longrightarrow \Ll$ defined as follows:
+  \begin{align*}
+  \underline \cdot_\Tt(\eepsilon)&:=\listenc {\ovverline {i_3(\circledast)}\Nat} 1\\
+  \underline \cdot_\Tt(c_0c_1\ldots c_n)&:=\listenc {\ovverline {i_3(c_n)}\Nat,\ldots,
+  \ovverline {i_3(c_1)}\Nat, \ovverline {i_3(c_0)}\Nat} {n+1}.
+  \end{align*}
+  In other words,
+  for each $\sigma\in {\hat \Sigma}^*$, it suffices to take the list which contains
+  in position $k$ the mapping of the $k$-th element of $\sigma$ through
+  $i_3$, and as encoding of the empty tape a list with a single instance of
+  the blank character. We took this decision for a technical reason:
+  the rightmost and the leftmost characters in an empty tape exist and are
+  $\circledast$, this will turn out to be useful in the definition of
+  the machine's simulation in $\POR^-$. We also know that for every $\sigma \in \Ss$ there is an injection
+  $\listenc \cdot {|\sigma|}: \Ss^{|\sigma|}\longrightarrow \Ss$.
+  The composition of the aforementioned injections with
+  $\listenc \cdot 4$ yields the claimed one.
+\end{proof}
+
+We are interested in capturing $\polyF$ so, before going further,
+we want to instantiate encodings described in
+Corollaries \ref{cor:confrepr} and \ref{cor:deltarepr} for the class of the Finite Stream Stream Machines.
+
+\begin{defn}[Encodings for Canonical Stream Machines]
+  \label{def:canencs}
+  The Encodings for Canonical Stream Machines are defined from
+  the one described in Corollaries \ref{cor:confrepr} and \ref{cor:deltarepr},
+  choosing in particular:
+  \begin{itemize}
+    \item $q_i \mapsto i$ for $i_2$.
+    \item $L\mapsto \zero, R\mapsto \one$.
+    \item For $i_3$: $\zero \mapsto 0, \one \mapsto 1, \circledast \mapsto 2$
+    \item the encoding for tapes $\underline \cdot_\Tt$, defined as follows:
+    \begin{align*}
+    \underline \cdot_\Tt(\eepsilon)&:=\listenc {\ovverline {i_3(\circledast)}\Nat} 1\\
+    \underline \cdot_\Tt(c_0c_1\ldots c_n)&:=\listenc {\ovverline {i_3(c_n)}\Nat,\ldots,
+    \ovverline {i_3(c_1)}\Nat, \ovverline {i_3(c_0)}\Nat} {n+1}.
+    \end{align*}
+  \end{itemize}
+\end{defn}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Dynamic Encoding}
+\label{sec:dynenc}
+In this section we will introduce some manipulating functions in
+$\POR^-$ for
+the data encodings defined above. Throughout these functions, we can easily define complex program behaviors,
+so that composing them we are able to construct increasingly complex behaviors such as the implementation in $\POR$ of any FSTM.
+
+\subsubsection{A Simple Boolean Algebra.}
+\label{subsub:booleanlalgebra}
+
+Since we choose to use $\zero$ and
+$\one$ to represent boolean values,
+it is natural to represent predicates
+with functions $\Ss^n \times \Os \longrightarrow \Bool$.
+%
+Given two values, $x_1$ and $x_2$,
+we can define a function that
+returns $x_1$ if a predicate outputs $\one$,
+$x_2$ if that predicate outputs $\zero$
+and $\eepsilon$ otherwise.
+Such function behaves as an $\mathtt{if}$-expression.
+
+
+\begin{defn}[$\mathtt{if}$]
+The $\mathtt{if}$ expression is defined as follows:
+\begin{align*}
+\mathtt{if}(x_2,x_1,y, \omega) &:= C(y, \eepsilon, x_1, x_2, \omega).
+\end{align*}
+\end{defn}
+\noindent
+Notice that according to this syntax, the first argument of the $\mathtt{if}$
+function is the
+expression resulting from the true branch, the second the one corresponding to the
+false branch, and the third is the so-called \emph{guard} expression.
+%
+%
+\begin{remark}
+  $\mathtt{if} \in\POR^-$
+\end{remark}
+\begin{proof}
+  Trivial: the definition of the function is given recurring to $C$.
+\end{proof}
+%
+\noindent
+From now on, we will omit similar proofs.
+Thanks to the $\mathtt{if}$ function we can now
+also easily define some basic connectives
+of classical Propositional Logic.
+
+\begin{defn}[Logical Connectives]
+Conjunction, disjunction and negation are
+defined as follows:
+\begin{align*}
+(P_1\wedge P_2)(\vec{x},\omega) &:=
+\mathtt{if}(P_2(\vec{x},\omega),\zero,P_1(\vec{x},\omega),
+\omega) \\
+%
+(P_1\vee P_2)(\vec{x},\omega) &:= \mathtt{if}(\one,
+P_2(\vec{x},\omega), P_1(\vec{x},\omega), \omega) \\
+%
+(\neg P)(\vec{x},\omega) &:= \mathtt{if}(\zero,\one,P(\vec{x},\omega),
+\omega).
+\end{align*}
+\end{defn}
+
+Now we define some predicates which
+are helpful in the development of the list manipulators.
+In particular, in order to show that $\mathit{halv} \in \POR^-$,
+it is useful
+to show that there is a predicate $\odd \in \POR^-$
+which is $\one$ if and only if the length of the remaining
+part of the string is even.
+Depending on the value of this predicate, proceeding by
+iteration it will be possible to deciding whether to keep or remove
+a certain bit while decoding a value stored within a list.
+
+%% definition
+\begin{defn}
+{Basic logical predicates in $\POR^-$
+are defined by the functions below:}
+\begin{align*}
+\odd(\eepsilon,\omega) &:= \zero; \\
+%
+\odd(y\bool,\omega) &:= \neg\big(\even(y)\big)|_\zero. \\[2ex]
+%
+\even(x,\omega) &:= \neg\big(\odd(x,\omega)\big); \\
+%
+\eq(x, y, \omega) &:= S(x, y, \omega) \land S(y, x, \omega).
+\end{align*}
+\end{defn}
+%
+%
+
+\begin{remark}
+Observe that the $\odd$ and $\even$
+predicates work as their opposites
+for the encoding of natural numbers:
+\begin{align*}
+\forall \sigma \in {\Ss}.\forall \bool
+\in \Bool. \odd(\sigma) &\leftrightarrow
+\even(\sigma b). \\
+%
+\forall n\in \Nat.\odd{(\ovverline{n}{\Nat})} &\leftrightarrow
+n \text{ is even.}
+\end{align*}
+\end{remark}
+
+Finally, encoding more advanced data manipulators,
+such as list manipulators, it will often be the case to
+test the rightmost or leftmost bit of a string.
+In order to do so, we need to define two other predicates:
+
+\begin{defn}
+Given a string, predicates
+\begin{itemize}
+  \item $\res$, i.e. Right Most Element String
+  \item $\les$, i.e. Left Most Element String
+\end{itemize}
+are defined as follows:
+\begin{align*}
+\res(\eepsilon,\omega) &:= \eepsilon; \\
+\res(y\zero, \omega) &:= \zero|_\one; \\
+\res(y\one,\omega) &:= \one|_\one. \\
+\\
+\les(\eepsilon,\omega) &:= \eepsilon \\
+\les(y\zero,\omega) &:= \mathtt{if}\big(\zero, \les(y,\omega),
+{\Cf}(y,\eepsilon,\omega),\omega\big)|_{\one} \\
+\les(y\one,\omega) &:= \mathtt{if}\big(\one,
+\les(y,\omega), S(y,\eepsilon,\omega),\omega\big)|_{\one}.
+\end{align*}
+\end{defn}
+
+\begin{remark}
+\begin{align*}\
+\forall \sigma \in {\Ss}.\res(\sigma \one) &=
+\one \wedge \res(\sigma\zero)=\zero. \\
+%
+\forall \sigma \in {\Ss}.\les(\one\sigma) &=
+\one \wedge \les(\zero\sigma)=\zero.
+\end{align*}
+\end{remark}
+\begin{proof}
+  Direct consequence of the definitions of $\res$ and $\les$.
+\end{proof}
+
+\subsubsection{Strings}
+\label{par:strings}
+
+The FSTMs' reachability function is defined on top of
+configurations, in particular, the strings which represent the tape are
+obtained from the strings in the initial configuration, applying some of the
+following transformations:
+%
+\begin{itemize}
+  \item Appending on the left or on the right.
+  \item Deleting a character on the left or on the right.
+\end{itemize}
+%behavior
+\begin{defn}[String Appenders and Removers]
+  \label{def:apprems}
+    We define string appenders
+    \begin{itemize}
+      \item $\ras$, i.e. \emph{Right Appender for Strings}
+      \item $\las$, i.e. \emph{Left Appender for Strings}
+      \item $\rrs$, i.e. \emph{Right Remover for Strings}
+      \item $\lrs$, i.e. \emph{Left Remover for Strings}
+    \end{itemize}
+    as follows:
+    \begin{align*}
+      \reverse(\eepsilon, \omega) &:= E(x, \omega)\\
+      \reverse(x\bool, \omega) &:= \concat(\bool, \reverse (x, \omega), \omega)\\%[2ex]
+      \ras(x, y, \omega) &:= \concat(x, y, \omega)\\%[2ex]
+      \las(x, y, \omega) &:=  \reverse (\ras(\reverse(x, \omega), \omega), \omega)\\%[2ex]
+      \rrs(\eepsilon,\omega) &:=  E(x, \omega)\\
+      \rrs(x\bool, \omega) &:=  x|_{x}\\%[2ex]
+      \lrs(\eepsilon, \omega) &:= \reverse (\rrs(\reverse(x, \omega), \omega), \omega).
+    \end{align*}
+\end{defn}
+\noindent
+The correctness of these functions can be seen by induction on the length of their
+arguments.
+
+\subsubsection{Natural Numbers}
+
+The execution of a FSTM in $\POR^-$ can modeled with the
+self-application of the machine's transition function to its output
+a polynomial number of times. However, the only iteration construct of $\POR^-$
+is bounded recursion, so, to iterate a function a polynomial number of step,
+we need to show that the schema computing the $k$-th application of a function
+for arbitrary $k$ is in $\POR$. Moreover, due to the polynomial time bound of
+$\polyF$ functions we need to compute a string whose size is polynomial in the size of the
+input. This would provide us a sufficiently long string to
+feed to the self-application schema in order to simulate any FSTM for a
+sufficient number of steps.
+%
+For this reason, we defined the encodings of numbers in a way that
+their size is linear in the size of the encoded number. This will allow us to use
+them directly as iteration parameters for the bounded recursion schema.
+%
+Finally, we said that the time bound of a FSTM is polynomial, so to iterate
+a function a polynomial number of steps, we could simply compute reduce the task
+to the computation of polynomial values in our encoding of naturals.
+
+\begin{defn}[Successor]
+We define a successor function
+$\Succ : \Ss_\Nat \longrightarrow \Ss_\Nat$
+that computes the successor of a number as follows:
+\begin{align*}
+\Succ(\eepsilon, \omega) &:= \eepsilon; \\
+\Succ(y\bool, \omega) &:= \Sf_\one(y,\omega)|_{y\one}.
+\end{align*}
+\end{defn}
+\noindent
+
+
+\begin{defn}[Predecessor]\label{df:predecessor}
+If $y\in \Ss_\Nat$ is the encoding
+of a number,
+the $\pd$ function calculates
+its predecessor y simply removing its
+last digit (if present):
+\begin{align*}
+\pd(\eepsilon,\omega) &:= \eepsilon; \\
+\pd(y\bool,\omega) &:= y|_y.
+\end{align*}
+\end{defn}
+
+\begin{remark}
+$\forall \sigma,c_1,c_2.\pd(\pd(\sigma c_1c_2))=\sigma$.
+\end{remark}
+\begin{proof}
+The claim is a trivial consequence of Definition~\ref{df:predecessor}.
+\end{proof}
+
+
+%% def
+\begin{defn}[Sum]
+The sum of two numbers $\mathit{sum}$
+is implemented using the operation of concatenation
+$\concat$ introduced in Definition \ref{def:concat} as:
+$$
+\mathit{sum}(x, y, \omega) := \pd(\concat(x, y, \omega), \omega).
+$$
+\end{defn}
+
+The encoding of the difference
+between two numbers within $\POR^-$ is cumbersome
+because it recurs on the definition of
+the self application schema we introduced above, namely: the $\sa_{\cdot, \cdot}$
+functor.
+Intuitively, it applies $\rrs$ $n$ times to $x$,
+where $\ovverline n\Nat$ is $y$.
+
+%% defn
+%% difference
+\begin{defn}[Difference]
+The function $\mathit{diff}$, which computes
+the difference between two natural numbers,
+is defined as follows:
+\begin{align*}
+\mathit{diff}(x, y, \omega) &:= \sa_{\rrs, x}(x, y, \omega).
+\end{align*}
+\end{defn}
+%
+\begin{remark}
+  The function $\mathit{diff}$ is in $\POR^-$ and follows its intended semantics.
+\end{remark}
+\begin{proof}
+    Lemma \ref{lemma:saPOR} states that the function $\sa_{\rrs, x}$ is in
+    $\POR^-$ and that $\sa_{\rrs, x}(x, \ovverline n \Nat, \omega)=\rrs^n(x, \omega)$
+    this is sufficient to prove the claim, in accordance with the definition
+    of $\rrs$ (Definition \ref{def:apprems}).
+\end{proof}
+
+%
+%
+\noindent
+In order to multiply two values $x,y$,
+we can remove their last digit --- so that their size
+is equal to the number that they encode ---
+concatenate $x$ to itself $y$-times and
+return the successor of the number we get.
+
+%% defn
+%% multiplication
+\begin{defn}[Multiplication]
+Multiplication between two natural numbers,
+$\mult$, is defined
+as follows:
+\begin{align*}
+{\mult^*}(x,  \eepsilon, \omega) &:= \eepsilon; \\
+{\mult^*}(x, y\bool, \omega) &:= \big(\mathit{sum}(\mult^*(x, y, \omega),
+x, \omega)\big)|_{x\times y\one}; \\
+\mult(x, y, \omega) &:= \Succ\big( \mult^*(\pd(x,\omega),
+\pd(y,\omega), \omega), \omega\big).
+\end{align*}
+\end{defn}
+%
+%
+\noindent
+With this encoding the computation of an exponential function
+would require an exponential size for the representation
+of the output, but our iteration is bounded by a term $\Lpw$
+and the size of the number in our encoding is
+linear in its value\footnote{We prove such result in Lemma \ref{lemma:size}}.
+Nevertheless, we can show how to compute an exponentiation, and so
+how to represent monomials and polynomials.
+
+\begin{defn}[Exponentiation]
+Given a $k\in \Nat$, the function computing
+the $k$-th exponentiation of such value
+is defined as follows:
+\begin{align*}
+  @0(x, \omega)&:= \ovverline 1 \Nat;\\
+  @(n+1)(x, \omega)&:= \mult(@n(x), x, \omega).
+\end{align*}
+\end{defn}
+
+Notice that all these functions, which are clearly in $\POR$,
+behave as desired. Indeed the following claims are
+easily verifiable:
+\begin{itemize}
+\itemsep0em
+\item For any $n,m\in \Nat$ and $\omega\in \Os$,
+$succ(\underline{n}_\Nat,\omega)=\underline{n+1}_\Nat$;
+
+ \item {For any $n\in \Nat^+$ and $\omega\in \Os$,
+ $pd(\underline{n}_\Nat,\omega)=\underline{n-1}_\Nat$};
+
+ \item For any $n,m\in \Nat$, and $\omega\in \Os$, $sum(\underline{n}_\Nat,
+ \underline{m}_\Nat, \omega)=\underline{n+m}_\Nat$;
+
+\item For any $n,m\in \Nat$ and $\omega\in \Os$, such that $n\ge m$,
+\emph{diff}$(\underline{n}_\Nat, \underline{m}_\Nat, \omega)=
+\underline{n-m}_\Nat$;
+
+\item For any $n,m\in \Nat$ and $\omega\in \Os$, $mult(\underline{n}_\Nat, \underline{m}_\Nat, \omega) = \underline{n\cdot m}_\Nat$;
+
+\item For any $n,m \in \Nat$ and $\omega\in \Os$, $@m(\underline{n}_\Nat, \omega)=
+\underline{n^m}_\Nat$.
+\end{itemize}
+
+\begin{cor}[Polynomials are in $\POR^-$]
+  \label{cor:polyinpor}
+  For each polynomial $p: \Nat^k\longrightarrow \Nat$ there is a function
+  $\underline p: \Ss^k\times \Os \longrightarrow \Ss$ such that for each
+  $x_1, \ldots, x_k \in \Nat$, and for each $\omega \in \Os$ ,
+  $\underline p(\ovverline {x_1}\Nat, \ldots, \ovverline {x_k} \Nat, \Os)=
+  \ovverline {p(x_1, \ldots, x_k)}\Nat$.
+\end{cor}
+\begin{proof}
+  $\POR^-$ is closed under composition ad it contains multiplications and sums.
+\end{proof}
+
+
+\subsubsection{Lists}
+
+In the previous Section,
+we reduced all the composed data structures to the case of lists. For this
+reason, it comes natural to develop a tool-set of functions which can be used
+to manipulate lists, which will be used as building-blocks to define the
+function simulator.
+%
+We start showing that the list member representation can
+be decoded in $\POR^-$, namely that $\mathit{halv}\in \POR^-$.
+
+\begin{lemma}
+  There is a function $\mathit{halv}$ in $\POR^-$ such that
+  $\forall x \in \Ss. \forall \omega \in \Os. \mathit{halv}(x, \omega)=\mathcal H(x)$
+\end{lemma}
+\begin{proof}
+  It can be shown giving the following definition:
+  %
+  \begin{align*}
+  \mathit{halv}(\eepsilon,\omega) &:= \eepsilon; \\
+  \mathit{halv}(y\zero, \omega) &:= \concat\big(\mathit{halv}(y,\omega),
+  {\mathtt{if}}(\zero,\eepsilon,
+  \odd(y,\omega),\omega)\big){|_{y\zero}}; \\
+  %
+  \mathit{halv}(y\one,\omega) &:=
+  \concat\big(\mathit{halv}(y,\omega), {\mathtt{if}}
+  (\one,\eepsilon,\odd(y,\omega),\omega)\big)
+  {|_{y\zero}}.
+  \end{align*}
+\end{proof}
+%
+Moreover, we ought show that it's the left-inverse of $\mathit{doub}$ (Lemma \ref{lemma:dfinpor}), as stated by
+the following lemma.
+
+\begin{lemma}[Left-Inverse of $\mathit{doub}$]
+  \label{lemma:dhleftinverse}
+$\forall \sigma \in {\Ss},
+\omega \ { \in \Os.} \mathit{halv}\big(\mathit{doub}(\sigma,\omega),\omega\big)
+=\sigma$.
+\end{lemma}
+\begin{proof}
+The proof is by (right) induction on $\sigma$.
+\begin{itemize}
+\itemsep0em
+
+\item[$\eepsilon.$] The thesis comes from a trivial
+rewriting of the two functions' bodies.
+
+\item[$\tau c.$] The thesis is:
+\begin{align*}
+\mathit{halv}\big(\mathit{doub}(\tau c,\omega),\omega\big) &= \tau c; \\
+%
+\mathit{halv}\big(\mathit{doub}(\tau,\omega)\one c, \omega\big) &=
+\tau c.
+\end{align*}
+By induction on $\sigma$ we can
+also prove that
+$\forall \sigma.\odd\big(\mathit{doub}(\sigma)\big)=
+{\zero}$.
+So we can simplify our claim as follows:
+\begin{align*}
+\mathit{halv}\big(\mathit{doub}(\tau,\omega)\one c,\omega\big) &=
+\tau c; \\
+%
+\mathit{halv}\big(\mathit{doub}(\tau,\omega)\one,\omega\big)c
+&= \tau c; \\
+%
+\mathit{halv}\big(\mathit{doub}(\tau,\omega)\one,\omega\big)
+&= \tau.
+\end{align*}
+We argued that $\forall \sigma.\odd\big(\mathit{doub}(\sigma)\big)
+={\zero}$.
+So, we can state the claim as:
+\begin{align*}
+\mathit{halv}\big(\mathit{doub}(\tau,\omega)\one,\omega\big) &= \tau; \\
+%
+\mathit{halv}\big(\mathit{doub}(\tau,\omega),\omega\big) &= \tau.
+\end{align*}
+which is the IH.
+\end{itemize}
+\end{proof}
+
+Thanks to the previous result, we can leverage $\mathit{halv}$ to define list
+appenders, extractors and removers.
+
+
+%
+\begin{defn}[List Extractors,  Appenders and Removers]
+  \label{def:listops}
+    We define lists' manipulator
+    \begin{itemize}
+      \item $\rel$, i.e. \emph{Right Extractor for Lists};
+      \item $\lel$, i.e. \emph{Left Extractor for Lists};
+      \item $\ral$, i.e. \emph{Right Appender for Lists};
+      \item $\lal$, i.e. \emph{Left Appender for Lists};
+      \item $\rrl$, i.e. \emph{Right Remover for Lists};
+      \item $\lrl$, i.e. \emph{Left Remover for Lists}.
+    \end{itemize}
+    and the auxiliary functions
+    \begin{itemize}
+      \item $\rmsep$, i.e. the functions which removes an encoded character.
+      \item $\rel'$, i.e. the functions which returns the rightmost element
+      of a list (size included).
+      \item $\srrl$, i.e. the right semi-remover, which given a
+      string shaped as $\sigma\zero\zero\tau\zero\zero$ returns
+      $\sigma\zero\zero$ where $\sigma$ is as long as possible.
+      This function is dual with respect to $\rel$.
+    \end{itemize}
+    Starting from the auxiliary functions, we define them as:
+    \begin{align*}
+      \rmsep(x, \omega) &:= \rrs(\rrs(x, \omega), \omega)\\
+      \rel'(\eepsilon,\omega) &:= E(x, \omega) \\
+      %
+      \rel'(y\zero, \omega) &:= \mathtt{if}(\eepsilon,
+      \concat(\rel'(y,\omega),\zero),
+      (\lnot \res(y, \omega)){\wedge}
+      \odd(y, \omega),\omega)|_{y\zero} \\
+      %
+      \rel'(y\one,\omega) &:=
+      \concat(\rel'(y,\omega),
+      \one,\omega))|_{y_\zero}\\
+      %
+      %
+      \srrl'(\eepsilon,\omega) &:= E(x, \omega)\\
+      %
+      \srrl'(y\zero, \omega) &:= \mathtt{if}(y\zero,
+      \srrl'(y, \omega),
+      \lnot (\res(y, \omega)){\wedge}
+      \odd(y, \omega),\omega)|_{y\zero} \\
+      %
+      \srrl'(y\one,\omega) &:= \srrl'(y, \omega)|_{y_\zero}\\
+      \srrl(x, \omega) &:= \srrl'(\rmsep(x, \omega), \omega).
+    \end{align*}
+    Thus, leveraging the auxiliary functions, we can define thour function as follows:
+    \begin{align*}
+      %
+      \rel(t,\omega) &:= \mathit{halv}(\rel'(\rmsep(t),\omega),\omega)\\
+      %
+      \lel(x, \omega) &:= \reverse(\rel(\reverse(x, \omega), \omega), \omega)\\
+      \ral(x, y, \omega) &:= \srrl(x, \omega)\zero \zero
+                             \mathit{doub}(y, \omega)\zero \zero
+                             \mathit{doub}(\rel(x,\omega)\one, \omega)\zero\zero
+                              \\%[2ex]
+      \lal(x, y, \omega) &:= \zero \zero\mathit{doub}(y, \omega)
+                              \srrl(y, \omega)
+                              \mathit{doub}(\rel(x, \omega)\one, \omega)
+                              \zero\zero\\%[2ex]
+      \rrl(x,\omega) &:=  \srrl(\srrl(x, \omega), \omega)
+                          \mathit{doub}(\rrs(\rel(x, \omega),\omega) \omega)
+                          \zero\zero \\
+      \lrl(x,\omega) &:=  \srrl(\reverse(\srrl(\reverse(x, \omega), \omega),\omega)
+                          \mathit{doub}(\rrs(\rel(x, \omega),\omega) \omega)
+                          \zero\zero.
+    \end{align*}
+  \end{defn}
+
+  \begin{remark}[Correctness of lists operators]
+    \label{rem:corrlistops}
+    Lists operators of Definition \ref{def:listops} follow their
+    intended specification, or the described ones for the auxiliary functions.
+  \end{remark}
+  \begin{proof}
+    Respectively:
+    \begin{itemize}
+      \item [$\rmsep$] Trivial, comes from the definition od $\rrs$.
+      \item [$\rel'$] Suppose that $y$ encodes a list, i.e. $y=\{\one\zero,
+       \one\one\}^*\zero\zero\{\one\zero, \one\one\}^*$.
+       % We will not take in account the case $y=\eepsilon$ because we are not interested in it:
+       % this function will always be invoked with non-empty inputs.
+       % So we go by cases on the input assuming that it has the shape described
+       % above.
+       If the input is $y\zero$, we
+       continue by cases on the guard of the $\mathtt{if}$ function:
+       $\lnot (res(y, \omega))$ entails that $y=y'\zero$, so the input of
+       the function is $y'\zero\zero$ finding two consecutive $\zero$s
+       means that we reached the separator, indeed the output is the same
+       of $\rel'$ is its input. If the guard is not true, the $\zero$ at the end of the
+       input is the second character of an encoded $\zero$ in the rightmost
+       value; even if the input is $y\one$, the current character is the encoding
+       of a value, so we get the claim by induction.
+      \item[$\srrl'$] We have already argued that this function is the
+      dual of the $\rel'$ function.
+      The proof is a slight variation of the previous.
+      \item[$\srrl$] Trivial by the proof of the correctness of $\srrl'$
+      \item[$\rel$] The claim is a consequence of the correctness of $\rel'$
+        and of Lemma \ref{lemma:dhleftinverse}.
+      \item[$\lel$] The claim comes from the fact that the definition of $\rel$
+      checks that a sequence of two characters is found and that the current
+      character is in even position (the remaining part of the encoding has
+      odd length) and that
+      \begin{itemize}
+        \item By induction on $\sigma$ we can show that
+        $\forall \sigma.\mathit{doub}(\sigma)$ has odd length.
+        \item If $\sigma$ is the encoding of a list, the separators
+        $\zero\zero$ are always followed by an even number of characters.
+        This can be show by induction on the number of elements of the list.
+      \end{itemize}
+      \item[$\ral$, $\lal$] The correctness comes from the definition of
+      lists' encoding and from the correctness of all the functions which
+      appear in the definitions of $\ral$ and $\lal$.
+      \item[$\rrl$] The correctness comes from the definition of
+      lists' encoding and from the correctness of all the functions composed
+      in the definition of this function.
+      \item[$\lrl$] The correctness comes from the definition of
+      lists' encoding and from the fact that $\srrl$, as $\rel$ does, is
+      safe with respect to the reversing of a string.
+    \end{itemize}
+  \end{proof}
+
+  Thanks to these basic manipulators, we have a sufficiently expressive
+  tool-set of functions, which enable us to show that it is possible to
+  define list parametric and constant list projectors, namely functions
+  $\pi_k: \Ss \times \Os \longrightarrow \Ss$ for $k\in \Nat$, which given
+  an encoding of a list and any oracle, they return the $k$-th element
+  of that list if it exists, $\eepsilon$ otherwise.
+
+  Together with these constant projectors, we can also define a \emph{parametric}
+  projector, in which the index of the projection is given as an input.
+
+  \begin{defn}[List-Projectors]
+  A family of \emph{constant projectors}, $\pi_n$,
+  fo $n\in \Nat$ is defined as follows:
+  $$
+  \pi_n (x,\omega) := rel(sa_{rrll, x}(x,\underline{n}_\Nat,\omega),\omega).
+  $$
+  A family of \emph{parametric projector}, $\pi$,
+  for $n\in \Nat$ is defined as follows:
+  $$
+  \pi(x,n,\omega) := rel(sa_{rrl,x}(x,n,\omega),\omega).
+  $$
+  \end{defn}
+
+  \begin{remark}
+    \label{rem:pojectors}
+  Constant and parametric projectors
+  with index $i> 0$ are correct with respect to their
+  intended specification.
+  Moreover, $\pi_0$ returns the number of elements in
+  the list and for indexes of projections $j$ greater
+  than the number of elements in the list, $\pi_j$,
+  returns $\eepsilon$.
+  \end{remark}
+  \begin{proof}
+    Correctness is a consequence of the correctness of $\sa, \rrl$ and
+    $\rel$ functions which has already been proven.
+  \end{proof}

@@ -1,0 +1,10 @@
+#section -> maiuscoa o minuscola?
+#definizioni in lemmi...
+#cosa fare della sezione encodings?
+#lemmi che non finiscono con .
+#rileggere appendice
+#task AB
+riassunto tesi
+#cases
+#biber
+#spaziatura

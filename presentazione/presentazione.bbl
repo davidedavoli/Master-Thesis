@@ -1,0 +1,186 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nyt/global//global/global}
+    \entry{ADLP}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{un=0,uniquepart=base,hash=64e8c715ecc1707be6766715d9c428b9}{%
+           family={Antonelli},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=94299738be3799d6a6d4e705e95f56c6}{%
+           family={Dal\bibnamedelima Lago},
+           familyi={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={U.},
+           giveni={U\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=95701418555942da58d30a4bf3b29549}{%
+           family={Pistone},
+           familyi={P\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod},
+           givenun=0}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=c107c7120c94aa8b6a53a890ecd6ab95}{%
+           family={De\bibnamedelima Mol},
+           familyi={D\bibinitperiod\bibinitdelim M\bibinitperiod},
+           given={L.},
+           giveni={L\bibinitperiod}}}%
+        {{hash=211dc1aa067b77a76a1bf09bf1d87f03}{%
+           family={Weiermannn},
+           familyi={W\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=8464275093270cd0829ed91d9592e72f}{%
+           family={Manea},
+           familyi={M\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=84890ea4134ccfd55cfb9f0f6dd4f845}{%
+           family={Fernández-Duque},
+           familyi={F\bibinithyphendelim D\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{e37856bc1ce8e023db6532e1e38f575a}
+      \strng{fullhash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{bibnamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authorbibnamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authornamehash}{e37856bc1ce8e023db6532e1e38f575a}
+      \strng{authorfullhash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{editorbibnamehash}{ec1347c8db6dab5071f777c014151787}
+      \strng{editornamehash}{ec1347c8db6dab5071f777c014151787}
+      \strng{editorfullhash}{0ce23a4024f956ceb5fe6f8fbd228c44}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Connecting with Computabiliy}
+      \field{title}{On Measure Quantifiers in First-Order Arithmetic}
+      \field{year}{2021}
+      \field{pages}{12\bibrangedash 24}
+      \range{pages}{13}
+    \endentry
+    \entry{Buss}{book}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=f22f5bd47daf8e3f962bfa1b42690a8e}{%
+           family={Buss},
+           familyi={B\bibinitperiod},
+           given={S.R.},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Bibliopolis}%
+      }
+      \strng{namehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{fullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{bibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorbibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authornamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorfullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Bounded Arithmetic}
+      \field{year}{1986}
+    \endentry
+    \entry{CookUrquhart}{article}{}
+      \name{author}{2}{}{%
+        {{un=0,uniquepart=base,hash=6d0042ba6060405425561c0184e8ece1}{%
+           family={Cook},
+           familyi={C\bibinitperiod},
+           given={Stephen},
+           giveni={S\bibinitperiod},
+           givenun=0}}%
+        {{un=0,uniquepart=base,hash=1c4c52d57a2c50570eab8a8f24bac3c8}{%
+           family={Urquhart},
+           familyi={U\bibinitperiod},
+           given={Alasdair},
+           giveni={A\bibinitperiod},
+           givenun=0}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{fullhash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{bibnamehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{authorbibnamehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{authornamehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{authorfullhash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annals of Pure and Applied Logic}
+      \field{number}{2}
+      \field{title}{Functional Interpretations of Feasibly Constructive Arithmetic}
+      \field{volume}{63}
+      \field{year}{1993}
+      \field{pages}{103\bibrangedash 200}
+      \range{pages}{98}
+      \verb{doi}
+      \verb 10.1016/0168-0072(93)90044-e
+      \endverb
+    \endentry
+    \entry{Ferreira88}{unpublished}{}
+      \name{author}{1}{}{%
+        {{un=0,uniquepart=base,hash=78a09d7a5b8d78dc141814ea9ad3ee9d}{%
+           family={Ferreira},
+           familyi={F\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod},
+           givenun=0}}%
+      }
+      \strng{namehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{fullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{bibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorbibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authornamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorfullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{extradatescope}{labelyear}
+      \field{labeldatesource}{year}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{12}
+      \field{note}{Ph.D. Dissertation}
+      \field{title}{Polynomial Time Computable Arithmetic and Conservative Extesions}
+      \field{year}{1988}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

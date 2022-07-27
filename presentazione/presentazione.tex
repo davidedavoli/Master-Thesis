@@ -1,0 +1,908 @@
+\documentclass[xcolor={x11names}]{beamer}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amsmath}
+\usepackage{stmaryrd}
+\usepackage{bm}
+\usepackage{verbatim}
+\usepackage[super]{nth}
+\usepackage{ebproof}
+\usepackage{tikz}
+\usepackage[style=authoryear, maxcitenames=2]{biblatex}
+\usepackage{multicol}
+\usepackage[italian]{babel}
+\usepackage{graphicx}
+\usepackage{xcolor}
+
+
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\usetikzlibrary{fit}
+\usetikzlibrary{chains}
+\usetikzlibrary{decorations.pathmorphing}
+
+\input{macros.tex}
+
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+\AtBeginSubsection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\\\vspace{3ex}\large \insertsubsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
+\definecolor{lightgray}{gray}{0.75}
+
+\addbibresource{bib.bib}
+
+\deftranslation[to=italian]{Example}{Esempio}
+
+\title{Bounded Arithmetic and Randomized Computation}
+\author{Davide Davoli}
+\institute{Alma Mater Studiorum - Università di Bologna}
+\date{\nth{13} July 2022 - Alma Mater Studiorum - Università di Bologna}
+
+\begin{document}
+\selectlanguage{english}
+
+\frame{\titlepage}
+
+\section{Introduction}
+
+\begin{frame}
+  \frametitle{Implicit Computational Complexity}
+  \begin{tikzpicture}[thick]
+    \onslide<1->{
+    \node[minimum width = 5cm, minimum height = 4cm, draw, rounded corners] (Prog) {};
+    \node[fill=white, align=center]  at ([yshift=1em]Prog.90) {Programs
+    %\\{\footnotesize $\{0, 1\}^*$}
+    };
+    \node[right = of Prog, minimum width = 5cm, minimum height = 4cm, draw, rounded corners] (Prob) {};
+    \node[fill=white, align=center]  at ([yshift=1em]Prob.90) {Problems
+    %\\{\footnotesize$2^{\{0, 1\}^*}$}
+    };
+      }
+\onslide<1>{
+      \node[fill = Khaki1] (P) at (Prog) {$P$};
+      \node[fill = LightBlue1] (semP) at (Prob) {$\llbracket P\rrbracket$};
+      \draw[->] (P) edge[bend left] node[fill=white] {$\llbracket \cdot \rrbracket$} (semP);
+      }
+\onslide<2->{
+      \node[minimum width = 4cm, minimum height = 3cm, draw, align= center,fill=Khaki1] (EffProg) at (Prog) {Class of programs};
+      \node[minimum width = 3cm, minimum height = 2cm, draw, align= center, fill=LightBlue1] (EffProb) at (Prob) {Class of \\problems};
+      \draw (EffProg.north east) edge[dashed]  (EffProb.north west);
+      \draw (EffProg.south east) edge[dashed]  (EffProb.south west);
+      %  \draw[->] (P) edge[bend left] node[fill=white] {$\llbracket \cdot \rrbracket$} (semP);
+      }
+    % \node[label = {Clique}] (clique) at ($(P)+(0.5cm, 1cm)$) {\textbullet};
+    % \node[label = {SAT}] (sat) at ($(P)+(-1.7cm, -0.5cm)$) {\textbullet};
+    % \node[label = {Parity}] (parity) at ($(P)+(-0.2cm, -1.5cm)$) {\textbullet};
+    % \node[label = {Reachability}] (reachability) at ($(P)+(1.5cm, -1.3cm)$) {\textbullet};
+    % \node[label = {$f$}] at ($(P)$) (f) {\textbullet};
+    %
+    % \node[label = {$U_\mathit{Clique}$}] (uclique) at ($(CD)+(0.5cm, 1cm)$) {\textbullet};
+    % \node[label = {$U_\mathit{SAT}$}] (usat) at ($(CD)+(-1.7cm, -0.5cm)$) {\textbullet};
+    % \node[label = {$U_\mathit{Parity}$}] (uparity) at ($(CD)+(-0.2cm, -1.5cm)$) {\textbullet};
+    % \node[label = {$U_\mathit{Rechability}$}] (ureachability) at ($(CD)+(1.5cm, -1.3cm)$) {\textbullet};
+    % \node[label = {$U_f$}] at ($(CD)$) (uf) {\textbullet};
+    %
+    % \node[label = {$U_1$}] (u1) at ($(CD)+(-1.5cm, 1.1cm)$) {$\bullet$};
+    % \node[label = {$U_2$}] (u2) at ($(CD)+(-1.1cm, 0.6cm)$) {$\bullet$};
+    % \node[label = {$U_3$}] (u3) at ($(CD)+(1.5cm, 1cm)$) {$\bullet$};
+    %
+    % \draw[->] (clique) edge[dashed] (f);
+    % \draw[->] (f) edge[dashed] (sat);
+    %
+    %
+    % \draw[->] (uclique) edge[dotted, bend left=10] node[fill=white]{$\Gamma$} (clique);
+    % \draw[->] (usat) edge[dotted, bend left=10] node[fill=white]{$\Gamma$} (sat);
+    % \draw[->] (uf) edge[dotted, bend left=10] node[fill=white]{$\Gamma$} (f);
+    %
+    % \draw[->] (uclique) edge[dashed] (uf);
+    % \draw[->] (uf) edge[dashed] (usat);
+
+  \end{tikzpicture}
+
+  \medskip
+
+  \onslide<3->
+{  {\bf Idea:} Study a complexity class describing the programs belonging to its preimage with respect to $\llbracket \cdot \rrbracket$.
+}
+\end{frame}
+
+\begin{frame}
+\frametitle{Purpose of a Randomized Bounded Arithmetic}
+
+Bounded arithmetics are logical theories which allow us to:
+
+\medskip
+\begin{itemize}
+\item Represent programs by means of proofs.
+\item Capture complexity classes by means of classes of foruml\ae{}.
+\end{itemize}
+\pause
+\bigskip
+
+A bounded arithmetic with randomness would enable us to:
+
+\medskip
+\begin{itemize}
+\item Capture the $\PPT$ functions.
+\item Characterize some probabilistic complexity classes, e.g. $\BPP$.
+\item Find a \emph{recursively enumerable} non-trivial subset of $\BPP$.
+\end{itemize}
+
+
+\end{frame}
+
+\begin{frame}
+
+\note{
+Buss in his PhD thesis developed a bounded arithmetic --- called $S^1_2$ --- for the class $\FP$.
+%
+Buss' result an be proven, for example, passing through a function algebra, as did
+by Ferreira
+}
+\frametitle{S. Buss' Bounded Arithmetic}
+\onslide<1->
+\cite{Buss} introduces a Bounded Arithmetic for the class $\FP$.
+\medskip
+\vspace {-0.25cm}
+\onslide<2->
+\begin{theorem}[Buss' Theorem \cite{Buss}]
+  \label{theorem:buss}
+  $f \in \FP$ if and only if there is a $\Sigma^b_{1}$ formula $G_f$ such that:
+  $$
+  S^1_2\vdash \forall x. \exists !y. G_f(x, y)
+  $$
+\end{theorem}
+\begin{itemize}
+  \item<3-> The proof system $S^1_2$ captures the complexity of $f$.
+\end{itemize}
+\bigskip
+\onslide<4->
+
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[->, node distance=2cm, semithick, scale = 0.50]
+ \node (Lpw) {$S^1_2$};
+ \node[right = 2cm of Lpw] (POR) {PTCA};
+ \node[right = 2cm of POR] (PPT) {$\FP$};
+ \draw[->] (Lpw) edge[bend left] (POR);
+ \draw[->] (POR) edge[bend left, dashed] (PPT);
+ \draw[->] (PPT) edge[bend left, dashed] (POR);
+ \draw[->] (POR) edge[bend left] (Lpw);
+\end{tikzpicture}
+}
+
+Schema of the proof given by \cite{Ferreira88}.
+
+\medskip
+% \onslide<3->{\begin{block}{Examples}
+% \vspace {-0.5cm}
+% \[
+% \llbracket \Flip(t)\rrbracket_{\xi} := \{\omega \in \{\zzero, \oone\}^\Ss | \
+% \omega(\llbracket t\,\rrbracket_{\xi}) = \oone\}
+% \]
+% \end{block}
+% }\onslide<4->{
+% \vspace{-0.5cm}
+% \[
+% \begin{gathered}
+% \mu\left(\llbracket \Flip(\one) \land \Flip(\zero)\rrbracket_\xi\right) = \\
+% %\{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\one) = \oone\} \cap \{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\zero) = \oone\}\\
+% %\mu \left(\{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\one) = \oone \land \omega(\zero) = \oone\}\right)= \frac 1 4
+% \mu \left(\{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\one) = \oone\} \cap \{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\zero) = \oone\}\right)= \frac 1 4
+% %\mu(\llbracket \Flip(\one) \land \Flip(\zero)\rrbracket_\xi)= \frac 1 4
+% \end{gathered}
+% \]
+% }
+
+\end{frame}
+
+% \begin{frame}
+% \frametitle{Definition of $\POR$}
+%
+% $\POR$ is obtained extending Cobham's function algebra with an argument $\omega$ and a query function $Q$. It is the smallest set of functions $\Ss^k \times \{\zzero, \oone\}^\Ss \longrightarrow \Ss$ containing:
+%
+% \begin{itemize}
+% \item<2-> the empty function, $E(x,\omega)=\eepsilon$
+% \item<3-> the Boolean successor $S_b(x,\omega)=xb$, for every $b\in\Bool$
+% \item<4-> the projection functions, $P^n_i(x_1,\dots, x_n,\omega)=x_i$, for $n\in \Nat$ and $1\leq i\leq n$
+% \item<5-> the conditional function
+% $$
+% C(x,y,\omega) = \begin{cases}
+% \oone \ \ \ &\text{if } x \bm{\subseteq} y \\
+% \zzero \ \ \ &\text{otherwise}
+% \end{cases}
+% $$
+% \item<6-> the query function $Q(x,\omega)=\omega(x)$
+% \end{itemize}
+% \pause\pause\pause\pause\pause\pause
+% and closed under composition and bounded recursion on notation.
+%
+%
+% \end{frame}
+
+% \begin{frame}
+% \frametitle{RBA's semantics}
+%
+% \begin{itemize}
+% \item Each possible value of the $\Flip$ predicate is represented by its characteristic function $\omega: \Ss \longrightarrow \{\zzero, \oone\}$.
+% \item The semantics of each formula is the \emph{measurable} set of functions $\omega$ which satisfy it.
+% \end{itemize}
+%
+% \pause
+%
+%
+% \begin{block}{Examples}
+% \[
+% \llbracket \Flip(t)\rrbracket_{\xi} := \{\omega \in \{\zzero, \oone\}^\Ss | \
+% \omega(\llbracket t\,\rrbracket_{\xi}) = \oone\}
+% \]
+% \end{block}
+% \pause
+% \[
+% \begin{gathered}
+% \llbracket \Flip(\one) \land \Flip(\zero)\rrbracket_\xi = \\
+% \{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\one) = \oone\} \cap \{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\zero) = \oone\}\\
+% \{\omega \in \{\zzero, \oone\}^\Ss | \ \omega(\one) = \oone \land \omega(\zero) = \oone\}\\[2ex]
+% \mu(\llbracket \Flip(\one) \land \Flip(\zero)\rrbracket_\xi)= \frac 1 4
+% \end{gathered}
+% \]
+%
+% \end{frame}
+
+
+
+% Definire PPT a voce
+
+\begin{frame}
+\frametitle{Main Theorem}
+\note{
+Ugo dal Lago and I, extended Buss' work to probabilistic computation,
+this required us to modify Buss' logic adding a predicate called $\Flip$
+to capture probabilistic behaviors
+
+
+$RS^1_2$ is the transposition into our framework of Buss' $S^1_2$ axioms, which capture the class $P$.
+
+...
+
+}
+\onslide<1->{
+$\Lpw$ is a first-order word language including the unary predicate $\Flip$ and associated with a \emph{quantitative} semantic inspired by~\cite{ADLP}.
+
+\pause
+
+\begin{theorem}
+The $\PPT$ functions are exactly the functions $f$ for which there exists a $\Sigma^b_1$ formula of $\Lpw$, $G_f$, such that:
+% \[
+% \forall x, y. \mu(\llbracket G_f\,(x, y)\rrbracket_\xi) = \mathit{Pr}[f\,(x) = y] \land \big(RS^1_2 \vdash \forall x.\exists ! y . G_f\,(x, y)\big)
+% \]
+\begin{itemize}
+  \item $RS^1_2\vdash \forall x \exists ! y. G_f(x, y)$.
+  \item The interpretation of $G_f(x, y)$ has measure equal to $\mathit{Pr}[f\,(x) = y]$.
+\end{itemize}
+\end{theorem}
+}
+\pause
+\smallskip
+% The proof consists in a series of reductions from $\Lpw$ to poly-time PTMs and viceversa.\\
+% \pause
+\bigskip
+% \resizebox{\textwidth}{!}{%
+% \begin{tikzpicture}[->, node distance=2cm, semithick, scale = 0.50]
+%  \node (Lpw) {$\Lpw$};
+%  \node[right = 2cm of Lpw] (POR) {$\POR$};
+%  \node[right = 2cm of POR] (SFP) {$\SFP$};
+%  \node[right = 2cm of SFP] (PPT) {$\PPT$};
+%  \onslide<3>{\draw[->] (Lpw) edge[bend left] (POR);}
+%  \onslide<4>{\draw[->] (Lpw) edge[bend left, very thick] (POR);}
+%  \draw[->] (POR) edge[bend left] (SFP);
+%  \draw[->] (SFP) edge[bend left] (PPT);
+%  \draw[->] (PPT) edge[bend left] (SFP);
+%  \draw[->] (SFP) edge[bend left] (POR);
+% \onslide<3>{\draw[->] (POR) edge[bend left] (Lpw);}
+% \onslide<4>{\draw[->] (POR) edge[bend left, very thick] (Lpw);}
+% \end{tikzpicture}
+% }
+% \onslide<4>{Proved following \cite{CookUrquhart} and \cite{Ferreira88}.}
+
+  \begin{resizebox}{\textwidth}{!}{%
+    \begin{tikzpicture}
+      \def \radius{4cm}
+    %  \node (POR) {$\POR$};
+    %  \node[right = 10cm of POR] (SFP) {$\SFP$};
+    %  \node[below right = 2cm and 1cm of POR] (SIFPRA) {$\SIFPRA$};
+    %  \node[below right = 1cm and 1cm of SIFPRA] (SIFPLA) {$\SIFPLA$};
+    %  \node[above right = 1cm and 2cm  of SIFPLA] (SFPOD) {$\SFPOD$};
+      \node at ({-30}:\radius) (SFP) {$\SFP$};
+      \node at ({-60}:\radius) (SFPOD) {$\SFPOD$};
+      \node at ({-90}:\radius) (SIFPLA) {$\SIFPLA$};
+      \node at ({-120}:\radius) (SIFPRA) {$\SIFPRA$};
+      \node at ({-150}:\radius) (POR) {$\POR$};
+      \node[left = 2cm of POR] (Lpw) {$\Lpw$};
+
+      \draw[->] (SFP) edge node {}(POR);
+
+      \draw[->] (POR) edge[bend right=15] node {}(SIFPRA);
+      \draw[->] (SIFPRA) edge[bend right=15] node {}(SIFPLA);
+      \draw[->] (SIFPLA) edge[bend right=15]node {} (SFPOD);
+      \draw[->] (SFPOD) edge[bend right=15] node {}(SFP);
+
+      \node[right = 2cm of SFP] (PPT) {$\PPT$};
+
+      \draw[<->] (PPT) edge (SFP);
+      \draw[<->] (Lpw) edge (POR);
+\onslide<4->{      \draw[<->, very thick] (Lpw) edge (POR);
+}    \end{tikzpicture}
+    }%
+
+
+    \onslide<4->{Proved following \cite{CookUrquhart} and \cite{Ferreira88}.}
+  \end{resizebox}
+
+\end{frame}
+
+\begin{comment}
+\begin{frame}
+\frametitle{Our goals}
+
+We were interested in:
+
+\begin{itemize}
+\item Discovering which class of formul\ae{} of $\Lpw$ corresponds to the PPT functions.
+\item Developing a characterization of $\BPP$ throughout some $\Lpw$ formul\ae{}.
+\item Identifying a proof system for such class.
+\end{itemize}
+\medskip
+\pause
+\begin{block}{Conjecture on $\POR$}
+For capturing all the PPT functions it's enough to extend Ferreira's $P$-Functions with a functional argument $\omega: \Ss \longrightarrow \{0, 1\}$ and a function $Q(x, \omega)=\omega(x)$.
+\end{block}\bigskip
+
+
+\end{frame}
+
+\begin{frame}
+\frametitle{The correspondance between $\POR$ and $\Lpw$}
+\framesubtitle{and between RBA and PTCA}
+
+\begin{block}{RBA}
+\vspace*{-1.5em}
+\begin{align*}
+&\begin{multlined}
+\forall f \in \POR. \exists G_f \in \Sigma^b_1. \\
+\big(\RS \vdash \forall x.\exists ! y . G_f(x, y)\big)\land \forall x, y. \llbracket G_f(x, y)\rrbracket_\xi =\{\omega \in \{\zzero, \oone\}^\Ss | f(x, \omega) = y\} \\
+\end{multlined}\\[-1em]
+&\begin{multlined}
+\forall G \in \Sigma^b_1. \exists f_G \in PF. \\
+\big(\RS \vdash \forall x.\exists ! y . G(x, y)\big) \to \forall x, y.\llbracket G(x, y)\rrbracket_\xi=\{\omega \in \{\zzero, \oone\}^\Ss | f_G(x, \omega) = y\}\\
+\end{multlined}
+\end{align*}
+\end{block}
+\pause
+\begin{block}{PTCA}
+\vspace*{-1.5em}
+\begin{gather*}
+\forall f \in PF. \exists G_f \in \Sigma^b_1. \big(S^1_2 \vdash \forall x.\exists ! y . G(x, y)\big)\land  \models \forall x. G_f(x, f(x)) \\
+\forall G \in \Sigma^b_1. \exists f_G \in PF. \big(S^1_2 \vdash \forall x.\exists ! y . G(x, y)\big) \to \models \forall x. G_f(x, f(x))
+\end{gather*}
+\end{block}
+
+
+\end{frame}
+
+\end{comment}
+
+\section{Some reductions}
+%\subsection{Form $\POR$ to $\PPT$ (and back)}
+
+\begin{frame}
+\frametitle<1>{Expressivity of $\POR$, Part I}
+%\frametitle<2>{Expressivity of $\POR$, Part I}
+\frametitle<2>{Expressivity of $\POR$, Part II}
+\frametitle<3>{Expressivity of $\POR$, Part III}
+\frametitle<4>{Expressivity of $\POR$, part IV}
+\frametitle<5>{Expressivity of $\POR$, part V}
+%\frametitle<6->{Expressivity of $\POR$, part V}
+
+\begin{overprint}
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[->, node distance=2cm, semithick, scale = 0.50]
+ \node (POR) {$\POR$};
+\onslide<1-2> {\node[right = 2.9cm of POR] (SFP) {$\SFP$};}
+\onslide<1-2> {\node[right = 2.9cm of SFP] (PPT) {$\PPT$};}
+\onslide<1> {\draw[->] (POR) edge[bend left, dashed] (SFP);}
+\onslide<1> {\draw[->] (SFP) edge[bend left] (PPT);}
+\onslide<1> {\draw[->] (PPT) edge[bend left] (SFP);}
+\onslide<2> {\draw[->] (SFP) edge[bend left] (PPT);}
+\onslide<2> {\draw[->] (PPT) edge[bend left] (SFP);}
+\onslide<1> {\draw[->] (SFP) edge[bend left, very thick] (POR);}
+%\onslide<1> {\draw[->] (SFP) edge[bend left, dashed] (POR);}
+\onslide<2> {\draw[->] (SFP) edge[bend left] (POR);}
+\onslide<2> {\draw[->] (POR) edge[bend left, very thick] (SFP);}
+ \onslide<3-> {\node[right of= POR] (SIFPRA) {\footnotesize $\SIFPRA$};}
+ \onslide<3-> {\node[right of = SIFPRA] (SIFPLA) {\footnotesize$\SIFPLA$};}
+ \onslide<3-> {\node[right of = SIFPLA] (SFPOD) {\footnotesize $\SFPOD$};}
+\onslide<3-> {\node[right of =  SFPOD] (SFP) {$\SFP$};}
+\onslide<3> {\draw[->] (POR) edge[very thick] (SIFPRA);}
+\onslide<3> {\draw[->] (SIFPRA) edge[dashed] (SIFPLA);}
+\onslide<3> {\draw[->] (SIFPLA) edge[dashed] (SFPOD);}
+\onslide<3> {\draw[->] (SFPOD) edge[dashed] (SFP);}
+
+\onslide<4-> {\draw[->] (POR) edge (SIFPRA);}
+\onslide<4> {\draw[->] (SIFPRA) edge[very thick] (SIFPLA);}
+\onslide<4> {\draw[->] (SIFPLA) edge[dashed] (SFPOD);}
+\onslide<4> {\draw[->] (SFPOD) edge[dashed] (SFP);}
+
+\onslide<5-> {\draw[->] (SIFPRA) edge (SIFPLA);}
+\onslide<5> {\draw[->] (SIFPLA) edge[very thick] (SFPOD);}
+\onslide<5> {\draw[->] (SFPOD) edge[very thick] (SFP);}
+
+%\onslide<6-> {\draw[->] (SIFPLA) edge (SFPOD);}
+%\onslide<6> {\draw[->] (SFPOD) edge[very thick] (SFP);}
+
+%\onslide<9-> {\draw[->] (SFPOD) edge (SFP);}
+
+\end{tikzpicture}
+}
+\vspace*{-5mm}
+\end{overprint}
+
+\begin{overprint}
+% \onslide<1>
+%   % \begin{defn}[PTM, \cite{AroraBarak}]%
+%   %   \label{def:PTMbarak}%
+%   %   A probabilistic Turing machine (PTM) is a Turing machine with two
+%   %   transition functions $\delta_0, \delta_1$. To execute a PTM $M$
+%   %   on an input $x$, we choose in each step with probability $\frac 1 2$
+%   %   to apply the transition function $\delta_0$ and with probability $\frac 1 2$
+%   %   to apply $\delta_1$. This choice is made independently of all previous choices.
+%   % \end{defn}%
+%
+%   \bigskip
+%
+%   \begin{tikzpicture}
+%    \tikzset{tape/.style={minimum size=.7cm, draw}}
+%    \begin{scope}[start chain=0 going right, node distance=0mm]
+%     \foreach \x [count=\i] in {$\one$,$\zero$,$\one$,$\one$,$\zero$,$\one$,$\zero$,$\zero$} {
+%      \ifnum\i=8 % if last node reset outer sep to 0pt
+%        \node [on chain=0, tape, outer sep=0pt] (n\i) {\x};
+%        \draw (n\i.north east) -- ++(.1,0) decorate [decoration={zigzag, segment length=.12cm, amplitude=.02cm}] {-- ($(n\i.south east)+(+.1,0)$)} -- (n\i.south east) -- cycle;
+%       \else
+%        \node [on chain=0, tape] (n\i) {\x};
+%       \fi
+%       \ifnum\i=1 % if first node draw a thick line at the left
+% %       \draw [line width=.1cm] (n\i.north west) -- (n\i.south west);
+%       \fi
+%     }
+%     \node [left=2cm of n1] (PTM) {PTM ($\PPT$)};
+%     \node [right=.25cm of n8] {$\cdots$};
+%     \node [tape, above left=.25cm and 1cm of n1] (d0) {$\delta_0$};
+%     \node [tape, below left=.25cm and 1cm of n1] (d1) {$\delta_1$};
+%     \draw [>=latex, ->] (d0) -| (n5);
+%     \draw [>=latex, ->] (d1) -| (n5);
+%    \end{scope}
+%   \end{tikzpicture}
+%
+%   \medskip
+%
+%   \begin{tikzpicture}
+%    \tikzset{tape/.style={minimum size=.7cm, draw}}
+%    \begin{scope}[start chain=0 going right, node distance=0mm]
+%     \foreach \x [count=\i] in {$\one$,$\zero$,$\one$,$\one$,$\zero$,$\one$,$\zero$,$\zero$} {
+%      \ifnum\i=8 % if last node reset outer sep to 0pt
+%        \node [on chain=0, tape, outer sep=0pt] (n\i) {\x};
+%        \draw (n\i.north east) -- ++(.1,0) decorate [decoration={zigzag, segment length=.12cm, amplitude=.02cm}] {-- ($(n\i.south east)+(+.1,0)$)} -- (n\i.south east) -- cycle;
+%       \else
+%        \node [on chain=0, tape] (n\i) {\x};
+%       \fi
+%       \ifnum\i=1 % if first node draw a thick line at the left
+% %       \draw [line width=.1cm] (n\i.north west) -- (n\i.south west);
+%       \fi
+%     }
+%     \foreach \x [count=\i] in {$\zero$,$\one$,$\one$,$\one$,$\one$,$\zero$,$\zero$,$\zero$} {
+%      \ifnum\i=8 % if last node reset outer sep to 0pt
+%        \node [right = 0cm of m7, tape, outer sep=0pt] (m\i) {\x};
+%        \draw (m\i.north east) -- ++(.1,0) decorate [decoration={zigzag, segment length=.12cm, amplitude=.02cm}] {-- ($(m\i.south east)+(+.1,0)$)} -- (m\i.south east) -- cycle;
+%       \else
+%        \node [below = 0.5cm of n\i, tape] (m\i) {\x};
+%       \fi
+%       \ifnum\i=1 % if first node draw a thick line at the left
+% %       \draw [line width=.1cm] (n\i.north west) -- (n\i.south west);
+%       \fi
+%     }
+%     \node [tape, above left= -0.125cm and 1cm of m1] (d) {$\delta$};
+%     \node [left=0.30cm of d] (STM) {STM ($\SFP$)};
+%     \node [right=.25cm of n8] {$\cdots$};
+%     \node [right=.25cm of m8] {$\cdots$};
+%     \draw [>=latex, ->] ($(m4)+(0,-0.5cm)$) -- ($(m6)+(0,-0.5cm)$);
+% %    \node [tape, below left=.25cm and 1cm of n1] (d1) {$\delta_1$};
+%     \draw [>=latex, ->] (d) -| (n5);
+%     \draw [>=latex, ->] (d) -| (m1);
+%    \end{scope}
+%   \end{tikzpicture}
+
+  % \begin{defn}[Stream Machines, informally]%
+  % Stream machines are ordinary $(k+1)$-taped Turing Machines which use one of
+  % their tapes to store an infinite stream of characters.
+  % This tape is read from left to right, one character for transition.
+  % An $\SFP$ machine is a PT Stream machine.
+  % \end{defn}%
+% \onslide<2>
+% 	\begin{lemma}%
+% 	Stream Machines $\simeq$ PTMs%
+% 	\end{lemma}%
+% 	\begin{proof}[Proof]%
+%     Take:
+%     \Large
+%     $$
+%       \delta := \delta_0 \sqcup \delta_1
+%     $$
+% 	% It suffices to show that having two transition functions $\delta_0$ and $\delta_1$ is equivalent to having an uniformly distributed read-only left to right binary tape, and a single transition function $\delta$ which behaves exactly like $\delta_b$ if the character on the tape is $b$.   %
+% 	\end{proof}%
+% 	\begin{corollary}%
+% 	$\SFP\simeq\PPT$%
+% 	\end{corollary}%
+\onslide<1>
+	The Stream Machines' source of randomness are tapes: functions $\eta \in \{\zzero, \oone\}^\Nat$, while $\POR$ functions use functions $\omega \in \{\zzero, \oone\}^\Ss$.\\
+
+	The two classes correspond, but  \emph{modulo measure}:
+
+  \begin{lemma}
+    For every $M \in \SFP$, there is a $f_M$ in $\POR$ such that:
+    %
+	  $$\mu(\{\eta\in \{\zzero, \oone\}^\Nat\,|\, M(x, \eta)=y\})=\mu(\{\omega\in \{\zzero, \oone\}^\Ss\,|\, f_M(x, \omega)=y\})
+    $$
+	\end{lemma}
+	\medskip
+%	\begin{proof}[Proof]
+%	If $p(x)$ is the bound to the complexity of a $M \in \SFP$, we can show that there exists a $\POR$ function $\mathit{eval}_{M}(x, \omega)$ which
+%	\begin{itemize}
+%	\item Works on an encoding of $M$ on tuples.
+%	\item Computes $1^{p(x)}$ and by induction on it simulates the machine's transitions
+%	\item Before each transition, queries $\omega$ for simulating the random tape $\eta$.
+%	\end{itemize}
+%	\end{proof}
+	% Indeed, a $\SFP$ function can be simulated by a $\POR$ function which computes the transitive closure of the $\delta$ function, and at each step
+	% queries a different coordinate of $\omega$ instead of $\eta$.
+
+\onslide<2>
+
+	\begin{itemize}
+	\item The \emph{poly-time} complexity of a function $M \in \SFP$ bounds the amount of the random bits of $\eta$ influencing the output.
+	\item A $\POR$ function $f(x, \omega): \Ss \times \{\zero, \one\}^\Ss \longrightarrow \Ss$ can query up to $2^{p(|x|)}$ different values to $\omega$.
+	\end{itemize}
+
+  \bigskip
+
+  Fixed $x$ and $\omega$, each $f \in \POR$ queries at most a polynomial number of values to $\omega$.\\
+
+  \bigskip
+
+  \textbf{Idea:} reduce $\POR$ to an imperative formalism, and then to $\SFP$.
+
+\onslide<3>
+	%\begin{lemma}
+	%$\forall f \in \POR.\exists M_f \in \SFP. \forall x, y.\linebreak
+	%\mu(\{\omega\in \{\zzero, \oone\}^\Ss| f(x, \omega)=y\})= \mu(\{\eta\in \{\zzero, \oone\}^\Nat| M_f(x, \eta)=y\})$
+	%\end{lemma}
+	%\bigskip
+	% \vspace*{-1cm}
+	% \begin{align*}
+	% \mathsf{Exp} &::= \epsilon \midd \mathsf{Exp.\zzero}
+	% \midd \mathsf{Exp.\oone} \midd
+	% \mathsf{Id} \midd \mathsf{Id} \sqsubseteq
+	% \mathsf{Exp} \midd
+	% \mathsf{Id} \wedge \mathsf{Exp} \midd
+	% \neg \mathsf{Exp} \\
+	% %
+	% \mathsf{Stm} &::= \mathsf{Id} \leftarrow \mathsf{Exp}
+	% \midd \mathsf{Stm};\mathsf{Stm} \midd \mathsf{Flip}(\mathsf{Exp}) \midd
+	% \mathbf{while}(\mathsf{Exp})\{\mathsf{Stm}\}
+	% \end{align*}
+	% \begin{lemma}
+	% $\forall f \in \POR.\exists P_f \in \SFIP. \forall x, y.
+	% \forall x, \omega. f(x, \omega) = P_f(x, \omega)$
+	% $\POR\subseteq \SFIP_{\mathbf{RA}}$.
+  %	\end{lemma}
+  \medskip
+
+  \textbf{Goal: } Showing that for each $f \in \POR$ there is a \emph{poly-time} imperative program $P_f$ which can query $\omega$ and such that $\llbracket P_f\rrbracket = f$.
+
+  \medskip
+
+  % \begin{proof}[Proof]
+	% By induction on $f$, it suffices to show a $\SIFPRA$ program for each basic function, then to show how to compose them and how to implement bounded recursion.
+	% \end{proof}
+
+\onslide<4>
+%	\vspace*{-10mm}
+%	\begin{lemma}
+%	$\forall P \in \SFIP.\exists M_P \in \SFP. \forall x, y.\linebreak
+%	\mu(\{\omega\in \{\zzero, \oone\}^\Ss| P(x, \omega)=y\})= \mu(\{\eta\in \{\zzero, \oone\}^\Nat| M_P(x, \eta)=y\})$
+%	\end{lemma}
+
+%	\centering
+%	\resizebox{!}{0.55\textheight}{%
+%	\begin{tikzpicture}[->, node distance=2cm, semithick, scale = 0.50]
+%
+%	 \node[minimum size=3cm, draw=black] (P) {$P$};
+%	 \node[right = of P, minimum size=3cm, draw=black] (MP) {$M_P$};
+%
+%	 \node[minimum size=1cm, draw=black] (x) at ($(P)!0.5!(MP)+(0,8cm)$) {$x$};
+%
+%	 \node[minimum size=2cm, right = 10mm of x, draw=black] (PO) {$\mathcal P(\{\zzero, \oone\}^\Nat)$};
+%	 \node[minimum size=2cm, left = 10mm of x, draw=black] (PBN) {$\mathcal P(\{\zzero, \oone\}^\Ss)$};
+%
+%	 \node[minimum size=1cm, draw=black] at ($(P)-(2cm,8cm)$) (y1) {$y_1$};
+%	 \node[minimum width=15mm, minimum height=10mm, draw=black] at ($(y1)+(35mm,0)$) (y2) {$y_2$};
+%	 \node[minimum width=25mm, minimum height=10mm, draw=black] at ($(y2)+(50mm,0)$) (y3) {$y_3$};
+%	 \node[minimum width=15mm, minimum height=10mm, draw=black] at ($(y3)+(50mm,0)$) (y4) {$y_4$};
+%
+%	 \draw ($(x.south)-(2mm,0)$) -- ($(x.south)-(2mm,2cm)$) -- ($(P.north)+(5mm,2cm)$) -- ($(P.north)+(5mm, 0)$);
+%	 \draw (PBN) -- (P);
+%	 \draw ($(x.south)+(2mm,0)$) -- ($(x.south)-(-2mm,2cm)$) -- ($(MP.north)+(-5mm,2cm)$) -- ($(MP.north)-(5mm, 0)$);
+%	 \draw (PO) -- (MP);
+%	 \draw let \p1 = (P.south) in let  \p2 = (y1.north) in ($(\x2-2mm, \y1)$) -- ($(\x2-2mm, \y2)$);
+%	 \draw let \p1 = (P.south) in let  \p2 = (y2.north) in ($(\x2-2mm, \y1)$) -- ($(\x2-2mm, \y2)$);
+%	 \draw let \p1 = (P.south) in let  \p2 = (y3.north) in ($(\x1+20mm, \y1)$) -- ($(\x1+20mm, \y1-3cm)$) -- ($(\x2-2mm, \y1-3cm)$) -- ($(\x2-2mm, \y2)$);
+%	 \draw let \p1 = (P.south) in let  \p2 = (y4.north) in ($(\x1+23mm, \y1)$) -- ($(\x1+23mm, \y1-26mm)$) -- ($(\x2-2mm, \y1-26mm)$) -- ($(\x2-2mm, \y2)$);
+%	 \draw let \p1 = (MP.south) in let  \p2 = (y4.north) in ($(\x2+2mm, \y1)$) -- ($(\x2+2mm, \y2)$);
+%	 \draw let \p1 = (MP.south) in let  \p2 = (y3.north) in ($(\x2+16.5mm, \y1)$) -- ($(\x2+16.5mm, \y2)$);
+%	 \draw let \p1 = (MP.south) in let  \p2 = (y2.north) in ($(\x1-22mm, \y1)$) -- ($(\x1-22mm, \y1-13mm)$) -- ($(\x2+2mm, \y1-13mm)$) -- ($(\x2+2mm, \y2)$);
+%	 \draw let \p1 = (MP.south) in let  \p2 = (y1.north) in ($(\x1-25mm, \y1)$) -- ($(\x1-25mm, \y1-1cm)$) -- ($(\x2+2mm, \y1-1cm)$) -- ($(\x2+2mm, \y2)$);
+%	\draw let \p1 = (MP.south) in let  \p2 = (y1.north) in ($(\x1+19mm, \y1)$) -- ($(\x1+19mm, \y1-26mm)$) -- ($(\x2-2mm, \y1-26mm)$) -- ($(\x2-2mm, \y2)$);
+
+	% \draw (MP.south) -- (y1.north);
+	% \draw (MP.south) -- (y2.north);
+	% \draw (MP.south) -- (y3.north);
+	% \draw (MP.south) -- (y4.north);
+%	\end{tikzpicture}
+
+	% \begin{align*}
+	% \mathsf{Exp} &::= \epsilon \midd \mathsf{Exp.\zzero}
+	% \midd \mathsf{Exp.\oone} \midd
+	% \mathsf{Id} \midd \mathsf{Id} \sqsubseteq
+	% \mathsf{Exp} \midd
+	% \mathsf{Id} \wedge \mathsf{Exp} \midd
+	% \neg \mathsf{Exp} \\
+	% %
+	% \mathsf{Stm} &::= \mathsf{Id} \leftarrow \mathsf{Exp}
+	% \midd \mathsf{Stm};\mathsf{Stm} \midd \mathsf{RB()} \midd
+	% \mathbf{while}(\mathsf{Exp})\{\mathsf{Stm}\}
+	% \end{align*}
+	% \begin{lemma}
+	% $\SFIP_\mathbf{RA} \approxeq \SFIP_\mathbf{LA}$
+	% \end{lemma}
+  \medskip
+
+  \textbf{Goal: } Showing that for each \emph{poly-time} $P \in \SIFPRA$ there is a \emph{poly-time} imperative program $Q\in \SIFPLA$ such that:
+  %
+  $$
+  \mu(\{\omega\in \{\zzero, \oone\}^\Ss\,|\, \llbracket P\rrbracket (x, \omega)=y\})= \mu(\{\eta\in \{\zzero, \oone\}^\Nat\,|\, \llbracket Q\rrbracket(x, \eta)=y\})
+  $$
+  %
+  and $Q$ reads random bits sequentially from $\eta$.
+
+  \medskip
+
+	% \begin{proof}[Proof]
+	% A register stores a table containing the queries and their value. The $\mathsf{Flip}(\mathsf{Exp})$ primitive is simulated by means of a procedure which accesses the table before and after each query.
+	% \end{proof}
+%\onslide<6>
+%	\vspace*{-7mm}
+%	\begin{lemma}
+%	$\forall P \in \SFIP.\exists M_P \in \SFP. \forall x, y.\linebreak
+%	\mu(\{\omega\in \{\zzero, \oone\}^\Ss| P(x, \omega)=y\})= \mu(\{\eta\in \{\zzero, \oone\}^\Nat| M_P(x, \eta)=y\})$
+%	\end{lemma}
+
+\onslide<5>
+\medskip
+
+\textbf{Goal: } Showing that for each \emph{poly-time} $P \in \SIFPLA$ there is a \emph{poly-time} STM $N\in \SFP$ such that:
+  $$
+  \mu(\{\eta\in \{\zzero, \oone\}^\Ss| \llbracket P\rrbracket (x, \eta)=y\})= \mu(\{\eta\in \{\zzero, \oone\}^\Nat| \llbracket N\rrbracket(x, \eta)=y\})
+  $$
+
+  \begin{theorem}
+    $\POR \simeq \PPT$.
+  \end{theorem}
+\end{overprint}
+
+\end{frame}
+
+\section{Characterizing $\BPP$}
+
+
+\begin{frame}
+\frametitle{A semantic Characterization of $\BPP$}
+
+We are investigating what happens if we extend $\Lpw$ with a measure quantifier $\cq{n/m}(F\,)$, defined by the following semantics:
+
+\[
+\llbracket\cq{n/m}(F\,)\rrbracket_\xi := \begin{cases}
+\{\zzero, \oone\}^\Ss & \text{ if } \mu (\llbracket F\, \rrbracket_\xi)\ge n/m\\
+\emptyset & \text{ otherwise }
+\end{cases}
+\]
+
+\pause
+
+\begin{corollary}\label{cor:bpp}
+$\BPP$ is exactly the set of languages $L$ with characteristic function $f_L$
+for which there is a $\Sigma^b_1$ formula $G_L$ such that:
+\begin{gather*}
+\RS \vdash \forall x \exists ! y. G_L(x, y)\\
+\forall \sigma \in \Ss.\models \cq{2/3} \left( G_L(\sigma,f_L(\sigma)) \right)
+\end{gather*}
+\end{corollary}
+\end{frame}
+
+
+
+\section{Further work}
+
+\begin{frame}
+\frametitle{Towards a syntactic characterization of $\BPP$}
+
+It is well known that $\BPP \subseteq \Sigma^p_2$, so according to \cite{Buss}, for each $L \in \BPP$ there exists a $\Sigma^b_3$ formula $H_L$ which decides $L$.
+
+Putting together this result with the semantic characterization of $\BPP$, it must hold that:
+\vspace{-2mm}
+\begin{align*}
+\forall x, y. \cq {2/3} (G_L(x, y)&\leftrightarrow H_L(x, y))
+\end{align*}
+\medskip
+Since all the terms in $\Lpw$ are bounded, $\cq {n/m}$ can be reduced to a counting existential, and then to a bonded existential.
+\begin{align*}
+\forall x, y. \exists^{\ge k(x)}t_f\preceq t(x). (G_L(x, y)&\leftrightarrow H_L(x, y))[\Flip(t)\leftarrow \pi_{t}(t_f\,)=\oone]
+\end{align*}
+
+\begin{block}{Conjecture}
+There is a non-trivial subset of $\BPP$, $\PBPP$ such that:
+\[
+\forall L\in \mathit{PBPP}.\exists F_L. PA \vdash \forall x. \forall y.F_L(x, y)
+\]
+\end{block}
+
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Contributions}
+
+%\resizebox{\textwidth}{!}{%
+%\begin{tikzpicture}[->, node distance=2cm, semithick, scale = 0.50]
+% \node (S13) {$\RS$};
+% \node[right = 2cm of S13] (POR) {$\POR$};
+% \node[right = 2cm of POR] (PPt) {$\PPT$};
+% \draw[-] (S13) edge (POR);
+% \draw[-] (POR) edge (PPT);
+% \end{tikzpicture}
+% }
+
+\medskip
+\begin{itemize}
+\item $\POR\simeq \PPT$.
+\item As a corollary: Cobham-style Algebras $= \FP$.
+\item Characterizations of $\BPP$, $\ZPP$, and other probabailistic complexity classes.
+\end{itemize}
+
+\end{frame}
+\begin{comment}
+\begin{frame}
+
+\centering
+\resizebox{!}{0.9\textheight}{%
+\begin{tikzpicture}[->, node distance=2cm, semithick, scale = 0.50]
+
+ \node[minimum size=3cm, draw=black] (P) {$P$};
+ \node[right = of P, minimum size=3cm, draw=black] (MP) {$M_P$};
+
+ \node[minimum size=1cm, draw=black] (x) at ($(P)!0.5!(MP)+(0,8cm)$) {$x$};
+
+ \node[minimum size=2cm, right = 10mm of x, draw=black] (PO) {$\mathcal P(\{\zzero, \oone\}^\Ss)$};
+ \node[minimum size=2cm, left = 10mm of x, draw=black] (PBN) {$\mathcal P(\{\zzero, \oone\}^\Nat)$};
+
+ \node[minimum size=1cm, draw=black] at ($(P)-(2cm,8cm)$) (y1) {$y_1$};
+ \node[minimum width=15mm, minimum height=10mm, draw=black] at ($(y1)+(35mm,0)$) (y2) {$y_2$};
+ \node[minimum width=25mm, minimum height=10mm, draw=black] at ($(y2)+(50mm,0)$) (y3) {$y_3$};
+ \node[minimum width=15mm, minimum height=10mm, draw=black] at ($(y3)+(50mm,0)$) (y4) {$y_4$};
+
+ \draw ($(x.south)-(2mm,0)$) -- ($(x.south)-(2mm,2cm)$) -- ($(P.north)+(5mm,2cm)$) -- ($(P.north)+(5mm, 0)$);
+ \draw (PBN) -- (P);
+ \draw ($(x.south)+(2mm,0)$) -- ($(x.south)-(-2mm,2cm)$) -- ($(MP.north)+(-5mm,2cm)$) -- ($(MP.north)-(5mm, 0)$);
+ \draw (PO) -- (MP);
+
+ \draw (P.south) -- (y1.north);
+ \draw (P.south) -- (y2.north);
+ \draw (P.south) -- (y3.north);
+ \draw (P.south) -- (y4.north);
+
+ \draw (MP.south) -- (y1.north);
+ \draw (MP.south) -- (y2.north);
+ \draw (MP.south) -- (y3.north);
+ \draw (MP.south) -- (y4.north);
+\end{tikzpicture}
+}
+
+
+\end{frame}
+
+\begin{frame}
+
+\centering
+\resizebox{!}{0.9\textheight}{%
+\begin{tikzpicture}[->, node distance=2cm, semithick, scale = 0.50]
+
+ \node[minimum size=3cm, draw=black] (P) {$P$};
+ \node[right = of P, minimum size=3cm, draw=black] (MP) {$M_P$};
+
+ \node[minimum size=1cm, draw=black] (x) at ($(P)!0.5!(MP)+(0,8cm)$) {$x$};
+
+ \node[minimum size=2cm, right = 10mm of x, draw=black] (PO) {$\mathcal P(\{\zzero, \oone\}^\Ss)$};
+ \node[minimum size=2cm, left = 10mm of x, draw=black] (PBN) {$\mathcal P(\{\zzero, \oone\}^\Nat)$};
+
+ \node[minimum size=1cm, draw=black] at ($(P)-(2cm,8cm)$) (y1) {$y_1$};
+ \node[minimum width=15mm, minimum height=10mm, draw=black] at ($(y1)+(35mm,0)$) (y2) {$y_2$};
+ \node[minimum width=25mm, minimum height=10mm, draw=black] at ($(y2)+(50mm,0)$) (y3) {$y_3$};
+ \node[minimum width=15mm, minimum height=10mm, draw=black] at ($(y3)+(50mm,0)$) (y4) {$y_4$};
+
+ \draw ($(x.south)-(2mm,0)$) -- ($(x.south)-(2mm,2cm)$) -- ($(P.north)+(5mm,2cm)$) -- ($(P.north)+(5mm, 0)$);
+ \draw (PBN) -- (P);
+ \draw ($(x.south)+(2mm,0)$) -- ($(x.south)-(-2mm,2cm)$) -- ($(MP.north)+(-5mm,2cm)$) -- ($(MP.north)-(5mm, 0)$);
+ \draw (PO) -- (MP);
+
+
+
+ \draw let \p1 = (P.south) in let  \p2 = (y1.north) in ($(\x2-2mm, \y1)$) -- ($(\x2-2mm, \y2)$);
+ \draw let \p1 = (P.south) in let  \p2 = (y2.north) in ($(\x2+2mm, \y1)$) -- ($(\x2+2mm, \y2)$);
+ \draw let \p1 = (P.south) in let  \p2 = (y3.north) in ($(\x1+20mm, \y1)$) -- ($(\x1+20mm, \y1-3cm)$) -- ($(\x2-2mm, \y1-3cm)$) -- ($(\x2-2mm, \y2)$);
+ \draw let \p1 = (P.south) in let  \p2 = (y4.north) in ($(\x1+23mm, \y1)$) -- ($(\x1+23mm, \y1-26mm)$) -- ($(\x2-2mm, \y1-26mm)$) -- ($(\x2-2mm, \y2)$);
+
+ \draw let \p1 = (MP.south) in let  \p2 = (y4.north) in ($(\x2+2mm, \y1)$) -- ($(\x2+2mm, \y2)$);
+ \draw let \p1 = (MP.south) in let  \p2 = (y3.north) in ($(\x2+16.5mm, \y1)$) -- ($(\x2+16.5mm, \y2)$);
+ \draw let \p1 = (MP.south) in let  \p2 = (y2.north) in ($(\x1-22mm, \y1)$) -- ($(\x1-22mm, \y1-13mm)$) -- ($(\x2-2mm, \y1-13mm)$) -- ($(\x2-2mm, \y2)$);
+ \draw let \p1 = (MP.south) in let  \p2 = (y1.north) in ($(\x1-25mm, \y1)$) -- ($(\x1-25mm, \y1-1cm)$) -- ($(\x2+2mm, \y1-1cm)$) -- ($(\x2+2mm, \y2)$);
+ %\draw let \p1 = (MP.south) in let  \p2 = (y1.north) in ($(\x1+19mm, \y1)$) -- ($(\x1+19mm, \y1-26mm)$) -- ($(\x2-2mm, \y1-26mm)$) -- ($(\x2-2mm, \y2)$);
+
+% \draw (MP.south) -- (y1.north);
+% \draw (MP.south) -- (y2.north);
+% \draw (MP.south) -- (y3.north);
+% \draw (MP.south) -- (y4.north);
+\end{tikzpicture}
+}
+\end{frame}
+\end{comment}
+
+
+\begin{frame}{}
+  \centering \huge
+  \vspace{1cm}
+  {Thanks for your attention}
+\end{frame}
+
+\begin{frame}[t]
+\frametitle{References}
+\printbibliography
+\end{frame}
+
+
+\end{document}

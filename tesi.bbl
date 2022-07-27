@@ -1,0 +1,905 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{ADLP21}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=64e8c715ecc1707be6766715d9c428b9}{%
+           family={Antonelli},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=94299738be3799d6a6d4e705e95f56c6}{%
+           family={Dal\bibnamedelima Lago},
+           familyi={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={U.},
+           giveni={U\bibinitperiod}}}%
+        {{hash=95701418555942da58d30a4bf3b29549}{%
+           family={Pistone},
+           familyi={P\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=49a663e4d34ee220de0f79355bf763c9}{%
+           family={Proceedings},
+           familyi={P\bibinitperiod},
+           given={CEUR\bibnamedelima Workshop},
+           giveni={C\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \strng{namehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{fullhash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{bibnamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authorbibnamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authornamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authorfullhash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{editorbibnamehash}{49a663e4d34ee220de0f79355bf763c9}
+      \strng{editornamehash}{49a663e4d34ee220de0f79355bf763c9}
+      \strng{editorfullhash}{49a663e4d34ee220de0f79355bf763c9}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. ICTCS '21}
+      \field{title}{On Counting Propositional Logic and Wagner's Hierarchy}
+      \field{volume}{3072}
+      \field{year}{2021}
+      \field{pages}{107\bibrangedash 121}
+      \range{pages}{15}
+    \endentry
+    \entry{ADLP}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=64e8c715ecc1707be6766715d9c428b9}{%
+           family={Antonelli},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=ae1bb02eb18feaace77b6ebcf51b3f19}{%
+           family={Del\bibnamedelima Lago},
+           familyi={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={U.},
+           giveni={U\bibinitperiod}}}%
+        {{hash=95701418555942da58d30a4bf3b29549}{%
+           family={Pistone},
+           familyi={P\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=c107c7120c94aa8b6a53a890ecd6ab95}{%
+           family={De\bibnamedelima Mol},
+           familyi={D\bibinitperiod\bibinitdelim M\bibinitperiod},
+           given={L.},
+           giveni={L\bibinitperiod}}}%
+        {{hash=211dc1aa067b77a76a1bf09bf1d87f03}{%
+           family={Weiermannn},
+           familyi={W\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=8464275093270cd0829ed91d9592e72f}{%
+           family={Manea},
+           familyi={M\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=84890ea4134ccfd55cfb9f0f6dd4f845}{%
+           family={Fernández-Duque},
+           familyi={F\bibinithyphendelim D\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{7627907cb86a661d382689f33054afd6}
+      \strng{fullhash}{7627907cb86a661d382689f33054afd6}
+      \strng{bibnamehash}{7627907cb86a661d382689f33054afd6}
+      \strng{authorbibnamehash}{7627907cb86a661d382689f33054afd6}
+      \strng{authornamehash}{7627907cb86a661d382689f33054afd6}
+      \strng{authorfullhash}{7627907cb86a661d382689f33054afd6}
+      \strng{editorbibnamehash}{ec1347c8db6dab5071f777c014151787}
+      \strng{editornamehash}{ec1347c8db6dab5071f777c014151787}
+      \strng{editorfullhash}{0ce23a4024f956ceb5fe6f8fbd228c44}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Connecting with Computabiliy}
+      \field{title}{On Measure Quantifiers in First-Order Arithmetic}
+      \field{year}{2021}
+      \field{pages}{12\bibrangedash 24}
+      \range{pages}{13}
+    \endentry
+    \entry{RBA}{tech}{}
+      \name{author}{4}{}{%
+        {{hash=64e8c715ecc1707be6766715d9c428b9}{%
+           family={Antonelli},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=94299738be3799d6a6d4e705e95f56c6}{%
+           family={Dal\bibnamedelima Lago},
+           familyi={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={U.},
+           giveni={U\bibinitperiod}}}%
+        {{hash=aaf32b4b0b8c474825e1c71ffd3e5995}{%
+           family={Oitavem},
+           familyi={O\bibinitperiod},
+           given={I.},
+           giveni={I\bibinitperiod}}}%
+        {{hash=95701418555942da58d30a4bf3b29549}{%
+           family={Pistone},
+           familyi={P\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {GitHub}%
+      }
+      \strng{namehash}{e37856bc1ce8e023db6532e1e38f575a}
+      \strng{fullhash}{e580922be8674d2114c4b710a3df6d94}
+      \strng{bibnamehash}{e37856bc1ce8e023db6532e1e38f575a}
+      \strng{authorbibnamehash}{e37856bc1ce8e023db6532e1e38f575a}
+      \strng{authornamehash}{e37856bc1ce8e023db6532e1e38f575a}
+      \strng{authorfullhash}{e580922be8674d2114c4b710a3df6d94}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{howpublished}{\url{https://github.com/davidedavoli/RBA}}
+      \field{journaltitle}{GitHub repository}
+      \field{title}{Randomized Bounded Arithmetic --- Technical Report}
+      \field{year}{2022}
+    \endentry
+    \entry{AroraBarak}{book}{}
+      \name{author}{2}{}{%
+        {{hash=e705e3c227df3ea5f063273e80a8711a}{%
+           family={Arora},
+           familyi={A\bibinitperiod},
+           given={S.},
+           giveni={S\bibinitperiod}}}%
+        {{hash=909bf04d3ddf4b0531fdbcfed494d4b4}{%
+           family={Barak},
+           familyi={B\bibinitperiod},
+           given={B.},
+           giveni={B\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge University Press}%
+      }
+      \strng{namehash}{b4c57797cd110914d1cad12fe98cf427}
+      \strng{fullhash}{b4c57797cd110914d1cad12fe98cf427}
+      \strng{bibnamehash}{b4c57797cd110914d1cad12fe98cf427}
+      \strng{authorbibnamehash}{b4c57797cd110914d1cad12fe98cf427}
+      \strng{authornamehash}{b4c57797cd110914d1cad12fe98cf427}
+      \strng{authorfullhash}{b4c57797cd110914d1cad12fe98cf427}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Computational complexity: A modern approach}
+      \field{year}{2009}
+    \endentry
+    \entry{Billingsley}{book}{}
+      \name{author}{1}{}{%
+        {{hash=81b881fef43d112b9064aa0067322019}{%
+           family={Billingsley},
+           familyi={B\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Wiley}%
+      }
+      \strng{namehash}{81b881fef43d112b9064aa0067322019}
+      \strng{fullhash}{81b881fef43d112b9064aa0067322019}
+      \strng{bibnamehash}{81b881fef43d112b9064aa0067322019}
+      \strng{authorbibnamehash}{81b881fef43d112b9064aa0067322019}
+      \strng{authornamehash}{81b881fef43d112b9064aa0067322019}
+      \strng{authorfullhash}{81b881fef43d112b9064aa0067322019}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Probability and Measure}
+      \field{year}{1995}
+    \endentry
+    \entry{Buss86}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=f22f5bd47daf8e3f962bfa1b42690a8e}{%
+           family={Buss},
+           familyi={B\bibinitperiod},
+           given={S.R.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Princeton University}%
+      }
+      \strng{namehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{fullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{bibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorbibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authornamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorfullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \field{extraname}{1}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Bounded Arithmetic}
+      \field{type}{phdthesis}
+      \field{year}{1986}
+    \endentry
+    \entry{Buss98}{incollection}{}
+      \name{author}{1}{}{%
+        {{hash=f22f5bd47daf8e3f962bfa1b42690a8e}{%
+           family={Buss},
+           familyi={B\bibinitperiod},
+           given={S.R.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=d65b550f209813188234a2ff003c4b5e}{%
+           family={Buss},
+           familyi={B\bibinitperiod},
+           given={S.R:},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsavier}%
+      }
+      \strng{namehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{fullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{bibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorbibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authornamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorfullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{editorbibnamehash}{d65b550f209813188234a2ff003c4b5e}
+      \strng{editornamehash}{d65b550f209813188234a2ff003c4b5e}
+      \strng{editorfullhash}{d65b550f209813188234a2ff003c4b5e}
+      \field{extraname}{2}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Handbook of Proof Theory}
+      \field{title}{First-Order Proof Theory of Arithmetic}
+      \field{year}{1998}
+    \endentry
+    \entry{Chistikov2021PresburgerAW}{article}{}
+      \name{author}{3}{}{%
+        {{hash=dfb9ed7d7d4e054ba92bffd31726a2b9}{%
+           family={Chistikov},
+           familyi={C\bibinitperiod},
+           given={Dmitry},
+           giveni={D\bibinitperiod}}}%
+        {{hash=d6c61b9c8b319ddc87cfd4d714d134d7}{%
+           family={Haase},
+           familyi={H\bibinitperiod},
+           given={Christoph},
+           giveni={C\bibinitperiod}}}%
+        {{hash=c19abda4211d44e24ae500913607f48c}{%
+           family={Mansutti},
+           familyi={M\bibinitperiod},
+           given={Alessio},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{fullhash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{bibnamehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{authorbibnamehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{authornamehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{authorfullhash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ArXiv}
+      \field{title}{Presburger arithmetic with threshold counting quantifiers is easy}
+      \field{volume}{abs/2103.05087}
+      \field{year}{2021}
+    \endentry
+    \entry{Cobham1965}{incollection}{}
+      \name{author}{1}{}{%
+        {{hash=6c4441a0e2bb320ad229dada2d6d0144}{%
+           family={Cobham},
+           familyi={C\bibinitperiod},
+           given={Alan},
+           giveni={A\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=addb53644c6c18534ffa421ae20c930d}{%
+           family={Bar{-}Hillel},
+           familyi={B\bibinitperiod},
+           given={Yehoshua},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {North-Holland Publishing}%
+      }
+      \strng{namehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{fullhash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{bibnamehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{authorbibnamehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{authornamehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{authorfullhash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{editorbibnamehash}{addb53644c6c18534ffa421ae20c930d}
+      \strng{editornamehash}{addb53644c6c18534ffa421ae20c930d}
+      \strng{editorfullhash}{addb53644c6c18534ffa421ae20c930d}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Logic, Methodology and Philosophy of Science: Proceedings of the 1964 International Congress (Studies in Logic and the Foundations of Mathematics)}
+      \field{title}{The Intrinsic Computational Difficulty of Functions}
+      \field{year}{1965}
+      \field{pages}{24\bibrangedash 30}
+      \range{pages}{7}
+    \endentry
+    \entry{CookUrquhart}{article}{}
+      \name{author}{2}{}{%
+        {{hash=6d0042ba6060405425561c0184e8ece1}{%
+           family={Cook},
+           familyi={C\bibinitperiod},
+           given={Stephen},
+           giveni={S\bibinitperiod}}}%
+        {{hash=1c4c52d57a2c50570eab8a8f24bac3c8}{%
+           family={Urquhart},
+           familyi={U\bibinitperiod},
+           given={Alasdair},
+           giveni={A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{fullhash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{bibnamehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{authorbibnamehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{authornamehash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \strng{authorfullhash}{fb31f6b47076e7ab5164efd9483b7ded}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Annals of Pure and Applied Logic}
+      \field{number}{2}
+      \field{title}{Functional Interpretations of Feasibly Constructive Arithmetic}
+      \field{volume}{63}
+      \field{year}{1993}
+      \field{pages}{103\bibrangedash 200}
+      \range{pages}{98}
+      \verb{doi}
+      \verb 10.1016/0168-0072(93)90044-e
+      \endverb
+    \endentry
+    \entry{curry34}{article}{}
+      \name{author}{1}{}{%
+        {{hash=084568593320079a00de6ba4216db1c1}{%
+           family={Curry},
+           familyi={C\bibinitperiod},
+           given={H.\bibnamedelimi B.},
+           giveni={H\bibinitperiod\bibinitdelim B\bibinitperiod}}}%
+      }
+      \strng{namehash}{084568593320079a00de6ba4216db1c1}
+      \strng{fullhash}{084568593320079a00de6ba4216db1c1}
+      \strng{bibnamehash}{084568593320079a00de6ba4216db1c1}
+      \strng{authorbibnamehash}{084568593320079a00de6ba4216db1c1}
+      \strng{authornamehash}{084568593320079a00de6ba4216db1c1}
+      \strng{authorfullhash}{084568593320079a00de6ba4216db1c1}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Proceedings of the National Academy of Sciences}
+      \field{number}{11}
+      \field{title}{Functionality in Combinatory Logic*}
+      \field{volume}{20}
+      \field{year}{1934}
+      \field{pages}{584\bibrangedash 590}
+      \range{pages}{7}
+      \verb{doi}
+      \verb 10.1073/pnas.20.11.584
+      \endverb
+      \verb{eprint}
+      \verb https://www.pnas.org/doi/pdf/10.1073/pnas.20.11.584
+      \endverb
+      \verb{urlraw}
+      \verb https://www.pnas.org/doi/abs/10.1073/pnas.20.11.584
+      \endverb
+      \verb{url}
+      \verb https://www.pnas.org/doi/abs/10.1073/pnas.20.11.584
+      \endverb
+    \endentry
+    \entry{feller1968introduction}{article}{}
+      \name{author}{1}{}{%
+        {{hash=0dc1084389f176f601af7787031a22f1}{%
+           family={Feller},
+           familyi={F\bibinitperiod},
+           given={William},
+           giveni={W\bibinitperiod}}}%
+      }
+      \strng{namehash}{0dc1084389f176f601af7787031a22f1}
+      \strng{fullhash}{0dc1084389f176f601af7787031a22f1}
+      \strng{bibnamehash}{0dc1084389f176f601af7787031a22f1}
+      \strng{authorbibnamehash}{0dc1084389f176f601af7787031a22f1}
+      \strng{authornamehash}{0dc1084389f176f601af7787031a22f1}
+      \strng{authorfullhash}{0dc1084389f176f601af7787031a22f1}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{An Introduction to Probability Theory and its Applications, Volume 1}
+      \field{year}{1968}
+    \endentry
+    \entry{Ferreira90}{inproceedings}{}
+      \name{author}{1}{}{%
+        {{hash=78a09d7a5b8d78dc141814ea9ad3ee9d}{%
+           family={Ferreira},
+           familyi={F\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=23bba0bb93d5688ab32aebd759393ef3}{%
+           family={Sieg},
+           familyi={S\bibinitperiod},
+           given={W.},
+           giveni={W\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {AMS}%
+      }
+      \strng{namehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{fullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{bibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorbibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authornamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorfullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{editorbibnamehash}{23bba0bb93d5688ab32aebd759393ef3}
+      \strng{editornamehash}{23bba0bb93d5688ab32aebd759393ef3}
+      \strng{editorfullhash}{23bba0bb93d5688ab32aebd759393ef3}
+      \field{extraname}{1}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Logic and Computation}
+      \field{series}{Contemporary Mathematics}
+      \field{title}{Polynomial-Time Computable Arithmetic}
+      \field{volume}{106}
+      \field{year}{1990}
+    \endentry
+    \entry{Ferreira88}{unpublished}{}
+      \name{author}{1}{}{%
+        {{hash=78a09d7a5b8d78dc141814ea9ad3ee9d}{%
+           family={Ferreira},
+           familyi={F\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{fullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{bibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorbibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authornamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorfullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \field{extraname}{2}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{12}
+      \field{note}{Ph.D. Dissertation}
+      \field{title}{Polyonmial Time Computable Arithmetic and Conservative Extesions}
+      \field{year}{1988}
+    \endentry
+    \entry{FerreiraOitavem}{article}{}
+      \name{author}{2}{}{%
+        {{hash=10bf5ba32aaf5a6f9a5e874888bb4e34}{%
+           family={Ferreira},
+           familyi={F\bibinitperiod},
+           given={G.},
+           giveni={G\bibinitperiod}}}%
+        {{hash=aaf32b4b0b8c474825e1c71ffd3e5995}{%
+           family={Oitavem},
+           familyi={O\bibinitperiod},
+           given={I.},
+           giveni={I\bibinitperiod}}}%
+      }
+      \strng{namehash}{ae774c59e51d8195c7dd088af45d2c8a}
+      \strng{fullhash}{ae774c59e51d8195c7dd088af45d2c8a}
+      \strng{bibnamehash}{ae774c59e51d8195c7dd088af45d2c8a}
+      \strng{authorbibnamehash}{ae774c59e51d8195c7dd088af45d2c8a}
+      \strng{authornamehash}{ae774c59e51d8195c7dd088af45d2c8a}
+      \strng{authorfullhash}{ae774c59e51d8195c7dd088af45d2c8a}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Portugaliae Mathematica}
+      \field{title}{An Interpretation of {$S^1_2$} in {$\Sigma^b_1$}-{NIA}}
+      \field{volume}{63}
+      \field{year}{2006}
+      \field{pages}{427\bibrangedash 450}
+      \range{pages}{24}
+    \endentry
+    \entry{Gill77}{article}{}
+      \name{author}{1}{}{%
+        {{hash=08efb88922e0d69e954e4a4d1c950e23}{%
+           family={Gill},
+           familyi={G\bibinitperiod},
+           given={J.},
+           giveni={J\bibinitperiod}}}%
+      }
+      \strng{namehash}{08efb88922e0d69e954e4a4d1c950e23}
+      \strng{fullhash}{08efb88922e0d69e954e4a4d1c950e23}
+      \strng{bibnamehash}{08efb88922e0d69e954e4a4d1c950e23}
+      \strng{authorbibnamehash}{08efb88922e0d69e954e4a4d1c950e23}
+      \strng{authornamehash}{08efb88922e0d69e954e4a4d1c950e23}
+      \strng{authorfullhash}{08efb88922e0d69e954e4a4d1c950e23}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{J. Comput.}
+      \field{title}{Computational Complexity of Probabilistic \text{T}uring machines}
+      \field{volume}{6(4)}
+      \field{year}{1977}
+      \field{pages}{675\bibrangedash 695}
+      \range{pages}{21}
+    \endentry
+    \entry{Goldreich}{article}{}
+      \name{author}{2}{}{%
+        {{hash=66aba379c7d3adb8af5b662a65c4c140}{%
+           family={Goldreich},
+           familyi={G\bibinitperiod},
+           given={Oded},
+           giveni={O\bibinitperiod}}}%
+        {{hash=dd1c8e639b015ebae9342a93535a335c}{%
+           family={Zuckerman},
+           familyi={Z\bibinitperiod},
+           given={David},
+           giveni={D\bibinitperiod}}}%
+      }
+      \strng{namehash}{49d6be9193853f23956863c5c005aee5}
+      \strng{fullhash}{49d6be9193853f23956863c5c005aee5}
+      \strng{bibnamehash}{49d6be9193853f23956863c5c005aee5}
+      \strng{authorbibnamehash}{49d6be9193853f23956863c5c005aee5}
+      \strng{authornamehash}{49d6be9193853f23956863c5c005aee5}
+      \strng{authorfullhash}{49d6be9193853f23956863c5c005aee5}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{isbn}{978-3-642-22669-4}
+      \field{journaltitle}{Electronic Colloquium on Computational Complexity - ECCC}
+      \field{month}{01}
+      \field{title}{Another proof that bpp?ph (and more)}
+      \field{year}{1997}
+      \verb{doi}
+      \verb 10.1007/978-3-642-22670-0_6
+      \endverb
+    \endentry
+    \entry{bob}{book}{}
+      \name{author}{2}{}{%
+        {{hash=60dab768d877eed5d9ec4491f163c16e}{%
+           family={Gorrieri},
+           familyi={G\bibinitperiod},
+           given={Roberto},
+           giveni={R\bibinitperiod}}}%
+        {{hash=cc1497b645151ec30e000f25b78e4fab}{%
+           family={Versari},
+           familyi={V\bibinitperiod},
+           given={Cristian},
+           giveni={C\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{4557d7920b81cd8aebc39b9384a0c5c2}
+      \strng{fullhash}{4557d7920b81cd8aebc39b9384a0c5c2}
+      \strng{bibnamehash}{4557d7920b81cd8aebc39b9384a0c5c2}
+      \strng{authorbibnamehash}{4557d7920b81cd8aebc39b9384a0c5c2}
+      \strng{authornamehash}{4557d7920b81cd8aebc39b9384a0c5c2}
+      \strng{authorfullhash}{4557d7920b81cd8aebc39b9384a0c5c2}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Introduction to concurrency theory: transition systems and CCS}
+      \field{year}{2015}
+    \endentry
+    \entry{Gradel}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=b874aff77cb41173c684952df5eb3420}{%
+           family={Gradel},
+           familyi={G\bibinitperiod},
+           given={E.},
+           giveni={E\bibinitperiod}}}%
+        {{hash=0a38da51c4d257133288b0e90fd76d35}{%
+           family={Otto},
+           familyi={O\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=523aefca09f8453dc031ccf72b032352}{%
+           family={Rosen},
+           familyi={R\bibinitperiod},
+           given={E.},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{fullhash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{bibnamehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{authorbibnamehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{authornamehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{authorfullhash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of Twelfth Annual IEEE Symposium on Logic in Computer Science}
+      \field{title}{Two-variable logic with counting is decidable}
+      \field{year}{1997}
+      \field{pages}{306\bibrangedash 317}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1109/LICS.1997.614957
+      \endverb
+    \endentry
+    \entry{Howard}{incollection}{}
+      \name{author}{1}{}{%
+        {{hash=1ec37127c2d4fc03f09601c6b863842d}{%
+           family={Howard},
+           familyi={H\bibinitperiod},
+           given={H.\bibnamedelimi A.},
+           giveni={H\bibinitperiod\bibinitdelim A\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Academic Press}%
+      }
+      \strng{namehash}{1ec37127c2d4fc03f09601c6b863842d}
+      \strng{fullhash}{1ec37127c2d4fc03f09601c6b863842d}
+      \strng{bibnamehash}{1ec37127c2d4fc03f09601c6b863842d}
+      \strng{authorbibnamehash}{1ec37127c2d4fc03f09601c6b863842d}
+      \strng{authornamehash}{1ec37127c2d4fc03f09601c6b863842d}
+      \strng{authorfullhash}{1ec37127c2d4fc03f09601c6b863842d}
+      \field{sortinit}{H}
+      \field{sortinithash}{23a3aa7c24e56cfa16945d55545109b5}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{To H. B. Curry: Essays on Combinatory Logic, Lambda Calculus, and Formalism}
+      \field{title}{The Formulae-as-Types Notion of Construction}
+      \field{year}{1980}
+    \endentry
+    \entry{Odifreddi}{book}{}
+      \name{author}{1}{}{%
+        {{hash=3b9d3ed5450ef2cf6bc86c0aeec726da}{%
+           family={Odifreddi},
+           familyi={O\bibinitperiod},
+           given={Piergiorgio},
+           giveni={P\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Elsevier}%
+      }
+      \strng{namehash}{3b9d3ed5450ef2cf6bc86c0aeec726da}
+      \strng{fullhash}{3b9d3ed5450ef2cf6bc86c0aeec726da}
+      \strng{bibnamehash}{3b9d3ed5450ef2cf6bc86c0aeec726da}
+      \strng{authorbibnamehash}{3b9d3ed5450ef2cf6bc86c0aeec726da}
+      \strng{authornamehash}{3b9d3ed5450ef2cf6bc86c0aeec726da}
+      \strng{authorfullhash}{3b9d3ed5450ef2cf6bc86c0aeec726da}
+      \field{sortinit}{O}
+      \field{sortinithash}{2cd7140a07aea5341f9e2771efe90aae}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Classical recursion theory: The theory of functions and sets of natural numbers}
+      \field{year}{1992}
+    \endentry
+    \entry{Parikh71}{article}{}
+      \name{author}{1}{}{%
+        {{hash=cc405ea7931e3032456fb7e058b3c67a}{%
+           family={Parikh},
+           familyi={P\bibinitperiod},
+           given={R.},
+           giveni={R\bibinitperiod}}}%
+      }
+      \strng{namehash}{cc405ea7931e3032456fb7e058b3c67a}
+      \strng{fullhash}{cc405ea7931e3032456fb7e058b3c67a}
+      \strng{bibnamehash}{cc405ea7931e3032456fb7e058b3c67a}
+      \strng{authorbibnamehash}{cc405ea7931e3032456fb7e058b3c67a}
+      \strng{authornamehash}{cc405ea7931e3032456fb7e058b3c67a}
+      \strng{authorfullhash}{cc405ea7931e3032456fb7e058b3c67a}
+      \field{sortinit}{P}
+      \field{sortinithash}{ff3bcf24f47321b42cb156c2cc8a8422}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{Journal of Symbolic Logic}
+      \field{title}{Existence and feasibility in arithmetic}
+      \field{volume}{36}
+      \field{year}{1971}
+      \field{pages}{494\bibrangedash 508}
+      \range{pages}{15}
+    \endentry
+    \entry{rogers1987theory}{book}{}
+      \name{author}{1}{}{%
+        {{hash=bc02d96a62e6f58aa9a06cbff1e18ebd}{%
+           family={Rogers\bibnamedelima Jr},
+           familyi={R\bibinitperiod\bibinitdelim J\bibinitperiod},
+           given={Hartley},
+           giveni={H\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {MIT press}%
+      }
+      \strng{namehash}{bc02d96a62e6f58aa9a06cbff1e18ebd}
+      \strng{fullhash}{bc02d96a62e6f58aa9a06cbff1e18ebd}
+      \strng{bibnamehash}{bc02d96a62e6f58aa9a06cbff1e18ebd}
+      \strng{authorbibnamehash}{bc02d96a62e6f58aa9a06cbff1e18ebd}
+      \strng{authornamehash}{bc02d96a62e6f58aa9a06cbff1e18ebd}
+      \strng{authorfullhash}{bc02d96a62e6f58aa9a06cbff1e18ebd}
+      \field{sortinit}{R}
+      \field{sortinithash}{5e1c39a9d46ffb6bebd8f801023a9486}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Theory of recursive functions and effective computability}
+      \field{year}{1987}
+    \endentry
+    \entry{Santos69}{article}{}
+      \name{author}{1}{}{%
+        {{hash=31f0c296f5c56c35c5a9f4788744755f}{%
+           family={Santos},
+           familyi={S\bibinitperiod},
+           given={E.S.},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{31f0c296f5c56c35c5a9f4788744755f}
+      \strng{fullhash}{31f0c296f5c56c35c5a9f4788744755f}
+      \strng{bibnamehash}{31f0c296f5c56c35c5a9f4788744755f}
+      \strng{authorbibnamehash}{31f0c296f5c56c35c5a9f4788744755f}
+      \strng{authornamehash}{31f0c296f5c56c35c5a9f4788744755f}
+      \strng{authorfullhash}{31f0c296f5c56c35c5a9f4788744755f}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{AMS}
+      \field{number}{3}
+      \field{title}{Probabilistic \text{T}uring Machines and computability}
+      \field{volume}{22}
+      \field{year}{1969}
+      \field{pages}{704\bibrangedash 710}
+      \range{pages}{7}
+    \endentry
+    \entry{Schweikardt}{article}{}
+      \name{author}{1}{}{%
+        {{hash=9d41cda0123e3c91bf925f52e5424ce5}{%
+           family={Schweikardt},
+           familyi={S\bibinitperiod},
+           given={Nicole},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{fullhash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{bibnamehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{authorbibnamehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{authornamehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{authorfullhash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Transactions on Computational Logic}
+      \field{month}{12}
+      \field{title}{Arithmetic, First-Order Logic, and Counting Quantifiers}
+      \field{volume}{6}
+      \field{year}{2002}
+      \verb{doi}
+      \verb 10.1145/1071596.1071602
+      \endverb
+    \endentry
+    \entry{shoup2009computational}{book}{}
+      \name{author}{1}{}{%
+        {{hash=b7ce99f593e2c7899b27afe41a6c28a0}{%
+           family={Shoup},
+           familyi={S\bibinitperiod},
+           given={Victor},
+           giveni={V\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Cambridge university press}%
+      }
+      \strng{namehash}{b7ce99f593e2c7899b27afe41a6c28a0}
+      \strng{fullhash}{b7ce99f593e2c7899b27afe41a6c28a0}
+      \strng{bibnamehash}{b7ce99f593e2c7899b27afe41a6c28a0}
+      \strng{authorbibnamehash}{b7ce99f593e2c7899b27afe41a6c28a0}
+      \strng{authornamehash}{b7ce99f593e2c7899b27afe41a6c28a0}
+      \strng{authorfullhash}{b7ce99f593e2c7899b27afe41a6c28a0}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{A computational introduction to number theory and algebra}
+      \field{year}{2009}
+    \endentry
+    \entry{STOCKMEYER19761}{article}{}
+      \name{author}{1}{}{%
+        {{hash=1cd63188c51dd0ee992e8893a23862b9}{%
+           family={Stockmeyer},
+           familyi={S\bibinitperiod},
+           given={Larry\bibnamedelima J.},
+           giveni={L\bibinitperiod\bibinitdelim J\bibinitperiod}}}%
+      }
+      \strng{namehash}{1cd63188c51dd0ee992e8893a23862b9}
+      \strng{fullhash}{1cd63188c51dd0ee992e8893a23862b9}
+      \strng{bibnamehash}{1cd63188c51dd0ee992e8893a23862b9}
+      \strng{authorbibnamehash}{1cd63188c51dd0ee992e8893a23862b9}
+      \strng{authornamehash}{1cd63188c51dd0ee992e8893a23862b9}
+      \strng{authorfullhash}{1cd63188c51dd0ee992e8893a23862b9}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{abstract}{The polynomial-time hierarchy is that subrecursive analog of the Kleene arithmetical hierarchy in which deterministic (nondeterministic) polynomial time plays the role of recursive (recursively enumerable) time. Known properties of the polynomial-time hierarchy are summarized. A word problem which is complete in the second stage of the hierarchy is exhibited. In the analogy between the polynomial-time hierarchy and the arithmetical hierarchy, the first-order theory of equality plays the role of elementary arithmetic (as the ω-jump of the hierarchy). The problem of deciding validity in the theory of equality is shown to be complete in polynomial-space, and close upper and lower bounds on the space complexity of this problem are established.}
+      \field{issn}{0304-3975}
+      \field{journaltitle}{Theoretical Computer Science}
+      \field{number}{1}
+      \field{title}{The polynomial-time hierarchy}
+      \field{volume}{3}
+      \field{year}{1976}
+      \field{pages}{1\bibrangedash 22}
+      \range{pages}{22}
+      \verb{doi}
+      \verb https://doi.org/10.1016/0304-3975(76)90061-X
+      \endverb
+      \verb{urlraw}
+      \verb https://www.sciencedirect.com/science/article/pii/030439757690061X
+      \endverb
+      \verb{url}
+      \verb https://www.sciencedirect.com/science/article/pii/030439757690061X
+      \endverb
+    \endentry
+    \entry{winskel1993formal}{book}{}
+      \name{author}{1}{}{%
+        {{hash=ac9148668fcbbf80b9bd8c23d6a42e58}{%
+           family={Winskel},
+           familyi={W\bibinitperiod},
+           given={Glynn},
+           giveni={G\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {MIT press}%
+      }
+      \strng{namehash}{ac9148668fcbbf80b9bd8c23d6a42e58}
+      \strng{fullhash}{ac9148668fcbbf80b9bd8c23d6a42e58}
+      \strng{bibnamehash}{ac9148668fcbbf80b9bd8c23d6a42e58}
+      \strng{authorbibnamehash}{ac9148668fcbbf80b9bd8c23d6a42e58}
+      \strng{authornamehash}{ac9148668fcbbf80b9bd8c23d6a42e58}
+      \strng{authorfullhash}{ac9148668fcbbf80b9bd8c23d6a42e58}
+      \field{sortinit}{W}
+      \field{sortinithash}{4315d78024d0cea9b57a0c6f0e35ed0d}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{The formal semantics of programming languages: an introduction}
+      \field{year}{1993}
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

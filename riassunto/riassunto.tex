@@ -1,0 +1,95 @@
+\documentclass{article}
+\usepackage[english, italian]{babel}
+
+\usepackage{geometry,xcolor,amsthm,amsmath,amssymb,stmaryrd, mathtools, hyperref, verbatim, bussproofs, bm, bbm, xifthen, tikz, mathrsfs}
+\usepackage{thmtools, thm-restate}
+\usepackage[backend=biber]{biblatex}
+
+\input{../macros/macros.tex}
+\addbibresource{../bibliography/bibliography.bib}
+
+\title{Bounded Arithmetic and Randomized Computation \\[1.5ex] \Large Riassunto}
+\author{Davide Davoli}
+
+
+\begin{document}
+\selectlanguage{italian}
+\maketitle
+Da novembre 2021 faccio parte di un progetto di ricerca che coinvolge assieme a me il Prof. Ugo Dal Lago, il Dott. Paolo Pistone, la Dott.ssa Melissa Antonelli dell'Università di Bologna e la Prof.ssa Isabel Oitavem dell'Università di Lisbona.
+
+Il nostro lavoro di ricerca verte sull'estensione della teoria $S^1_2$ introdotta da S. Buss \cite{Buss86} per caratterizzare la classe $\FP$ \cite{Cobham1965} verso una nuova teoria, detta $\RS$, in grado di catturare classi di complessità probabilistiche mediante lo sviluppo di una randomized bounded arithmetic.
+%
+Un tale risultato permetterebbe, per esempio, di sviluppare caratterizzazioni
+puramente logiche di classi di complessità probabilistiche e, dunque,
+di studiare tali oggetti ed i problemi aperti ad essi legati senza impiegare metodi
+solamente combinatorici, ma anche quelli logici.
+
+\paragraph*{Preliminaries.} In questo capitalo vengono introdotte alcune nozioni
+fondamentali per lo sviluppo dei capitoti successivi. In particolare,
+viene definita in modo formale la nozione di spazio di probabilità, assieme a quella
+di $\sigma$-algebra, e di misura. Nella sezione successiva, viene brevemente descritto
+il paradigma di computazione probabilistico e vengono definite le principali classi di
+complessità probabilistiche che catturano il concetto di \emph{feasibility} in tale ambito. Infine, vengono introdotti alcuni risultati preliminari del lavoro di S. Buss per lo sviluppo di una bounded arithmetic in grado di catturare la classe di complessità $\FP$.
+
+\paragraph*{A Randomized Bounded Arithmetic.}
+Questo capitolo descrive come, partendo dal lavoro di Ferreira \cite{Ferreira88}, sia possibile sviluppare una bounded arithmetic per catturare un'algebra di funzioni ivi introdotta e detta $\POR$. In primo luogo, viene definita tale algebra di funzioni e, assieme ad essa, il linguaggio al prim'ordine $\Lpw$ assieme ad una semantica quantitativa che associa ad ogni formula un insieme misurabile anziché un valore binario di verità. Successivamente, viene definita una nozione di $\Sigma^b_1$-rappresentabilità sul modello di quella definita da Buss in \cite{}. Infine, viene descritto come è possibile provare che tutte le funzioni $\Sigma^b_1$-rappresentabili all'interno della teoria $\RS$ appartengono a $\POR$. Nella sezione successiva, viene delineata la prova dell'inclusione inversa, seguendo \cite{}.
+
+\paragraph*{On the equivalence between $\PPT$ and $\POR$.} Questo capitolo si occupa
+di studiare l'espressività delle funzioni che si trovano all'interno di $\POR$. In particolare, all'inizio del capitolo si
+congettura che tale classe di funzioni sia equivalente alla classe $\PPT$, ossia
+l'insieme delle distribuzioni di stringhe che sono calcolabili da macchine di Turing
+probabilistiche in tempo al più polinomiale. Per provare tale congettura, vengono
+introdotti numerose classi di funzione, fondate su diversi paradigmi di computazione,
+le quali le quali si dimostrano essere equivalenti l'una alle altre.
+La più importante di queste
+classi di funzioni è $\SFP$. Essa contiene tutte le funzioni che sono calcolabili in
+tempo polinomiale da macchine di Turing dotate di un nastro aggiuntivo da cui leggono
+una sequenza infinita di bit casuali. In una prima parte del capitolo, viene provata
+un'equivalenza fra $\POR$ e $\SFP$, passivamente viene provata l'equivalenza fra
+$\SFP$ e $\POR$, infine, l'equivalenza fra $\POR$ e $\PPT$.
+
+\paragraph*{On the equivalence between $\FP$ and Cobham's Algebra.} In questo capitolo
+vengono sfruttati i risultati del corollario precedente per derivare, come corollario,
+l'equivalenza fra la classe di funzioni computabili da una macchina di Turing in tempo
+polinomiale, detta $\FP$, e le funzioni descritte da un'algebra di funzioni $\fcob$
+definita sul modello
+di quella proposta da Cobham, \cite{Cobham1965}. Infatti, questo risultato, per quanto ne siamo a conoscenza,
+non possiede alcuna prova sufficientemente esaustiva ed auto-contenuta, nonostante sia
+vastamente condiviso in letteratura.
+Dunque, dal momento che il modelli di calcolo su cui abbiamo definito $\SFP$
+è molto simile a quello delle macchine di Turing così come l'algebra di
+funzioni $\POR$ è molto simile a $\fcob$, abbiamo deciso di provare tale risultato.
+L'equivalenza fra $\FP$ e $\fcob$ si ottiene dall'equivalenza fra $\POR$ e $\SFP$
+mediante alcune semplici trasformazioni fra macchine di Turing.
+
+\paragraph*{Characterizing complexity classes.} All'interno di quest'ultimo capitolo,
+studiamo come è possibile estendere ulteriormente il linguaggio $\Lpw$ in modo da fare
+uso della nozione di $\Sigma^b_1$-rappresentabilità per caratterizzare note classi di
+complessità probabilistiche. A tal fine, prendendo ispirazione dall'aritmetica $\MQPA$
+descritta in \cite{ADLP, ADLP21}, definiamo un'estensione di $\Lpw$ mediante un
+quantificatore $\cq{s/t}F$ il cui valore di verità dipende direttamente dalla misura
+dell'insieme descritto dalla semantica $F$, ottenendo linguaggio $\Lmq$.
+Successivamente, sulla base delle definizioni delle classi di complessità
+probabilistiche date in precedenza, definiamo le caratterizzazioni di $\BPP$,
+$\RP$, co-$\RP$ e $\ZPP$ all'interno di $\Lmq$, provandone la correttezza.
+
+\paragraph*{Future Work.} In questa sezione, congetturiamo la possibilità di ridurre
+il linguaggio $\Lmq$ al linguaggio della logica al prim'ordine. Questo processo
+richiederebbe la riduzione del quantificatore $\cq{s/t}$ ad un quantificatore a
+soglia su modello di \cite{Gradel}, contestualmente a questa riduzione, tutto il linguaggio delle formule di $\Lmq$ sarebbe ridotto a quello standard della logica del
+prim'ordine, ad eccezione del quantificatore a soglia. Successivamente,
+sulla base di alcuni lavori simili \cite{Schweikardt, Chistikov2021PresburgerAW} ma su aritmetiche meno espressive,
+congetturiamo che, quantomeno nel contesto delle caratterizzazioni
+di classi di complessità probabilistiche, anche quest'ultimo quantificatore
+possa a sua volta essere ridotto ad un quantificatore al prim'ordine standard.
+Si potrebbe dunque identificare un sottoinsieme di $\BPP$ ricorsivamente
+enumerabile contenente tutti i problemi di quest'ultima classe che sono
+descritti da formule al prim'ordine provabili all'interno di un sistema come $\PA$.
+Sarebbe dunque interessante studiare quali problemi che si congetturano essere
+in $\BPP \setminus \mathbf P$ si trovino in questa classe.
+
+\newpage
+\printbibliography
+
+
+\end{document}

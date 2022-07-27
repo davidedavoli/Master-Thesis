@@ -1,0 +1,28 @@
+\contentsline {section}{\tocsection {}{1}{The Class $\mathcal {SFP}$}}{1}{section.1}%
+\contentsline {section}{\tocsection {}{2}{From $\mathcal {SFP}$ to $\mathcal {POR}$}}{4}{section.2}%
+\contentsline {subsection}{\tocsubsection {}{2.1}{Preliminary Notions}}{5}{subsection.2.1}%
+\contentsline {subsubsection}{\tocsubsubsection {}{2.1.1}{(poly-time) Finite Stream Turing Machine}}{5}{subsubsection.2.1.1}%
+\contentsline {subsubsection}{\tocsubsubsection {}{2.1.2}{The Class $\mathcal {POR}^-$}}{6}{subsubsection.2.1.2}%
+\contentsline {subsection}{\tocsubsection {}{2.2}{From $\mathcal {SFP}$ to $\mathcal {PTF}_{\mathbb {S}}$}}{7}{subsection.2.2}%
+\contentsline {subsection}{\tocsubsection {}{2.3}{From $\mathcal {PTF}_{\mathbb {S}}$ to $\mathcal {POR}^-$}}{7}{subsection.2.3}%
+\contentsline {subsubsection}{\tocsubsubsection {}{2.3.1}{The function $\mathit {apply}$}}{8}{subsubsection.2.3.1}%
+\contentsline {subsubsection}{\tocsubsubsection {}{2.3.2}{Power Function}}{8}{subsubsection.2.3.2}%
+\contentsline {subsubsection}{\tocsubsubsection {}{2.3.3}{Representing transition in $\mathcal {POR}^-$}}{9}{subsubsection.2.3.3}%
+\contentsline {subsubsection}{\tocsubsubsection {}{2.3.4}{\emph {Concluding the Proof}}}{10}{subsubsection.2.3.4}%
+\contentsline {subsection}{\tocsubsection {}{2.4}{Extractor Function in $\mathcal {POR}$}}{11}{subsection.2.4}%
+\contentsline {section}{\tocsection {}{3}{Folklore becomes true}}{13}{section.3}%
+\contentsline {section}{\tocsection {}{4}{Appendix}}{13}{section.4}%
+\contentsline {subsection}{\tocsubsection {}{4.1}{Encodings}}{13}{subsection.4.1}%
+\contentsline {subsubsection}{\tocsubsubsection {}{4.1.1}{Statical encodings}}{13}{subsubsection.4.1.1}%
+\contentsline {paragraph}{\tocparagraph {}{}{\emph {Lists}}}{14}{section*.2}%
+\contentsline {subsubsection}{\tocsubsubsection {}{4.1.2}{Dynamic encoding}}{17}{subsubsection.4.1.2}%
+\contentsline {paragraph}{\tocparagraph {}{}{Boolean Algebra.}}{17}{section*.3}%
+\contentsline {paragraph}{\tocparagraph {}{}{Strings}}{18}{section*.4}%
+\contentsline {paragraph}{\tocparagraph {}{}{Natural Numbers}}{19}{section*.5}%
+\contentsline {paragraph}{\tocparagraph {}{}{Lists}}{20}{section*.6}%
+\contentsline {subsection}{\tocsubsection {}{4.2}{Section\nonbreakingspace \ref {sec:SFP}}}{22}{subsection.4.2}%
+\contentsline {subsection}{\tocsubsection {}{4.3}{Section\nonbreakingspace \ref {sec:preliminary}}}{22}{subsection.4.3}%
+\contentsline {paragraph}{\tocparagraph {}{}{\emph {Defining Finite Stream Turing Machine}}}{23}{thmt@dummyctr.dummy.83}%
+\contentsline {paragraph}{\tocparagraph {}{}{\emph {The Class $\mathcal {POR}^-$}}}{23}{section*.8}%
+\contentsline {subsection}{\tocsubsection {}{4.4}{Section\nonbreakingspace \ref {sec:G}}}{24}{thmt@dummyctr.dummy.91}%
+\contentsline {subsection}{\tocsubsection {}{4.5}{Section\nonbreakingspace \ref {sec:E}}}{27}{thmt@dummyctr.dummy.94}%

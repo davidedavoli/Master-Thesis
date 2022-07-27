@@ -1,0 +1,2644 @@
+
+
+\newtheorem{defn}{Definition}
+\newtheorem{conj}{Conjecture}
+\newtheorem{remark}{Remark}
+\newtheorem{notation}{Notation}
+\newtheorem{prop}{Proposition}
+\newtheorem{ex}{Example}
+\newtheorem{lemma}{Lemma}
+\newtheorem{cor}{Corollary}
+\newtheorem{theorem}{Theorem}
+
+
+\newcommand{\map}{\longrightarrow}
+
+
+\newcommand{\res}{\mathit{res}}
+\newcommand{\les}{\mathit{les}}
+
+\newcommand{\reverse}{\mathit{reverse}}
+\newcommand{\ras}{\mathit{ras}}
+\newcommand{\las}{\mathit{las}}
+\newcommand{\rrs}{\mathit{rrs}}
+\newcommand{\lrs}{\mathit{lrs}}
+
+\newcommand{\rel}{\mathit{rel}}
+\newcommand{\lel}{\mathit{lel}}
+\newcommand{\ral}{\mathit{ral}}
+\newcommand{\lal}{\mathit{lal}}
+\newcommand{\rrl}{\mathit{rrl}}
+\newcommand{\lrl}{\mathit{lrl}}
+\newcommand{\srrl}{\mathit{srrl}}
+\newcommand{\simulate}{\mathit{sim}}
+\newcommand{\concat}{\mathit{concat}}
+\newcommand{\Succ}{\Sf}
+\newcommand{\pd}{\mathit{pd}}
+\newcommand{\Cf}{\mathit{C}}
+\newcommand{\op}{\mathit{op}}
+\newcommand{\mult}{\mathit{mult}}
+\newcommand{\sa}{\mathit{sa}}
+\newcommand{\Lpw}{\mathcal L}
+\newcommand{\rmsep}{\mathit{rmsep}}
+\newcommand{\apply}{\mathit{apply}}
+\newcommand{\dectape}{\mathit{dectape}}
+
+
+
+
+
+
+\newcommand{\PPT}{\mathcal{PPT}}
+\newcommand{\SFP}{\mathcal{SFP}}
+
+\newcommand{\POR}{\mathcal{POR}}
+\newcommand{\PTCA}{\mathbf{PTCA}}
+\newcommand{\Ss}{\mathbb{S}}
+\newcommand{\Os}{\mathbb{O}}
+\newcommand{\Bool}{\mathbb{B}}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\Qs}{\mathbb{Q}}
+\newcommand{\Vv}{\mathbb{V}}
+\newcommand{\Ll}{\mathbb{L}}
+\newcommand{\Tt}{\mathbb{T}}
+\newcommand{\POLY}{\mathsf{POLY}}
+
+\newcommand{\zero}{\mathbf{0}}
+\newcommand{\one}{\mathbf{1}}
+
+\newcommand{\eepsilon}{\epsilon}
+\newcommand{\bool}{\mathbf{b}}
+
+\newcommand{\blank}{\circledast}
+\newcommand{\odd}{\mathit{odd}}
+\newcommand{\even}{\mathit{even}}
+\newcommand{\eq}{\mathit{eq}}
+
+\newcommand{\Cyl}{Cyl}
+
+\newcommand{\PCyl}{Pcyl}
+\newcommand{\NCyl}{Ncyl}
+\newcommand{\cyl}{cyl}
+\newcommand{\CylP}{\Cyl P}
+
+\newcommand{\rt}{\mathbf{rt}}
+
+\newcommand{\meas}{\nu}
+
+\newcommand{\sig}{\m{\sigma}}
+\newcommand{\stmreach}{\lvert\triangleright}
+\newcommand{\stmtrans}{\Vdash}
+
+
+
+
+
+\newcommand{\longv}[1]{}
+
+
+
+
+\newcommand{\m}[1]{\textcolor{blue}{#1}}
+\newcommand{\g}[1]{\textcolor{teal}{#1}}
+
+
+
+
+
+%%% NEW
+\newcommand{\fcob}{\mathcal{PF}_\Ss}
+\newcommand{\polyF}{\mathcal{PTF}_{\Ss}}
+
+\newcommand{\cob}[1]{{#1}_{\mathcal{D}}}
+
+
+
+\newcommand{\ovverline}[2]{{\underline {#1}}_{#2}}
+\newcommand{\porif}{f_{\mathit{if}}}
+\newcommand{\Sf}{S}
+\newcommand{\listenc}[2]{{\langle #1\rangle}^n_\Ll}
+
+
+\newcommand{\doubling}{doub}
+\newcommand{\halving}{halv}
+
+\newcommand{\tmstep}{\vdash}
+\newcommand{\tmreach}{\triangleright}
+
+
+\newcommand{\dyad}{\emph{dyad}}
+\newcommand{\dy}{\emph{dy}}
+
+\newcommand{\ext}{ext}
+
+\addbibresource{bib.bib}
+
+\title{Task C}
+\author{}
+\date{} % delete this line to display the current date
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+%\section{Task C}
+
+
+
+%%% CLASS PPT
+\begin{defn}[Class $\PPT$]
+The \emph{class $\PPT$} is the class of functions
+from $\Ss$ to $\mathbb D(\Ss)$
+which are computable by a PTM in a polynomial
+number of steps.
+\end{defn}
+%
+%
+\noindent
+We show that for each $f\in \PPT$,
+the probability that $f(x)=y$ is equal to the measure
+of the set of $\omega$ in the
+corresponding function of $\POR$,
+returning $y$ on input $x$, and vice-versa.
+%
+Formally,
+%
+% Conjecture
+\begin{conj}\label{conj1}
+\begin{enumerate}
+\itemsep0em
+\item[i)] For each $f\in \PPT$, there is $g \in \POR$
+such that:
+$$
+\forall x, y. \emph{Pr}\big(f(x)=y\big) = \mu\big(\{
+\omega \in \Os \ | \ g(x,\omega)=y\}\big).
+$$
+
+\item[ii)] For each $g\in \POR$, there is an $f\in \PPT$
+such that:
+$$
+\mu\big(\omega \in \Os \ | \ g(x,\omega) = y\}\big)
+= \emph{Pr}\big( f(x) =y \big).
+$$
+\end{enumerate}
+\end{conj}
+%
+% Proof Sketch
+\begin{proof}[Proof Sketch]
+First, we introduce an auxiliary class of functions,
+$\SFP$, which is strongly related to $\PPT$,
+but based on a source of randomness close
+to that of $\POR$, Section~\ref{sec:SFP}.
+%
+Then, we actually relate the class $\SFP$
+with $\POR$, Section~\ref{sec:SFPtoPOR},
+and vice-versa, Section~\ref{sec:PORtoSFP}.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%% SECTION
+%%%%%% THE CLASS SFP
+\section{The Class $\SFP$}\label{sec:SFP}
+In the perspective of Conjecture~\ref{conj1},
+probabilistic Turing machines (PTM, for short)
+are not a suitable computational model.
+But they are anyway needed to prove our claim,
+because the definition of the $\PPT$ class
+relies on these machines. Moreover,
+$\BPP$ itself is defined on top of these machines.
+
+
+
+%%% DEFINITION PTM
+\begin{defn}[Probabilistic Turing Machines \cite{AroraBarak}]
+A \emph{probabilistic Turing machine}
+is a Turing machine with two transition functions: $\delta_0,\delta_1$.
+%
+Given an input $x$, the PTM chooses at each step
+to apply, with probability $\frac{1}{2}$,
+either $\delta_0$ or $\delta_1$.
+%
+The choice is independent from all the previous ones.
+\end{defn}
+%
+%
+%
+\noindent
+Indeed, the source of randomness in a PTM is ``implicit'',
+as coming from a uniform distribution of
+probabilities, and the machine
+outputs distributions of probabilities over strings,
+(not strings).
+%
+On the other hand, in $\POR$,
+randomness is enucleated by the oracle function,
+$Q$
+%$\omega : \Ss \map \Bool$, and
+%its functions output strings, not probability distributions.
+returning strings (not probability distributions).
+
+
+To bridge this gap %between $\PPT$ and $\POR$,
+we introduce the \emph{class $\SFP$}
+of functions which are computable by
+stream machines in polynomial-time.
+%
+This class is based on
+a better-fitting computational model,
+namely \emph{stream Turing machines}
+(STM, for short).
+%
+In STMs, the source of randomness
+consists in an ``explicit'', read-only
+random tape.
+%
+More precisely, these machines can be defined
+as ordinary
+TMs with $k+1$ tapes,
+with one of them designated as a read-only \emph{oracle},
+which stores an infinite stream of characters to
+be read from left to right.
+%
+These machines are a valuable intermediate
+model, linking $\POR$ and $\PPT$.
+%
+On the one hand, they use the oracle tape as an \emph{explicit}
+source or randomness,
+that can be represented
+as a function $\eta:\Nat \map \Bool$,
+and the behavior of which
+is consistent with that of
+the query functions and $\omega$s in $\POR$.
+%
+On the other hand, STMs share many features with
+multi-tape TMs.\footnote{Conversely,
+we can see
+a TM as special STM, which basically ``ignores'' the
+oracle tape.}
+%
+Thus, many well-known results
+about the latter model still hold
+%
+Intuitively, the class of functions computed by STM
+is almost equivalent to that of the ones computable
+by PTMs.
+
+
+
+%%% DEFN Stream Turing Machine
+\begin{defn}[Stream Turing Machine]\label{df:streamMachine}
+A \emph{stream Turing machine} is a quadruple
+$M:= \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta} \rangle$, where:
+\begin{itemize}
+\itemsep0em
+\item $\m{\Qs}$ is a finite set of states ranged over by
+$\m{q_i}$ and similar meta-variables.
+%
+\item $\m{q_0} \in \m{\Qs}$ is an initial state
+%
+\item $\m{\Sigma}$ is a finite set of characters
+ranged over by $\m{c_i}$ \emph{et simila}.
+%
+\item $\m{\delta}: \m{\hat{\Sigma}}
+\times \m{\Qs} \times \m{{\hat{\Sigma}}} \times
+\Bool
+\map \m{\hat{\Sigma}} \times \m{\Qs} \times \m{\hat{\Sigma}} \times \{\m{L},\m{R}\}$
+is a transition function describing the new configuration
+reached by the machine,
+\end{itemize}
+where  \m{$L$} and \m{$R$} are two fixed and distinct symbols,
+e.g.~\m{$\zero$} and \m{$\one$},
+$\m{\hat{\Sigma}}=\m{\Sigma} \cup \{\m{\blank}\}$
+and \m{$\blank$} represents the
+\emph{blank character}, such that $\m{\blank} \not \in
+\m{\Sigma}$.
+\end{defn}
+%
+\noindent
+Without loss of generality,
+we can assume
+$\m{\Sigma}=\{\m{\zero}, \m{\one}\}$,
+and define the canonical STM as follows:
+
+
+
+
+%%% DEFN
+%%% Canonical STM
+\begin{defn}[Canonical STM]\label{df:canonicalSTM}
+A \emph{canonical stream machine} is an STM,
+such that
+$\m{\Sigma}=\{\m{\zero}, \m{\one}\}$,
+%$\m{L}=\m{\zero}$, and $\m{R}=\m{\one}$.
+\end{defn}
+
+
+%%% Notation
+%\begin{notation}
+%In the following, let us use $\m{c}_{|\m{\Sigma}|+1}$ to denote the blank character $\m{\blank}$.
+%\end{notation}
+
+
+
+The \emph{configuration} of a ordinary TM is
+a tuple which keeps track of the current state
+and some strings representing the state of the
+machine tape(s).
+%
+The portion of the oracle tape
+which has not been
+queried yet is represented by means of a function
+$\m{\eta} : \Nat \map \Bool$.
+
+
+%%% DEFINITION
+%%% CONFIGURATION
+\begin{defn}[Configuration of STM]\label{df:STMConfiguration}
+The \emph{configuration of an STM}
+is a quadruple $\langle \m{\sigma},
+\m{q}, \m{\tau}, \m{\eta}\rangle$,
+where:
+\begin{itemize}
+\itemsep0em
+%
+\item $\m{\sigma} \in \hat{\Sigma}^*$
+is the portion of the work tape on the left of the head
+%
+\item $\m{q}\in A$ is the current state of the machine
+%
+\item $\m{\tau} \in \hat{\Sigma}$ is the portion of the
+work tape on the right of the head
+%
+\item $\m{\eta} \in \Bool^\Nat$ is the portion
+of the oracle tape that has not been read yet.
+\end{itemize}
+\end{defn}
+%
+%
+\noindent
+At each step, the machine queries a new value
+on the oracle tape.
+%
+Shifting on the work tape is naturally defined by
+pre-fixing and post-fixing characters to strings,
+so formalized by a shifting operation
+between the function $\m{\eta}$
+and a string $\m{\sigma}$.
+
+
+
+%%% DEFINITION
+%%% Shifting Operation
+\begin{defn}[Shifting Operation]\label{df:shifting}
+Given $n\in \Nat$, $\m{\sigma} \in \Ss$, and
+$\m{\eta}:\Nat \map \Bool$,
+we define the \emph{shifting of $\m{\eta}$
+by %prefix
+$\m{\sigma}$},
+$\m{\sigma \eta}(\cdot)$,
+by induction on the structure of $\m{\sigma}$:
+\begin{align*}
+(\m{\eepsilon} \m{\eta})(n) &:= \m{\eta}(n) \\
+%
+(\m{\bool \tau}) \m{\eta}(n) &:= \begin{cases}
+\m{\bool} \ \ \ &\text{if } n=0 \\
+(\m{\tau \eta})(n-1) \ \ \ &\text{otherwise.}
+\end{cases}
+\end{align*}
+\end{defn}
+
+
+The dynamics of STMs is defined
+as predictable by extending the notion of standard
+transition function in the natural way.
+
+
+%%% DEFINITION
+%%% STM Transition Function
+\begin{defn}[STM Transition Function]\label{df:STMTransition}
+Given an STM, $M=\langle
+\m{\Qs}, \m{q}, \m{\Sigma}, \m{\delta}\rangle$,
+we define the \emph{partial transition function}
+$\vdash_{\delta} \hat{\Sigma}^* \times
+Q \times \hat{\Sigma}^* \times
+\Bool^\Nat \map
+\hat{\Sigma}^* \times
+Q \times \hat{\Sigma}^*
+\times \Bool^\Nat$
+between two configurations as:
+%
+\begin{align*}
+\langle \m{\sigma}, \m{q}, \m{c\tau}, \m{\zero\eta}\rangle
+%
+\stmtrans_{\delta}
+%
+\langle \m{\sigma c'}, \m{q'}, \m{\tau}, \m{\eta}\rangle
+%
+\ \ \ \ \ &\text{if} \ \m{\delta}(\m{q},\m{c},\m{\zero}) =
+\langle \m{q'}, \m{c'}, \m{R}\rangle \\
+%
+%
+%
+\langle \m{\sigma c_0},
+\m{q}, \m{c\tau},
+\m{\zero\eta \rangle}
+\stmtrans_{\delta}
+\langle \m{\sigma},
+\m{q'}, \m{c_0c_1'\tau},
+\m{\eta}\rangle
+%
+\ \ \ \ \ &\text{if} \ \m{\delta}(\m{q}, \m{c_1},
+\m{\zero}) = \langle
+\m{q'}, \m{c_1'}, \m{L}\rangle \\
+%
+%
+%
+\langle \m{\sigma}, \m{q}, \m{c\tau}, \m{\one\eta}\rangle
+%
+\stmtrans_{\delta}
+\langle \m{\sigma c'}, \m{q'},
+\m{\tau}, \m{\eta}\rangle
+%
+\ \ \ \ \ &\text{if } \m{\delta}(\m{q}, \m{c}, \m{\one})
+= \langle \m{q'}, \m{c'}, \m{R}\rangle \\
+%
+\langle \m{\sigma c_0}, \m{q}, \m{c_1\tau}, \m{\one \eta}\rangle
+\stmtrans_{\delta}
+\langle \m{\sigma}, \m{q'}, \m{c_0c_1' \tau},
+\m{\eta}\rangle
+%
+\ \ \ \ \ &\text{if }
+\m{\delta}(\m{q},\m{c_1},\m{\one}) = \langle
+\m{q'},\m{c_1'},\m{L}\rangle.
+%
+\end{align*}
+%
+\end{defn}
+%
+%
+%
+\noindent
+The configuration reached by the machine
+after $n$ steps of computation is obtained
+by composing $n$ times
+its reachability function, defined below.
+
+
+%%% DEFINITION
+%%% REACHABILITY FUNCTION
+\begin{defn}[STM Reachability Function]\label{df:STMReachability}
+Given a STM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+$\{\stmreach^n_M\}_n$ is the smallest
+family of relations such that:
+%
+%
+%
+\begin{align*}
+\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle
+&\stmreach^0_M
+\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle \\
+%
+%
+\big(\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle
+\stmreach^n_M
+\langle \m{\sigma'}, \m{q'}, \m{\tau'},\m{\eta'}\rangle\big)
+%
+\wedge
+%
+\big(\langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\eta'}\rangle
+%
+&\stmtrans_\delta
+%
+\langle \m{\sigma''}, \m{q''}, \m{\tau''}, \m{\eta''}\rangle\big)
+\rightarrow
+\big(\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle
+\stmreach^{n+1}_M
+\langle \m{\sigma''}, \m{q''}, \m{\tau''},\m{\eta''}\rangle\big)
+\end{align*}
+\end{defn}
+%
+%
+%
+%
+\noindent
+Without loss of generality,
+we assume STMs not to use final states:
+computation is regarded as concluded
+whenever the current configuration does
+not define the transition function.\footnote{Indeed,
+in all these cases,
+we could imagine to add a final state $q_F$
+and a transition to it.}
+
+
+\begin{prop}\label{prop}
+For any STM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma},\m{\delta}\rangle$
+and $n\in \Nat$,
+$\stmreach^n_M$ is a function.
+\end{prop}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{notation}[Final Configuration]
+Given an STM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+and a configuration
+$\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle$,
+we write
+$\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle \not\stmtrans_{\delta}$
+when there are no $\m{\sigma'}, \m{q'}, \m{\tau'}, \m{\eta'}$
+such that
+$\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle
+\stmtrans_{\delta} \langle \m{\sigma'}, \m{q'},
+\m{\tau'}, \m{\eta'}\rangle$.
+\end{notation}
+%
+%
+%
+\noindent
+Finally, let us introduce the notion of function computable by (poly-time) STMs.
+
+
+
+
+
+%%% COMPUTATION of STM
+\begin{defn}[STM Computation]\label{df:STMcomputation}
+Given an STM,
+$M = \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+strings $\sigma,\gamma \in \Ss$,
+and $\eta:\Nat \map \Bool$,
+we say that
+\emph{$f_M$ computes $\m{\gamma}$ on input $\m{\sigma}$
+and oracle tape $\m{\eta}$},
+$f_M (\m{\sigma},\m{\eta})=\m{\gamma}$,
+when there are a number $n\in \Nat$,
+a string $\m{\tau}\in \Ss, \m{q'} \in \Qs$,
+and a function
+$\m{\psi} : \Nat \map \Bool$ such that:
+$$
+\langle \m{\eepsilon}, \m{q_0}, \m{\sigma}, \m{\eta}\rangle
+\ \stmreach^n_M \
+\langle \m{\gamma'}, \m{q'}, \m{\tau}, \m{\psi}\rangle
+\not\vdash_{\delta},
+$$
+%for some $\m{\tau}, \m{q'$} and $\m\psi$ and
+$\m{\gamma}$ being
+the longest suffix of $\m{\gamma'}$ not including
+$\m{\blank}$.
+\end{defn}
+
+
+
+
+\begin{defn}[poly-time Stream Machine]\label{df:PSTM}
+A \emph{poly-time stream machine}
+is an STM,
+$M= \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$
+such that,
+$$
+\exists p\in \textsf{POLY}.
+\forall \m{\sigma} \in \Ss,
+\eta \in \Bool^\Nat.
+\exists n \leq p(|\m{\sigma}|)
+\big(\langle \m{\eepsilon},
+\m{q_0}, \m{\sigma}, \m{\eta} \rangle
+\stmreach^n_{M}
+\langle \m{\gamma}, \m{q'}, \m{\tau}, \m{\psi}\rangle \not\vdash_{\delta}.
+$$
+\end{defn}
+%
+%
+\noindent
+We define the class of functions which
+are computable by poly-time STMs.
+
+
+%%% The Class SFP
+\begin{defn}[The Class $\SFP$]\label{df:SFP}
+$$
+\SFP := \{ f \in \Ss \times \Bool^\Nat \ | \
+f = f_{M}\},
+$$
+for some canonical polynomial STM, $M$.
+\end{defn}
+%
+%
+\noindent
+
+
+
+\begin{remark}
+All definitions given so far concern single-input,
+single-tape machines only.
+%
+We could naturally generalize them as
+multi-input and multi-tape machines
+in the standard way.
+\end{remark}
+
+
+
+
+
+Finally, the notion of initial prefix of an
+oracle tape is also crucial:
+we will show that a polynomially long prefix
+of the oracle tape is sufficient to determine
+the value of the function.
+
+
+%%%% Prerfix of Oracle Tape
+\begin{defn}[Prefix of Oracle Tape]
+For each function $\eta : \Nat \map \Bool$,
+$\sigma \in \Ss$ and  $n,i\in \Nat$ such that
+$i<n$,
+$$
+\eta_n = \sigma \ \ \ \Leftrightarrow \ \ \eta(i)=
+{\sigma(i)}.
+$$
+\end{defn}
+%
+%
+\noindent
+
+
+%%% LEMMA
+% \begin{lemma}[Identity of Prefix]\label{lemma:idPrefix}
+% For any number $n\in \Nat$ and functions
+% $\eta, \eta': \Nat \map \Bool$ the $n$-long
+% prefix of which are
+% the same, i.e.~$\eta_n=\eta'_n$,
+% strings $\m{\sigma},\m{\tau}\in\Ss$,
+% and state
+% $\m{q}\in \Qs$,
+% $$
+% \langle \m{\sigma},
+% \m{q}, \m{\tau}, \m{\eta}\rangle \stmreach^n_\delta
+% \langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\xi}\rangle
+% \ \ \ \Leftrightarrow
+% \ \ \ \langle\m{\sigma}, \m{q}, \m{\tau}, \m{\eta'}\rangle
+% \stmreach^n_\delta
+% \langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\chi}\rangle.
+% $$
+% for some $\xi, \chi \in \Ss$.
+% \end{lemma}
+
+
+%\begin{cor}\label{cor:idPrefix1}
+%For any $n\in \Nat, \eta, \eta': \Nat \map \Bool$, such that $\eta_n=\eta'_n$, then for any $\m{\sigma},\m{\tau}\in\Ss$, $\m{q}\in \Qs$, there are some $\xi,\chi$ such that:
+%$$
+%\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle \overline{\triangleright}^n_\delta \langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\xi}\rangle \ \ \ \Leftrightarrow \ \ \ \langle\m{\sigma}, \m{q}, \m{\tau}, \m{\eta'}\rangle \overline{\triangleright}^n_\delta \langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\chi}\rangle.
+%$$
+%\end{cor}
+
+
+%\begin{cor}\label{cor:idPrefix2}
+%For any $n\in \Nat, \eta, \eta': \Nat \map \Bool$, such that $\eta_n=\eta'_n$, then for any $\m{\sigma},\m{\tau}\in\Ss$, $\m{q}\in \Qs$, there are some $\xi,\chi$ such that:
+%$$
+%\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\eta}\rangle \overline{\underline{\triangleright}}^n_\delta \langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\xi}\rangle \ \ \ \Leftrightarrow \ \ \ \langle\m{\sigma}, \m{q}, \m{\tau}, \m{\eta'}\rangle \overline{\underline{\triangleright}}^n_\delta \langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\chi}\rangle.
+%$$
+%\end{cor}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%
+Before going on, notice that $\POR$ and $\SFP$
+are two inherently different sets:
+\begin{align*}
+\POR \subseteq \bigcup_{i\in \Nat} \Ss^i \times
+\Bool^\Ss \map \Ss \\
+%
+\SFP \subseteq \bigcup_{i\in \Nat} \Ss^i \times
+\Bool^\Nat \map \Ss
+\end{align*}
+%
+Thus, some effort is required
+to relate these two classes
+%
+and, actually, %as we shall see,
+the correspondence obtained in this
+context is weaker than the one between
+$\Sigma^b_1$-formul\ae{} representable in
+$\RS$ and $\POR$, from
+Section~\ref{taskA} and~\ref{taskB}.
+%
+Differently from formul\ae{} of $\Lpw$
+and functions in $\POR$,
+which have access to their source of randomness
+in almost the same way,
+we cannot define a precise identity between $\SFP$
+and $\POR$.
+%
+We could relate sets of (oracle) functions,
+\emph{which are not the same}, by considering
+their measure,
+and
+obtain a weaker (but strong enough) result,
+providing encodings between the two classes,
+which preserve measures of the random sources
+associated to the given input and output.
+
+
+\begin{theorem}\label{thmTaskC}
+\begin{itemize}
+
+\item[i)] For each $f \in \SFP$, there is a $g \in \POR$ such that for every $x,y\in \Ss:$
+$$
+\mu\big(\{\eta \in \Bool^\Nat \ | \  f(x,\eta) = y\}\big) = \mu\big(\{\omega \in \Os \ | \ g(x,\omega)=y\}\big).
+$$
+
+\item[ii)] For each $g\in \POR$, there is an  $f \in \SFP$ such that for every $x,y\in \Ss:$
+$$
+\mu\big(\{\omega \in \Os \ | \ g(x,\omega) = y\}\big) = \mu\big(\{\eta \in \Bool^\Nat \ | \  f(x, \eta) = y\}\big).
+$$
+\end{itemize}
+\end{theorem}
+
+In the two following sections, we will address the two reductions
+separately, namely: in Section \ref{sec:SFPtoPOR}, we will show
+that $\SFP$ can be reduced to $\POR$ and in Section
+ \ref{sec:PORtoSFP} we will show the converse reduction.
+
+ Finally, in Section \ref{SFPandPPT}, we will show that a similar
+ relation holds between $\SFP$ and $\PPT$, too.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%% SECTION
+%%%% FROM SFP to POR
+%\newpage
+\section{From $\SFP$ to $\POR$}\label{sec:SFPtoPOR}
+%
+%
+
+In this section, we address the first of the two claims in
+Theorem \ref{thmTaskC}:
+
+%%% LEMMA
+%%% lemma:taskC1
+\begin{lemma}\label{lemma:taskC1}
+For any $f\in \SFP$, there is a $g \in \POR$
+such that for every $x,y\in \Ss$,
+$$
+\mu\big(\{\eta \in \Bool^\Nat \ | \ f(x, \eta)=y \}\big)
+= \mu\big(\{\omega \in \Os \ | \ g(x,\omega) =y\}\big).
+$$
+\end{lemma}
+
+When reducing $\SFP$ to $\POR$, we can either build
+a direct encoding or not. A direct encoding would require
+an on-line management of the probabilistic choices made by
+the $\POR$ function and the $\SFP$ function.
+This would make the proof cumbersome and would require
+quite some effort.
+Intuitively, we would need to simulate any function computed
+by an STM with the oracle tape associated with
+$\m{\eta}$
+by means of a
+$\POR$-function $g$,
+querying a fresh \emph{coordinate} of its
+oracle $\omega$ at each simulate step,
+in turn emulating
+the corresponding value written
+on $\m{\eta}$.
+From a technical viewpoint, providing such
+apparently-natural correspondence between
+$\m{\eta}$ and $\omega$ (i.e.~linking functions
+in $\Os$ and in $\Bool^\Nat$)
+is not trivial.
+%
+For this reason, we prefer to separate the probabilistic concerns by
+the computational one, ending up with a easier and clearer proof,
+paying the cost of introducing another intermediate formalism.
+
+This new formalism, called ``\emhp{Finite} Stream Turing Machines'',
+is defined as a variation of the STM formalism in which the oracle
+tape contains a finite-length string, instead of a finite stream of
+characters.
+
+On top of the ``\emhp{Finite} Stream Turing Machines'', we define a
+class of functions which can be computed in a polynomial time with
+respect to their first input. This class of functions, $\polyF$, is
+strongly related to $\SFP$.
+
+
+
+%%% proof sketch
+Before giving the details of the proof of Lemma \ref{lemma:taskC1},
+we would like to outline the main steps of the proof we give,
+in order to facilitate the reader in understanding the following
+parts of this section.
+Given an arbitrary $f \in \SFP$ with time bound $p \in \POLY$,
+we define a function $h:\Ss \times \Ss \map \Ss$
+such that
+$$
+f(x,\eta) = h\big(x, \eta_{p(|x|)}\big),
+$$
+where $h$ is something very close to an ordinary \emph{poly-time} function%
+\footnote{The main difference lies in the fact that ordinary poly-time function should take one input only.}; in particular, $f \in \polyF$.
+To prove this, we pass
+through the corresponding class of machines, as done in
+Section~\ref{sec:H}.
+%
+Then, we define a function $h' : \Ss \times \Ss \times
+\Os \map \Ss$ such that, for any $x,y\in \Ss$ and $\omega \in \Bool^\Ss$:
+$$
+h'(x,y,\omega) = h(x,y)
+$$
+and we prove that $h'\in \POR^-$.
+%
+Finally, in Section~\ref{sec:E},
+we define a function
+$e: \Ss \times \Os \map \Ss \in \POR$
+ to mimic the prefix extractor, namely we
+define $e$ such that its output have
+\emph{the same distribution} of all possible $\eta$'s prefixes,
+but taking a functional argument with different signature
+to do so we need to deal with a bijection between $\Ss$ and $\Nat$,
+which ensures us that for each $\eta \in \Bool^\Nat$
+there is an $\omega\in \Bool^\Ss$, such that
+any prefix of $\eta$ is an output of
+$e(y, \omega)$ for a specific $y$.
+Proving $e \in\POR$. Since $\POR$ is closed under composition and
+$\POR \setminus \{Q\} \subseteq \POR$, we get the claim. In particular, taking
+
+$$
+g(x, \omega) := h'(x, e(x, \omega), \omega)
+$$
+
+% Notice that this result entails, as a
+% corollary, the fact that Ferreira's PTCA
+% is complete with respect to poly-time computation.
+% %
+% Nevertheless, in order for our proof to be self-contained
+% we formally establish this result in
+% Section~\ref{sec:G}.
+%
+
+We will structure the proof as follows:
+
+\begin{itemize}
+  \item In Section \ref{}, we will show that for each $f \in \SFP$
+  with time bound $p \in \POLY$ there is a $\polyF$ $h:\Ss \map \Ss$
+  such that
+  $$
+  f(x,\eta) = h\big( x, \eta_{p(|x|)}\big),
+  $$
+  \item In Section \ref{}, we introduce $\POR^-$
+  a subset of $\POR$ which is complete
+  with respect to $\polyF$ functions\footnote{And, in particular with to poly-time functions}. This entails that there is a function
+  $h' \in \POR$ such that:
+  $$
+  \forall x, y, \omega. h(x, y)=h'(x, y, \omega)
+  $$
+  \item Then, in Section \ref{}, we show that $e \in \POR$.
+  \item In Section \ref{}, we join all the results in order to prove the claim.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%% PRELIMINARY NOTIONS
+\subsection{Preliminary Notions}\label{sec:preliminary}
+The proof of Lemma~\ref{lemma:taskC1},
+relies on the introduction of some auxiliary notions.
+In particular, we need all the necessary instruments to
+show that the function $h$ introduced in the
+proof of Lemma~\ref{lemma:taskC1} is actually poly-time.
+%
+To do so, we define:
+
+\begin{itemize}
+\item The class $\polyF$, defined in Section \ref{sec:poly-timeTM}.
+\item A subset of $\POR$ which is expressive enough to capture the class $\polyF$,
+ defined in Section \ref{sub:por-o}.
+\end{itemize}
+%
+%Although some of them are almost standard,  we briefly present them formally.
+
+
+
+
+
+
+
+
+
+%%%%%%%% SUBSECTION
+%%%%%%%% poly-time TURING MACHINE
+\subsubsection{(poly-time) Finite Stream Turing Machine}\label{sec:poly-timeTM}
+
+
+The Finite Stream Turing Machine (FSTM, for short)
+are a blending between
+$\SFP$ machines, introduced in Section
+\ref{} and ordinary Turing Machines.
+Basically, they are ordinary Stream Machines, but
+with the difference that the second tape can
+contain a finite stream of values.\footnote{Some
+definitions are omitted but can be found
+in Appendix~\cite{app}}
+%
+\begin{defn}[Finite Stream Turing Machine]\label{df:FSTuringMachine}
+A \emph{Finite Stream Turing machine} is a quadruple,
+$M = \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+where:
+\begin{itemize}
+\itemsep0em
+%
+\item $\m{\Qs}$ is a finite set of states ranged over by the meta-variables
+$\m{q_i}$
+%
+\item $\m{q_0}\in \m{\Qs}$ is the initial state
+%
+\item $\m{\Sigma}$ is a finite set of characters
+ranged over by the $\m{c_i}$ meta-variables.
+%
+\item $\m{\delta} : \m{\hat{\Sigma}} \times
+\m{\Qs} \times \m{\hat{\Sigma}} \times \m{\hat{\Sigma}} \map \m{\hat{\Sigma}}
+\times \m{\Qs} \times \m{\hat{\Sigma}} \times
+\{\m{L}, \m{R}\}$
+is a transition function describing the new
+configuration reached by the machine.
+\end{itemize}
+where $\m{L}$ and $\m{R}$
+are two fixed constants,
+e.g.~$\m{\zero}, \m{\one}$,
+$\m{\hat{\Sigma}} = \m{\Sigma} \cup \{\m{\blank}\}$
+and $\m{\blank}$ represents the blank character
+such that $\m{\blank} \not \in \m{\Sigma}$.
+\end{defn}
+%
+%
+%
+\noindent
+%Without loss of generality, we can assume $\m{\Sigma}=\{\m{\zero}, \m{\one}\}$, and define the canonical TM as follows:
+%
+%\begin{defn}[Canonical TM]\label{df:canonicalSTM}
+A \emph{canonical Finite Stream Turing Machine} is a FSTM,
+such that
+$\m{\Sigma}=\{\m{\zero}, \m{\one}\}$,
+$\m{L}=\m{\zero}$, and $\m{R}=\m{\one}$.
+%\end{defn}
+%
+%
+Configurations are defined in the standard way.
+
+\begin{defn}[FSTM Configuration]\label{df:TMConfiguration}
+The \emph{configuration of a FSTM} is a 4-tuple
+$\langle \m{\sigma}, \m{q}, \m{\tau},\m{\xi}\rangle$, where
+\begin{itemize}
+\itemsep0em
+
+\item $\m{\sigma} \in \m{\hat{\Sigma}^*}$ is the portion of the work tape on the left of the head
+
+\item $\m{q} \in \m{\Qs}$ is the current state of the machine
+
+\item $\m{\tau} \in \m{\hat{\Sigma}^*}$ is the portion
+of the work tape on the right of the head.
+
+\item $\m{\sigma} \in \m{\hat{\Sigma}^*}$ is the portion
+of the secondary tape on the right of the head.
+
+\end{itemize}
+\end{defn}
+
+
+Due to the definition of FSTM configuration, it is possible to
+define the FSTM's transition function.
+
+
+
+
+
+
+\begin{defn}[FSTM Reachability Function]\label{df:TMReachability}
+Given a TM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+$\{\tmreach^n_M\}_n$ is the smallest
+family of relations such that:
+%
+%
+%
+\begin{align*}
+\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\xi}\rangle
+&\tmreach^0_M
+\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\xi}\rangle \\
+%
+%
+\big(\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\xi}\rangle
+\tmreach^n_M
+\langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\xi'}\rangle\big)
+%
+\wedge
+%
+\big(\langle \m{\sigma'}, \m{q'}, \m{\tau'}, \m{\xi''}\rangle
+%
+&\tmstep_{\m{\delta}}
+%
+\langle \m{\sigma''}, \m{q''}, \m{\tau''}, \m{\xi''}\rangle\big)
+\rightarrow
+\big(\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\xi}\rangle
+\tmreach^{n+1}_M
+\langle \m{\sigma''}, \m{q''}, \m{\tau''}, \m{\xi''}\rangle\big)
+\end{align*}
+\end{defn}
+\noindent
+Without loss of generality,
+we assume TMs not to use final states:
+computation is regarded as concluded
+whenever the current configuration does
+not define the transition function.\footnote{Indeed,
+in all these cases,
+we could imagine to add a final state $q_F$
+and a transition to it.}
+
+
+
+
+\begin{prop}
+For any FSTM, $M\langle \m{\Qs}, \m{q_0}, \m{\Sigma},
+\m{\delta}\rangle$ and $n\in \Nat$,
+$\tmreach^n_M$ is a function.
+\end{prop}
+
+\begin{notation}[Final Configuration]
+Given a FSTM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+and a configuration
+$\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\xi}\rangle$,
+we write
+$\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\xi}\rangle \not\tmstep_{\m{\delta}}$
+when there are no $\m{\sigma'}, \m{q'}, \m{\tau'}, \m{\xi'}$
+such that
+$\langle \m{\sigma}, \m{q}, \m{\tau}, \m{\xi}\rangle
+\tmstep_{\m{\delta}} \langle \m{\sigma'}, \m{q'},
+\m{\tau'}, \m{\xi'}\rangle$.
+\end{notation}
+%
+%
+%
+
+%
+%Transition function is again as predictable and denoted as  $\tmstep_{\delta}$.
+
+
+%%% DEFINITION
+\begin{defn}[FSTM Transition Function]\label{df:FSTMTransition}
+Given an STM, $M=\langle
+\m{\Qs}, \m{q}, \m{\Sigma}, \m{\delta}\rangle$,
+we define the \emph{partial transition function}
+$\tmstep_{\delta} \m{\hat{\Sigma}^*} \times
+\m{\Qs} \times
+\m{\hat{\Sigma}^*}\times
+\m{\hat{\Sigma}^*}
+\map
+\m{\hat{\Sigma}^*} \times
+\m{\Qs} \times
+\m{\hat{\Sigma}^*}$
+between two configurations as:
+%
+\begin{align*}
+\langle \m{\sigma}, \m{q}, \m{c\tau}, \m{d} \rangle
+%
+\tmstep_{\m{\delta}}
+%
+\langle \m{\sigma c'}, \m{q'}, \m{\tau}\rangle
+%
+\ \ \ \ \ &\text{if} \ \m{\delta}(\m{q},\m{c}, \m{d}) =
+\langle \m{q'}, \m{c'}, \m{R}\rangle \\
+%
+%
+%
+\langle \m{\sigma c_0},
+\m{q}, \m{c\tau}, \m{d}\rangle
+\tmstep_{\m{\delta}}
+\langle \m{\sigma},
+\m{q'}, \m{c_0c_1'\tau}
+\rangle
+%
+\ \ \ \ \ &\text{if} \ \m{\delta}(\m{q}, \m{c_1}, \m{d}) = \langle
+\m{q'}, \m{c_1'}, \m{L}\rangle \\
+%
+%
+%
+\langle \m{\sigma}, \m{q}, \m{c\tau}, \m{d}\rangle
+%
+\tmstep_{\m{\delta}}
+\langle \m{\sigma c'}, \m{q'},
+\m{\tau}\rangle
+%
+\ \ \ \ \ &\text{if } \m{\delta}(\m{q}, \m{c}, \m{d})
+= \langle \m{q'}, \m{c'}, \m{R}\rangle \\
+%
+\langle \m{\sigma c_0}, \m{q}, \m{c_1\tau}, \m{d}\rangle
+\tmstep_{\m{\delta}}
+\langle \m{\sigma}, \m{q'}, \m{c_0c_1' \tau}, \m{d}\rangle
+%
+\ \ \ \ \ &\text{if }
+\m{\delta}(\m{q},\m{c_1}, \m{d}) = \langle
+\m{q'},\m{c_1'},\m{L}\rangle.
+%
+\end{align*}
+%
+\end{defn}
+%
+\noindent
+As for STM, the configuration reached by the machine
+$M$ after $n$ steps of computation is obtained
+by composing $n$ times
+its reachability function, denoted by $\tmreach^n_M$.
+
+
+
+
+%%% poly-time TM
+\begin{defn}[poly-time Finite Stream Turing Machine]\label{df:polyTM}
+A \emph{poly-time Finite Stream Turing machine}
+is a TM, $M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma},
+\m{\delta}\rangle$
+such that,
+$$
+\exists p \in \mathsf{POLY}. \forall \m{\sigma}, \m{\tau} \in \m{\Ss}.
+\exists n \leq p(|\m{\sigma}|)
+\big(\langle \m{\eepsilon}, \m{q_0}, \m{\sigma}, \m{\tau}
+\rangle \tmreach^n_M
+\langle \m{\gamma}, \m{q'}, \m{\sigma'}, \m{\tau'}\rangle
+\not \tmstep_\delta
+$$
+\end{defn}
+
+%
+% \begin{remark}
+%   All these definitions scale naturally to multi-tape Turing machines, if we define
+%   the configuration of a $k$-taped TM as a tuple:
+%   $$
+%     \langle \sigma_1, \ldots, \sigma_k, q, \tau_1, \ldots, \tau_k\rangle
+%   $$
+%   Where the $\sigma_i$ are the strings on the left of each tape's head, and
+%   the $\tau_i$ are the strings on the right of the heads.
+% \end{remark}
+
+%%% COMPUTATION of STM
+\begin{defn}[FSTM Computation]\label{df:FSTMcomputation}
+Given a  FSTM,
+$M = \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+three strings $\sigma, \tau, \gamma \in \Ss$,
+we say that
+$f_M$ computes $\m{\gamma}$ on input $\m{\sigma, \tau}$
+$f_M (\m{\sigma},\m{\tau})=\m{\gamma}$,
+when there are a natural number $n\in \Nat$,
+a string $\m{\xi}\in \Ss, \m{q'} \in \Qs$,
+such that
+$$
+\langle \eepsilon, q, \sigma, \tau\rangle \tmreach^n_M
+\langle \gamma',  q, \sigma', \tau'\rangle\
+$$
+%for some $\m{\tau}, \m{q'$} and $\m\psi$ and
+with $\m{\gamma}$ being
+the longest suffix of $\m{\gamma}$ not including
+$\m{\blank}$.
+\end{defn}
+
+
+
+
+We are now able to define the class
+$\polyF$, namely the class of functions
+which are computable by poly-time FSTMs.
+
+
+
+%%% Class ?
+\begin{defn}[The Class $\polyF$]\label{df:poly-time}
+$$
+\polyF := \{f \in \Ss \times \Ss \map \Ss \ | \ f=f_M\}
+$$
+for some poly-time TM $M$.
+\end{defn}
+
+
+The class $\polyF$, basically, is a generalization to $k$-taped Turing Machines
+of the class PF.
+
+
+
+
+
+
+
+
+
+%%%%%%% SUBSUBSECTION
+\subsubsection{The Class $\POR^-$}
+\label{sub:por-o}
+
+%
+Furthermore, we present the class
+$\POR^-$ which is defined as
+$\POR$ except for the
+absence of the query function $Q$.
+%
+This class is useful because it will be trivially shown being
+sound and complete with respect
+to Ferreira's PTCA \cite{}
+(Remarks \ref{remarkdafare} and \ref{remarkdafare2}).
+%
+This entails that, showing that $\POR^-$ is complete
+with respect to $\polyF$ function
+and that $\polyF$ functions are complete with respect to
+\emph{ordinary poly-time functions} (Lemma \ref{lemma:polyFcompleteness})
+yields, as a corollary, the proof that
+Ferreira's PTCA contains the class of poly-time
+computable functions.
+%
+The completeness of $\POR^-$ with
+respect to FSTM function is proved in Section \ref{sec:G}.
+
+
+
+\begin{defn}[The Class $\POR^-$]
+The \emph{class $\POR^-$}
+is the smallest class of functions
+$\Ss^n\times \Os\map \Ss$ containing:
+\begin{itemize}
+\itemsep0em
+
+\item the empty function $E(x,\omega)=\eepsilon$
+
+\item the projection function
+$P^{n}_i(x_1,\dots, x_n,\omega)=x_i$
+
+\item the word-successor $S_\bool(x,\omega) = x\bool$,
+for every $\bool \in \Bool$
+
+\item the conditional function
+\begin{align*}
+C(\eepsilon, y, z_\zero, z_\one,\omega) &= y \\
+C(x\bool, y, z_\zero, z_\one,\omega) &= z_\bool.
+\end{align*}
+where $\bool \in \Bool$.
+
+
+
+
+\end{itemize}
+and closed under:
+\begin{itemize}
+\item composition, such that $f$ is defined from
+$g,h_1,\dots, h_k$ as:
+$$
+f(\vec{x}) = g\big(
+h_1(\vec{x},\omega), \dots, h_k(\vec{x},\omega),\omega\big)
+$$
+
+
+\item bounded recursion, such that $f$ is defined from
+$g, h_1, h_2$ as:
+\begin{align*}
+f(\vec{x},\eepsilon,\omega) &:= g(\vec{x},\omega) \\
+%
+f(\vec{x}, y_1\zero,\omega) &:= h_1
+\big(\vec{x}, y_1,
+ f(\vec{x},y_1,\omega),\omega\big)|_{t(\vec{x},y)} \\
+%
+f(\vec{x}, y_2,\omega\one) &:=
+h_2\big(\vec{x}, y,
+f(\vec{x}, y_2,\omega),\omega\big)|_{t(\vec{x},y_2)}
+\end{align*}
+where $t$ is defined from $\eepsilon, \zero, \one,
+\frown, \times$ by explicit definition.
+\end{itemize}
+\end{defn}
+
+
+%\begin{defn}[The Class $\POR^-$]
+%The class $\POR^-$ is  the class of functions $\Ss^n\times \Os \map \Ss$ containing $E, P^n_i, S_{\bool},  C$, and closed under oracle composition and bounded-recursion.
+%\end{defn}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%\newpage
+%%%%%% ENCODING
+
+\subsection{From $\SFP$ to $\polyF$}\label{sec:H}
+First of all we show that for any $f\in \SFP$,
+the corresponding $\polyF$ function
+$h:\Ss \times \Ss\map \Ss$ can be constructed.
+%
+The core idea consists in passing through
+the associated machines.
+%
+According to Definition~\ref{df:SFP},
+there is a poly-time STM $M$, such that $f=f_M$.
+%
+We want to construct the corresponding
+\emph{poly-time} FSTM $N$, which,
+given as second argument polynomial prefix of $\eta$,
+behaves exactly like $M$.
+%
+In particular, $N$ is constructed basing on a
+two-taped TM $N$, which
+simply inherits the transition function of $M$
+%
+For each computation,
+$N$ performs a number of steps which
+is \emph{exactly the same number of those performed} by $M$,
+so also this standard TM must be \emph{poly-time}.
+
+
+
+%%% LEMMA
+%%% lemma:poly-time
+\begin{lemma}\label{lemma:SFPtopolyF}
+For each $f\in \SFP$ with time-bound $p\in \POLY$,
+there is an $h \in \polyF$ such that
+for any $\eta\in \Bool^\Nat$ and $x, y\in \Ss$,
+$$
+f(x,\eta) = h(x, \eta_{p(|x|)}).
+$$
+\end{lemma}
+
+
+
+%%% Proof of Lemma
+\begin{proof}
+Assume that $f \in \SFP$.
+%
+By Definition~\ref{df:SFP},
+there is a poly-time STM, $M =\langle \m{\Qs},
+\m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+such that $f=f_M$.
+%
+Let us define a (standard) TM $N$
+which, given a polynomial prefix of $\eta$,
+behaves like $M$.
+%
+The Definition of $N$ is identical to the definition of $M$.
+Formally,
+for any $k\in \Nat$ and some $\sigma,\tau , y' \in \Ss$
+$$
+\langle \m{\eepsilon}, \m{q_0'}, \m{x}, \m{y} \rangle
+\triangleright^k_{\delta'} \langle \m{\sigma},
+\m{q}, \m{\tau}, \m{y'}\rangle
+\ \ \ \Leftrightarrow \ \ \
+\langle \g{\eepsilon}, \g{q_0'}, \g{x}, \g{\eta}\rangle
+\stmreach^k_\delta
+\langle \g{\sigma}, \g{q}, \g{\tau}, \g{y'\eta}\rangle.
+$$
+Moreover,
+$N$ requires a number of steps which is exactly equal to
+the number of steps required by $M$, and thus
+is in $\polyF$, too.
+%
+We conclude the proof defining $h=f_{N}$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%\newpage
+%%%%%%%
+%%%%%%%
+%%%%%%% FROM PTF TO POR
+\subsection{From $\polyF$ to $\POR^-$}\label{sec:G}
+
+In this section we will show that all the function which are in $\polyF$
+can be represeted in $\POR$, too. This can formalized as follows.
+
+%%% LEMMA
+\begin{restatable}{lemma}{polyFtoCob}
+\label{lemma:polyFtoCob}
+  For any $f\in \polyF$ and $x\in \Ss$,
+  there is a $g\in \POR^-$,
+  such that
+  $
+  \forall x, y, \omega. f(x, y)=g(x, y,\omega).
+  $
+\end{restatable}
+
+\begin{proof}[Proof Sketch]
+  Any configuration of a Finite Stream Turing Machine
+  can be encoded into strings, thus we
+  can pass the value which is an encoding of the initial machines configuration
+  to a function which emulates the execution of the machine which computes $f$ ($M_f$) for
+  a  polynomial number of steps.
+  When $M$ reaches a final configuration, it is sufficient to extract
+  from the final configuration the longest portion of the primary tape
+  which is on the left and free form $\circledast$ characters.
+\end{proof}
+
+In order to prove the lemma above, we did an important technical work, which can
+be found in Section \ref{sub:encoding} of the Appendix. Now we will show that
+$\POR^-$ benefits of three important properties:
+
+\begin{itemize}
+  \item There is a function $\apply \in \POR^-$ which receiving as input
+  the encoding of a FSTM configuration $c$, and the encoding of a
+  FSTM transition function $\delta$,
+  it computes the encoding configuration obtained
+  applying the function $\vdash_\delta$ on $c$.
+  \item For each $f \in \POR^-$ and for each $x, y \in \Ss$ if there is a
+  term $t(x)$ in $\Lpw$
+  which bounds $f(x, \omega)$ for each $\omega$, then there is a function which
+  applies $|y|$ times $f$ on its own output.
+  \item There is a function $\dectape$ which extracts
+  the machine's output from any encoded final configuration of a FSTM machine.
+\end{itemize}
+
+\subsubsection{The function $\apply$}
+\label{subsub:apply}
+
+To define $\apply$, we show that given the encoding of a finite function
+(for details, see Corollary \ref{cor:deltarepr} in the Appendix), can be
+\emph{interpreted} by means of a $\POR^-$ function,
+the \emph{total function simulator}\footnote{We call it \emph{total} because,
+since $\POR^-$ is total, it defines a default value to be returned when the
+simulated function is not defined on the queried input.}
+
+
+\begin{defn}[Total Function Simulator]
+We define the \emph{total function simulator}
+$sim(\cdot, \cdot, \omega)$ as follows:
+\begin{align*}
+sim'(y,x,\eepsilon,\omega) &:= \eepsilon \\
+%
+sim'(y,x,z\bool, \omega) &:= \mathit{if}\big(\pi_2(\pi(y,z\bool,\omega),
+\omega), sim'(y,x,z,\omega), eq(\pi_1(\pi(y,z\bool,\omega),
+\omega), x,\omega), \omega\big) \\
+\\
+sim(x,y,\omega) &:= sim'\big(y,x,\pi_0(y,\omega),\omega\big).
+\end{align*}
+\end{defn}
+
+The total function simulator is defined by induction on the number of elements
+in the encoding of the simulated function is defined
+(the number of pairs in the function's graph). At step $i$ the unction extracts the
+$i$-th projection from the function's graph and compares its first element with
+the queried value. If they correspond, then it returns the second projection of
+the pair, otherwise is procedes recursively.
+%
+The formal proof of the correctness of this function is in the Appendix,
+Lemma \ref{lemma:simcorr}.
+%
+It holds that there is a function $\apply$ in $\POR$ which,
+given a transition function $\delta$, simulates the function $\vdash_\delta$
+on the encodings of machine's configuration, formally:
+
+\begin{lemma}
+  \label{lemma:applycorr}
+  The function $\apply$ is such that for any FSTM $M$ with transition function
+  $\delta$, said $x_\delta$ the encoding of $\delta$ described in Corollary
+  \ref{cor:deltarepr}, and $h(c)$ the encoding of a configuration $c$ as
+  described in Definition \ref{def:canencs},
+  \begin{align*}
+    \forall \omega \in \Os.\vdash_\delta(c)=d \to \apply(x_\delta, h(c), \omega) = h(d)\\
+    \forall \omega \in \Os. \left(c \not\vdash_\delta\right ) \to \apply(x_\delta, h(c), \omega) = h(c)
+  \end{align*}
+\end{lemma}
+%
+\noindent
+The formal proof of the statement of Lemma \ref{lemma:applycorr}, together
+with the definition of the function $\apply$ are quite cumbersome, for this
+reason they are given in the Appendix.
+%
+\subsubsection{Power Function}
+\label{subsub:pf}
+
+In this section we show that for each function in $\POR^-$, if it has an output
+size which is bounded by a term in $\Lpw$, then its $n$-th power is in $\POR^-$.
+%
+Thanks to this result, we will be able to compute the polynomial transitive
+closure of a function in $\POR^-$, in order to compute the final configuration
+of any FSTM, given its $\delta$ function and its input.
+
+\begin{lemma}
+  \label{lemma:saPOR}
+  For each $f : \Ss^{k+1} \times \Os \longrightarrow \Ss \in \POR$
+  If there is a term $t \in \Lpw$ such that
+  $\forall x, \vec z, \omega. f(x, \vec z, \omega)|_t = f(x, \vec z, \omega)$
+  then there is also a function $\sa_{f, t} : \Ss^{k+2} \times \Os \longrightarrow \Ss$
+  such that
+  $$
+  \forall n \in \Nat. \forall x \in \Ss,  \omega \in \Os.
+  sa_{f, t}(x, \ovverline n \Nat, \vec z, \omega) =
+  \underbrace{f(f(f(x, \vec z,  \omega), \vec z, \omega), \ldots)}_{n\text{ times}}.
+  $$
+\end{lemma}
+
+For sake of readability, we will proof this result giving the definition of the
+$\sa_{\cdot, \cdot}$ funtion schema only in the Appendix, the details
+are in Proof \ref{proof:saPOR}.
+%
+The function $\sa_{\cdot,\cdot}$ allows us to compute
+the transitive closure of the function $\apply$, but to do so,
+we must show that the growth of the terms computed by $\apply$
+is under control. This is due to the fact that the only iterative
+mechanis of $\POR^-$ is the bounded recursion on notation, which
+requires that, at each step, the function outputs are bounded in size.
+%
+So, the self-application schema must pass through bounded recursion on notation
+and then, requires size bounds. For this reason, we show that the term-growth
+of the size growth of the output of the function $\apply$ is at mosst constant.
+
+\begin{lemma}[$\apply$ Size growth]
+  \label{lemma:applysize}
+  For all $x_c\in \Ss$ being the encoding of a FSTM configuration
+  and for each encoding of a transition function $\delta$
+  in a string $x_\delta \in \Ss$ and for each $\omega\in \Os$, there is
+  a $k \in \Nat$ sich that
+  $\apply(x_c, x_\delta, \omega)|_{x_c\one^k}$
+\end{lemma}
+
+The specific value of the size bound expressed in the lemma above
+is not particularly meaningful, and it is
+mainly due to the encodings we decided to adopt, but it is important that
+fixed a FSTM machine we can always find such $k$.
+A technical proof of this result is in the Appendix.
+
+
+
+
+
+
+
+
+%%%%% REPRESENTING TRANSITION IN COB
+\subsubsection{Representing transition in $\POR^-$}
+
+In this section, we show that it is possible to define a function
+$\dectape \in \POR^-$ which takes in input the encoding of a tape and
+$\omega \in \Os$, and returns the longest suffix of the tape on the left of the
+head without any occurrence of $\circledast$. To do so, we need to do some
+technical work. First we introduce
+some auxiliary functions $\in \POR^-$:
+the difference function $\mathit{diff}$ returning the difference
+between two numbers,
+the list-projector function $\pi_n$
+taking (the encoding of) a list
+and a number $n$ as its input and returning
+the $n$-th element of the list,
+and the right-remover function $\rrs$.\footnote{Formal
+definitions are presented in Appendix~\ref{}.}
+Moreover, $eq: \Ss^2 \times \Os \map \Ss$
+is a function in $\POR^-$.
+%
+%
+%
+%
+%
+%
+While decoding the final configuration of a
+canonical TM,
+we need to extract the longest
+sequence of bits on the immediate
+left of the head.
+%
+To do so, we introduce an auxiliary
+function $\rho:\Ss^2\times \Os \map \Ss$
+that is supposed to take the encoding of a tape
+as its input and return the $y$-th right character
+of the tape.
+Formally,
+%
+$$
+\rho(x,y,\omega) = \pi\big(x,
+diff(\pi_0(x,\omega), y,\omega),\omega\big).
+$$
+Then, we define a \emph{decoding}
+function so that at each step,
+due to $eq$,
+it checks whether the character obtained from
+$\rho$ is the encoding of $\circledast$ defined in the Appendix, i.e.
+$\one\one\one$.
+If so, it returns $\eepsilon$.
+%
+
+
+
+
+
+
+
+%%%%%% DECTAPE
+\begin{defn}[$\dectape$ Function]
+Let $dec :\Ss\times \Ss \times \Os
+\map \Ss$ be an auxiliary function defined
+as follows:
+\begin{align*}
+dec(x,\eepsilon,\omega) &= \eepsilon \\
+dec(x, y\bool,\omega) &= \mathit{if}\big(dec(x,y,\omega)
+\rho (x,y\bool,\omega), \eepsilon,
+\lnot eq(\rho(x,y\bool,\omega),\omega), \one\one\one,\omega)\big)
+\end{align*}
+with
+$$
+\rho(x,y,\omega) = \pi\big(x,
+diff(\pi_0(x,\omega), y,\omega),\omega\big).
+$$
+We define the function \emph{dectape}:
+$\Ss  \times \Os \map \Ss$
+as follows:
+$$
+dectape(x,\omega) = dec\big(x,rrs(\pi_0(x,\omega),\omega),
+\omega\big)
+$$
+\end{defn}
+%
+%
+\noindent
+The function $\dectape$ returns a string which is the
+longest suffix not including $\circledast$
+of the tape encoded with $\ovverline \cdot \Tt$ and stored in $x$.
+By Definition~\ref{def:TM}, this is precisely
+the value computed by the machine.
+A formal proof of this statement
+is given in the Appendix, the details are in Lemma \ref{lemma:dectape}
+
+\begin{lemma}\label{lemma:dectape}
+{The function $\mathit{dectape}\in \POR^-$
+is such that if $\underline{\cdot}_\Tt$
+is the encoding for tapes above,
+then for any $\sigma\in \{\zero,\one,\blank\}$
+$\omega \in \Os$}
+$$
+f(\underline{\sigma}_\Tt, \omega) = \tau
+$$
+and $\tau$ is the longest suffix of $\sigma$ without $\blank$.
+\end{lemma}
+
+
+Let us also define a function \emph{size}
+which allows us to compute the
+encoding of the size of a string throughout
+$\underline{\cdot}_\Nat$
+\begin{defn}
+The function $\mathit{size} : \Ss\times \Os \map \Ss$
+is defined as follows:
+\begin{align*}
+\mathit{size}(\eepsilon, \omega) &= \one \\
+\mathit{size}(x\bool,\omega) &= \mathit{size}(x,\omega)\one|_{x\one\one}.
+\end{align*}
+\end{defn}
+
+The correctness of the function $\mathit{size}$, with respect to the
+encoding we are adopting --- namely $n \mapsto\one^{n +1}$ ---
+can be shown by induction.
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%% CONCLUDING THE PROOF
+\subsubsection{\emph{Concluding the Proof}}
+It is now possible to show that, for any
+$\SFP$-function there is
+a function in $\POR^-$,
+which behaves exactly like the  former one.
+%
+The conclusion is the \emph{composition} of three main ingredients:
+\begin{itemize}
+  \item Machine steps can be simulated by means of the function $\apply$.
+  \item The function $\apply$ can be self-applied a polynomial numbers of times.
+  \item We can extract the value computed by the machine by its final configuration.
+\end{itemize}
+
+These results allow us to give a proof to Lemma \ref{lemma:polyFtoCob}.
+
+
+
+%%% LEMMA
+\polyFtoCob*
+% \begin{lemma}\label{lemma:polyFtoCob}
+% {For any $f\in \polyF$ and $x, y\in \Ss$,
+% there is a $g\in \POR^-$,
+% such that
+% $
+% \forall \omega \in \Os. f(x, y)=g(x, y, \omega).
+% $}
+% \end{lemma}
+%% PROOF
+\begin{proof}
+%
+By definition of $\polyF$,
+there is a FSTM computing $f$ on a machine $M$ with a polynomial
+time-bound, $p$, and a transition function $\delta$.
+%
+Let us consider a function $g$
+defined as follows:
+$$
+g(x, y, \omega) = dectape(\pi_{1}(sa_{\apply, t_M}(x_\delta,
+\langle \ovverline \circledast \Tt, \underline{0}_\Nat, \ovverline x\Tt, \ovverline y\Tt\rangle_\Ll,
+\underline p(\mathit{size}(x, \omega), \omega), \omega), \omega), \omega)
+$$
+where $p$ is the $\POR^-$-function which
+computes the encoding of the value of the polynomial $p$.\footnote{
+This function is in $\POR^-$, because we have shown that this class
+contains all the polynomials.}
+This function is correct as the self-application of $\apply$ for $p(|x|)$
+times returns in the machine configuration, as a consequence of Lemma \ref{lemma:applycorr}.
+Finally, \emph{dectape}
+extracts the longest suffix free from blank characters
+which is on the left of the head
+in the encoding of the tape reached at the end of the computation.
+This is a consequence of the correctness of the projector $\pi_1$
+with respect to the encoding of lists (for details, see the Appendix)
+and of the correctness of $\dectape$ (Lemma \ref{lemma:dectape}).
+As required by Definition~\ref{def:TM}, this is exactly $f(x, y)$.
+\end{proof}
+%
+%
+%
+%
+%
+\noindent
+As a consequence,
+%%% COROLLARY
+\begin{cor}
+  \label{cor:sfptopor-}
+For each $f\in \SFP$ and polynomial
+time-bound $p\in \POLY$,
+there is a function $g\in \POR^-$ such that
+for any $\eta : \Nat \map \Bool$, $\omega : \Nat \map \Bool$ and $x\in\Ss$,
+$$
+f(x,\eta) = g\big(x,\eta_{p(|x|)}, \omega\big).
+$$
+\end{cor}
+
+%%% PROOF
+\begin{proof}
+Assume $f\in \SFP$ and $y = \eta_{p(|x|)}$.
+By Lemma~\ref{lemma:SFPtopolyF},
+there is a function $h\in \polyF$ such that,
+for any $\eta :\Nat \map \Bool$ and
+$x\in \Ss$,
+$$
+f(x,\eta) = h\big(x,\eta_{p(|x|)}\big).
+$$
+%
+%
+Moreover,
+due to Lemma~\ref{lemma:polyFtoCob},
+there is also a $g\in \POR^-$ such that
+%
+$$
+g(x,y, \omega) = h\big( x, y \big).
+$$
+%
+%
+Then, the desired function is $g$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%\newpage
+\subsection{Extractor Function in $\POR$}\label{sec:E}
+Finally, we construct an extractor function $e(x, \omega)$ in $\POR$
+we introduced in the sketch of the proof of Lemma \ref{lemma:taskC1}.
+%
+This function extracts $|x|+1$ bits from $\omega$ and places them in a
+and concatenates them in its output.
+%%%%% PRELIMINARIES
+%\paragraph{\emph{Preliminaries.}}
+%
+%
+As said, for any polynomial $p$, $x\in \Ss$ and $\omega\in\Os$,
+there is $t\in \POR^-\subseteq \POR$, %(or $\in \polyF$)
+such that
+$|t(x,\omega)|=p(|x|)$.
+Then, there is also a $t \in \POR$ such that
+for any $\vec{x} \in \Ss$ and $\omega \in \Os$,
+$|t(\vec{x},\omega)|= p(|\vec{x}|)$.
+%
+Moreover, it is possible to associate each natural
+number $n$ to its dyadic representation.
+Intuitively, for each natural number $n\in \Nat$,
+if $n_2$ is the encoding of $n$ in base 2,
+the dyadic representation of $m$ is $(m+1)_2$ without is leftmost bit.
+%
+The intuition is at the basis of our definition
+of an ``extractor'' function in $\POR$.
+
+
+
+
+
+
+
+
+
+
+
+First, we define a function $bin:\Ss\times \Os\map \Ss$
+such that, if $x$ has length $k$,
+then for every $\omega\in \Os$,
+$bin(x,\omega)$ is the binary encoding of $k$.
+%\footnote{For
+%readability's sake, we define functions in a semi-formal way.
+%The formal definition of their representability in $\POR$
+%can be found in Appendix~\ref{??}.}
+
+
+
+
+
+\begin{defn}
+Let us define an auxiliary function
+$binsucc:\Ss\times \Os\map \Ss$,
+\begin{align*}
+binsucc(\eepsilon,\omega) &= {\one} \\
+binsucc(x\zero,\omega) &= x\one|_{x\zero\zero} \\
+binsucc(x\one,\omega) &= binsucc(x,
+\omega)\zero|_{x\zero\zero}.
+\end{align*}
+Then, $bin:\Ss\times \Os \map \Ss$ is
+defined as:
+\begin{align*}
+bin(\eepsilon,\omega) &= {\zero} \\
+bin(x\bool,\omega) &= binsucc\big(bin(x,\omega),\omega\big)|_{x\bool}
+\end{align*}
+\end{defn}
+%
+On top of the definition of the binary encoding of a number,
+we define the dyadic encoding of it:
+\begin{defn}
+  We call $\mathit{dy}: \Ss \times \Os \longrightarrow \Ss$ the function in $\POR^-$ such that
+  $\forall n \in \Nat, \omega \in \Os. \mathit{dy}(\ovverline n \Nat, \omega)$ is the diadic encoding of $n$.
+  Namely:
+  \begin{align*}
+    \mathit{dy}(x, \omega):= \lrs(bin(x, \omega), \omega), \omega
+  \end{align*}
+\end{defn}
+%
+In the Appendix (Lemma \ref{lemma:dyadbij})
+we prove that for any $\omega$,
+the function $\mathit{dy}(\ovverline n \Nat, \omega)$
+is a bijection between a a natural number $n$ and a string
+--- its dyadic representation.
+This result will be crucial proving Lemma \ref{lemma:taskC1}, because it relates
+throughout a bijection the set $\Bool^\Nat$ to $\Bool^\Ss$.
+%
+%
+%
+%
+%
+%
+%
+\noindent
+We then define a function $e \in \POR$,
+which takes a string and an oracle
+as its input and returns a finite string obtained picking $|x|$ bytes from it,
+choosing exactly the coordinates of $\omega$ corresponding to the dyadic encoding
+of the first $|x|$ natural numbers.
+%%% DEFN
+\begin{defn}
+Let $e :\Ss\times \Os \map \Ss$ be defined as follows:
+\begin{align*}
+e(\eepsilon,\omega) &= \eepsilon \\
+%
+e(x\bool,\omega) &= e(x, \omega)Q\big(\mathit{dy}(x,\omega),\omega)|_{x\bool}.
+\end{align*}
+\end{defn}
+%
+%
+\noindent
+
+\begin{defn}
+  We define $\sim_{\mathit{dy}}$ as the smallest relation in
+   $\Bool^\Ss\times \Bool^\Nat$ such that:
+   $$
+   \eta \sim_\mathit{dy} \omega \leftrightarrow \forall n \in \Nat.
+    \eta(n)= \omega (\mathit{dy}(\ovverline n \Nat, \omega))
+   $$
+\end{defn}
+
+This relation has some good properties:
+
+\begin{lemma}
+  \label{lemma:funbij}
+  It holds that:
+  \begin{itemize}
+    \item $\forall \eta \in \Bool^\Nat. \exists ! \omega \in \Bool^\Ss. \eta \sim_{\mathit{dy}} \omega$
+    \item $\forall \omega \in \Bool^\Ss. \exists ! \eta \in \Bool^\Nat. \eta \sim_{\mathit{dy}} \omega$
+  \end{itemize}
+\end{lemma}
+\begin{proof}
+  The proofs are very similar, for this we will take in exam only the first.
+  By the fact that $\mathit{dy}$ is a bijectio  with respect to its
+  first argument and is constant over its second argument,
+  we obtain the existence of an $\omega$ which is in relation with $\eta$.
+  Now suppose that there are $\omega_1, \omega_2$ both in relation with $\eta$
+  being different. It holds then that $\exists \sigma \in\Ss$ such that
+  $\omega_1(\sigma)\neq\omega_2(\sigma)$. Then, since $\mathit{dy}$ is in $\POR^-$,
+  the value of its last argument does not affect th value of its output,
+  moreover it is a bijection so we get that the claim holds.
+\end{proof}
+\begin{cor}
+  The relation $\sim_{\mathit{dy}}$ is a bijection.
+\end{cor}
+
+\begin{proof}
+  Consequence of Lemma \ref{lemma:funbij}.
+\end{proof}
+
+
+
+
+
+
+
+
+
+%\newpage
+
+
+%%% COROLLARY
+\begin{cor}
+  For each $f \in \SFP$, there is a $g \in \POR$ such that:
+  $$
+  \mu\big(\{\eta \in \Bool^\Nat \ | \ f(x, \eta)=y \}\big)
+  = \mu\big(\{\omega \in \Os \ | \ g(x, \omega) =y\}\big).
+  $$
+\end{cor}
+
+%%% PROOF
+\begin{proof}
+  From Corollary \ref{cor:sfptopor-}, we know that there is a function $f'\in \POR^-$,
+  and a $p \in \POLY$ such that
+  $$
+  \forall x, y \in \Ss.\forall \eta.\forall \omega. y = \eta_{p(x)} \to  f(x, \eta) = f'(x, y, \omega)\quad (*)
+  $$
+  So, by the fact that $\POR^- \subseteq \POR$, $f' \in \POR$, too.
+  %
+  % For this reason, the application of Lemma \ref{}, yields the following result:
+  %
+  % $$
+  % \left(\forall 1 \le i \le p(|x|). \omega (\mathit{dyad}(i))={\eta}(i)\right) \to g(x, e(p(\mathit{size}(x, \omega), \omega), \omega), \omega) = f(x, \eta)
+  % $$
+  %
+  Fixed an $\eta \in \{\eta \in \Bool^\Nat \ | \ f(x, \eta)=y \}$,
+  its image with respect to $\sim_{\mathit{dy}}$
+  is in
+  $$
+  \{\omega \in \Os \ | \ f'(x, e(p'(\mathit{size}(x, \omega), \omega), \omega), \omega) =y\}
+  $$
+  %
+  Indeed, by Lemma \ref{lemma:auxsimdy}, it holds that
+  $\eta_{p(x)} = e(p(\mathit{size}(x, \omega), \omega)$, where $p'$ is the $\POR^-$
+  function computing the polynomial $p$ and $\mathit{size}$ is the $\POR^-$, to
+  function computing the encoding of the natural number which corresponds to the
+  size of its first input, so by $(*)$ we have the claim.
+  It also holds that, fixed an $\omega \in \{\omega \in \Os \ | \ f'(x, e(p'(\mathit{size}(x, \omega), \omega), \omega), \omega) =y\}$,
+  then its pre-image with respect to $\sim_{\mathit{dy}}$ is in $\{\eta \in \Bool^\Nat \ | \ f(x, \eta)=y \}$.
+  The proof is analogous to the one we showed above.
+  Now, since $\sim_{\mathit{dy}}$ is a bijection between the two sets, we
+  conclude that
+  $$
+  \mu\big(\{\eta \in \Bool^\Nat \ | \ f(x, \eta)=y \}\big)
+  = \mu\big(\{\omega \in \Os \ | \ g(x, e(p(\mathit{size}(x, \omega), \omega), \omega), \omega) =y\}\big).
+  $$
+  which concludes the proof.
+\end{proof}
+
+
+
+\newpage
+
+\section{Appendix}\label{appendix}
+\input{appendix}
+
+
+\end{document}

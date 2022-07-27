@@ -1,0 +1,550 @@
+%!TeX spellcheck = en-US
+In Chapter \ref{chap:sfptopor}, we proved that every $\PPT$ function is $\Sigma^b_1$
+representable in $\RS$ a result which grounds the characterizations of some well-known probabilistic complexity classes.
+%
+In this chapter we show how it is possible, for instance, to characterize
+the classes $\BPP$, $\RP$, co-$\RP$ and $\ZPP$.
+%
+To do so we introduce an extension of $\Lpw$ strongly
+inspired by the arithmetic $\MQPA$ introduced in \cite{ADLP21}. We call this novel language $\Lmq$.
+%
+The language $\Lmq$ extends $\Lpw$ expressiveness by means of a \emph{measure quantifier}
+$\cq {s/t}$ which is intended to model measure-related assertions such~as:
+%
+$$
+\mu \left(\llbracket F\rrbracket\right) \ge \frac {|s|}{|t|}.
+$$
+%
+Leveraging the quantitative semantics for $\Lpw$ formul\ae{},
+this quantifier allows for a characterization of probabilistic complexity classes such as the
+aforementioned ones.
+
+This chapter is structured as follows:
+
+\begin{itemize}
+  \item In Section \ref{sec:lmq}, we define the language $\Lmq$ and its semantics.
+  \item In Section \ref{sec:charcompclass}, we show the characterizations of the aforementioned
+  probabilistic complexity classes.
+\end{itemize}
+
+\section{The $\Lmq$ Language}
+\label{sec:lmq}
+
+The language $\Lmq$ is the
+first-order language
+with equality obtained extending $\Lpw$ with the measure quantifier $\cq{s/t}$
+and his De Morgan dual $\dq{s/t}$.
+%
+This novel language uses the same term grammar of $\Lpw$ and, apart the measure quantifiers,
+the well-formed fromula\ae{} of $\Lmq$ are exactly the ones of $\Lpw$.
+%
+In what follows we suppose that the notational conventions adopted for $\Lpw$
+are adopted for $\Lmq$, as well.
+
+%%% defn
+%%% Terms
+\begin{defn}[Terms of $\Lmq$]
+Let $x,y,\dots$ denote variables.
+Terms are defined by the following grammar:
+$$
+t,s ::= x \midd \epsilon \midd \zero \midd \one
+\midd t \conc s \midd t\times s.
+$$
+\end{defn}
+
+
+%%% defn
+%%% Formul\ae{}
+\begin{defn}[Formul\ae{}]
+Let $x,y,\dots$ denote variables and
+$t,s,\dots$ terms.
+Formul\ae{} are defined by the following
+grammar:
+\small
+$$
+F, G ::= \Flip(t) \midd t=s \midd t\subseteq s
+\midd \neg F \midd F\wedge G \midd F\vee G
+\midd F\rightarrow G \midd \exists x.F \midd
+\forall x.F \midd \cq {s/t}F \midd \dq {s/t}F.
+$$
+\normalsize
+\end{defn}
+
+Unlikely $\Lpw$, due to the presence of measure quantifiers,
+it makes no sense to define a qualitative semantics for $\Lmq$,
+so we will only define a \emph{quantitative semantics} for this language.
+%
+Intuitively, the \emph{quantitative} semantics of $\Lmq$ is an extension of
+the semantics of $\Lpw$ form Definition \ref{def:quantsem} in which measure quantified formul\ae{} of the form $\cq{s/t}.F$
+are quantitatively true, meaning that their semantics id $\Os$, if and only if
+the $\llbracket F\rrbracket$ is grater or equal to $\frac {|s|}{|t|}$.
+Finally, in Remark \ref{rem:lpwlmq}, we show that
+$\Lmq$ is a conservative extension of $\Lpw$.
+
+
+
+
+
+
+%%% defn
+%%% Interpretation of Terms
+\begin{defn}[Interpretation for Terms]\label{df:termslmq}
+Given an environment $\xi:\mathcal{G}\mapsto \Ss$,
+a term $t$ in $\Lmq$,
+the \emph{interpretation of $t$ in $\xi$}
+is the string $\llbracket t\rrbracket_\xi \in \Ss$
+defined as follows:
+
+\begin{minipage}{\linewidth}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{align*}
+\llbracket \epsilon\rrbracket_\xi &:= \eepsilon \\
+\llbracket \zero\rrbracket_\xi &:= \zzero \\
+\llbracket \one \rrbracket_\xi &:=\oone
+\end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.6\linewidth}
+\begin{align*}
+\llbracket x\rrbracket_\xi &:= \xi(x) \in \Ss \\
+\llbracket t\conc s\rrbracket_\xi &:=\llbracket t\rrbracket_\xi
+ \llbracket s\rrbracket_\xi \\
+\llbracket t\times s\rrbracket_\xi &:=\llbracket t\rrbracket_\xi
+\times \llbracket s\rrbracket_\xi.
+\end{align*}
+\end{minipage}
+\end{minipage}
+\end{defn}
+
+
+%%% defn
+%%% Quantitative Semantics
+\begin{defn}[Quantitative Semantics]\label{def:quantsemlmq}
+Given a formula
+$F$ and an environment $\xi:\mathcal{G}\rightarrow
+\Ss$, where $\mathcal{G}$
+is the set of term variables,
+the \emph{interpretation of F in $\xi$},
+$\llbracket F\rrbracket_\xi$,
+is the (measurable) set of functions
+%\in \sigma(\mathscr{C})$
+inductively defined as follows:
+
+\begin{minipage}{\linewidth}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{align*}
+\llbracket \Flip(t)\rrbracket_{\xi} &:= \{\omega \ | \
+\omega(\llbracket t\rrbracket_{\xi}) = \oone\} \\
+%\mathsf{C}_{X^1_{|\llbracket t\rrbracket_\xi|}} \\
+\llbracket t=s\rrbracket_\xi &:= \begin{cases}
+\Os \ \ &\text{if } \llbracket t\rrbracket_\xi = \llbracket s\rrbracket_\xi \\
+\emptyset \ \ &\text{otherwise}
+\end{cases} \\
+\llbracket t\subseteq s\rrbracket_{\xi} &:=
+\begin{cases}
+\Os \ \ \ &\text{if } \llbracket t\rrbracket_\xi
+\ssubseteq \llbracket s\rrbracket_\xi \\
+\emptyset \ \ \ &\text{otherwise}
+\end{cases}\\
+\llbracket \cq {s/t} F\rrbracket_{\xi} &:=
+\begin{cases}
+\Os \ \ \ &\text{if }|\llbracket t\rrbracket_\xi|>0 \text{ and } \mu (\llbracket F\rrbracket)\ge\frac{|\llbracket s\rrbracket_\xi|}
+{|\llbracket t\rrbracket_\xi|} \\
+\emptyset \ \ \ &\text{otherwise}
+\end{cases}\\
+\llbracket \dq {s/t} F\rrbracket_{\xi} &:=
+\begin{cases}
+\Os \ \ \ &\text{if }|\llbracket t\rrbracket_\xi|>0 \text{ and } \mu (\llbracket F\rrbracket)<\frac{|\llbracket s\rrbracket_\xi|}
+{|\llbracket t\rrbracket_\xi|} \\
+\emptyset \ \ \ &\text{otherwise}
+\end{cases}
+\end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\begin{align*}
+\llbracket \neg G\rrbracket_\xi &:=
+\Os\setminus\llbracket G\rrbracket_\xi \\
+\llbracket G\vee H\rrbracket_\xi &:= \llbracket G\rrbracket_\xi \cup \llbracket H\rrbracket_\xi \\
+%
+\llbracket G\wedge H\rrbracket_\xi &:=
+\llbracket G\rrbracket_\xi \cap \llbracket H\rrbracket_\xi \\
+%
+\llbracket G\rightarrow H\rrbracket_\xi &:=
+(\Os\setminus\llbracket G\rrbracket_\xi)
+\cup \llbracket H\rrbracket_\xi \\
+%
+\llbracket \exists x.G\rrbracket_\xi &:=
+\bigcup_{i\in\Ss} \llbracket G\rrbracket_{\xi\{x\leftarrow i\}} \\
+%
+\llbracket \forall x.G\rrbracket_\xi &:=
+\bigcap_{i\in \Ss}\llbracket G\rrbracket_{\xi\{x\leftarrow i\}}.
+\end{align*}
+\end{minipage}
+\end{minipage}
+where $|\llbracket t\rrbracket_\xi|$ denotes the length of $\llbracket t\rrbracket_\xi\in \Ss$
+and $\mu$ is the measure function of Definition \ref{def:mu}.
+\end{defn}
+\noindent
+Intuitively, the semantics of the measure quantifiers
+evaluates the terms $s$ and $t$ within the environment $\xi$,
+then it computes the ratio between the length of $s$ and the length of $t$
+and compares the values thus obtained with the measure of the semantics of
+the quantified formula. An example of the application of these quantifiers
+is the following:
+
+\begin{ex}
+  Take in exam the formula $F$ defined below:
+  $$
+  F:=\forall x.\cq{\one / \one}\dq{\one\one/\one\one\one} \Flip(x).
+  $$
+  The semantics of $F$ is $\Os$, indeed, be $x$ a general term within $\Ss$
+  then it is true that $\mu \left(\llbracket \Flip(x)\rrbracket \right)=\frac 1 2$
+  regardless from the value of $x$. Thus,
+  $\llbracket \dq{\one\one/\one\one\one} \Flip(x)\rrbracket=\Os$
+  and $\llbracket F \rrbracket= \Os$ because $\mu(\Os)=1=~\frac {|\one|}{|\one|}$.
+\end{ex}
+
+The previous example also emphasizes that the terms within $s, t$ within
+$\cq{s/t}$ quantified formul\ae{} can cause cumbersome notations.
+For this reason, we introduce a simplified
+notation which allows us to replace these terms with natural numbers.
+
+\begin{notation}
+  For every $n, m \in \Nat$, we represent with $\cq{n/m}F$ (respectively $\dq{n/m}$)
+  the formula $\cq{\one^n/\one^m}F$ (respectively $\dq{\one^n/\one^m}F$).
+\end{notation}
+
+\begin{remark}
+  \label{rem:lpwlmq}
+  $\Lmq$ is  conservative extension of $\Lpw$ with respect to their quantitative semantics.
+  Formally, said $\overline{\llbracket \cdot \rrbracket}$ $\Lpw$'s quantitative semantics, it holds that:
+  $$
+  \forall F \in \Lpw.  \overline{\llbracket F\rrbracket} = \llbracket F\rrbracket.
+  $$
+\end{remark}
+
+\begin{proof}
+  Immediate by induction on $F$.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+\section{Characterizations}
+\label{sec:charcompclass}
+
+In this section, we examine how it is possible to define
+\emph{semantical characterizations} of well-known probabilistic complexity classes
+within $\Lmq$.
+%
+With \emph{semantical characterizations}, we mean that these characterizations
+are done leveraging the notion of semantic consequence ($\models$)
+rather than the syntactical notion of provability ($\vdash$).
+%
+This is a consequence of the $\Sigma^b_1$-representability property (Theorem \ref{thm:TaskABC})
+which captures $\PPT$ functions by means of the following statement:
+\[
+\forall f \in \PPT.\exists G_f \in \Sigma^b_1. \RS \vdash \forall x \exists ! y. G(x, y) \land \mu\left(\llbracket G(x, y) \rrbracket\right)=Pr[f_G(x)=y].
+\]
+
+Due to the explicit presence of $G$'s semantics in correspondence with $Pr[f_G(x)=y]$,
+Theorem \ref{thm:TaskABC} describes a \emph{semantical notion}
+of representability instead of a syntactical one.
+
+
+
+
+
+\subsection{$\BPP$}
+
+The probabilistic complexity class
+$\BPP$ has been introduced in Definition \ref{def:bppinformal}.
+It is the class of languages having a poly-time PTM $M$
+deciding $L$ with probability of error smaller than $\frac 1 3$.
+This class is intended to capture both time feasibility,
+and arbitrarily low probability of error.
+Indeed, due to the polynomial
+time bound required to the machine, $\BPP$ languages can be decided
+with low time consuming algorithms; moreover, running
+the same machine a polynomial number of times,
+it is possible to reduce the probability of error to an
+arbitrarily small value, still requiring polynomial time complexity.
+Using our framework, we can define $\BPP$ as follows:
+
+\begin{defn}[$\BPP$]
+\label{def:bpp}
+We say that a language $L\subseteq \Ss$ is in $\BPP$ if and only if,
+said $f_L$ the characteristic function of $L$, there is a
+Polynomial Probabilistic Turing Machine
+$M$ such that
+$\forall \sigma \in L. Pr[Y_{M,\sigma} = f_L(\sigma)]\ge \frac 2 3$.
+\end{defn}
+
+Exploiting Theorem \ref{thm:TaskABC}, we can give a characterization of $\BPP$
+replacing the PTM $M$ of Definition \ref{def:bpp} with a $\Sigma^b_1$
+formula of $\Lpw$ which is provable under $\RS$.
+%
+Doing so, we end up with Characterization~\ref{char:bpp}.
+
+\begin{characterization}
+\label{char:bpp}
+We say that a language $L$ is in $\BPP$ if (and only if)
+\[
+\exists G \in \Sigma^b_1.\RS \vdash \forall x \exists ! y. G(x, y)\land \forall \sigma \in L.\models \cq {2/3} G(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{2/3} \exists y. G(\sigma, y) \land y \neq \one.
+\]
+\end{characterization}
+
+
+\begin{proof}
+The result above is a consequence of the existence of a function $f_L: \{\zero, \one\}^*\longrightarrow \Bool$ which decides $L$:
+according to Theorem \ref{thm:TaskABC} (second claim),
+there is a $\RS$-provable formula $G \in \Sigma^b_1$ asserting
+the totality of  $f_L$. Moreover, it holds that:
+$$
+\forall x, y\in \Ss.\mu(\llbracket G(x, y) \rrbracket)=Pr[F_l(x)=y].
+$$
+Thus, if $x \in L$, then $Pr[F_l(x)=\one]\ge \frac 2 3$, so it even holds that
+$\cq{2/3}G(x, \one)$. Similarly, if $x\in \overline L$,
+$Pr[F_l(x)\neq \one]\ge \frac 2 3$, so $\cq{2/3}G(x, \zero)$.
+For the opposite direction, we can take in exam the $\PPT$ function
+$F_G$ whose existence is guaranteed by Theorem \ref{thm:TaskABC} (first claim).
+The opposite direction can thus be shown moving an argument identical to the one above.
+\end{proof}
+
+\subsection{$\RP$ and co-$\RP$}
+
+The $\RP$ complexity class (Definition \ref{def:rpinformal}) is very similar to
+$\BPP$, the only difference is that $\RP$ contains all the languages which are decidable with
+\emph{one-sided} probabilistic error, instead of \emph{two-sided} probabilistic error, as for $\BPP$.
+Precisely, a language $L$ is in $\RP$
+if and only if there is a Probabilistic Turing Machine $M$ always refusing strings which are not
+in $L$ and accepting $L$'s elements with probability at least $\frac 2 3$.
+%
+This can be formally stated by this Definition:
+
+\begin{defn}[$\RP$]
+\label{def:rp}
+We say that a language $L\subseteq \Ss$ is in $\RP$ if and only if
+there is a
+Polynomial Probabilistic Turing Machine
+$M$ such that:
+\begin{align*}
+\forall \sigma \in L. Pr[Y_{M,\sigma} = \one]\ge \frac 2 3;\\
+\forall \sigma \not\in L. Pr[Y_{M,\sigma} \neq \one]= 1.
+\end{align*}
+\end{defn}
+\noindent
+%
+As for $\BPP$, we can characterize the $\RP$ complexity class in $\Lmq$ with
+a slight modification
+on the characterization of $\BPP$, i.e. requiring that:
+$$
+\forall \sigma \in \overline L.\models \cq{1/1} G(\sigma, \zero),
+$$
+instead of requiring that
+$$
+\forall \sigma \in \overline L.\models \cq{2/3} G(\sigma, \zero).
+$$
+i.e. requiring no probabilistic error for all the strings which are not in the language.
+Formally:
+
+\begin{characterization}
+\label{char:rp}
+We say that a language $L$ is in $\RP$ if (and only if)
+\[
+\exists G \in \Sigma^b_1.\RS \vdash \forall x \exists ! y. G(x, y)\land \forall \sigma \in L.\models \cq {2/3} G(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{1/1} \exists y. G(\sigma, y) \land y \neq \one.
+\]
+\end{characterization}
+
+\begin{proof}
+  Analogous to the proof of Characterization \ref{char:bpp}.
+\end{proof}
+
+\noindent
+The complementary of $\RP$ is co-$\RP$ (Definition \ref{def:corpinformal}.
+It is defined as the class of
+languages $L$ such that there is a PTM $M$ accepting all the strings of $L$
+with no probabilistic error and refusing the strings which not belonging to $L$
+with probability of error smaller than $\frac 1 3$. This can be formally
+stated as follows:
+
+\begin{defn}[co-$\RP$]
+\label{def:corp}
+We say that a language $L\subseteq \Ss$ is in co-$\RP$ if and only if
+there is a
+Polynomial Probabilistic Turing Machine
+$M$ such that:
+\begin{align*}
+\forall \sigma \in L. Pr[Y_{M,\sigma} = \one]=1;\\
+\forall \sigma \not\in L. Pr[Y_{M,\sigma} \neq \one]\ge \frac 2 3.
+\end{align*}
+\end{defn}
+\noindent
+The characterization comes naturally, applying the same approach of
+those for $\BPP$ and $\RP$.
+
+\begin{characterization}
+\label{char:corp}
+We say that a language $L$ is in co-$\RP$ if (and only if)
+\[
+\exists G \in \Sigma^b_1.\RS \vdash \forall x \exists ! y. G(x, y)\land \forall \sigma \in L.\models \cq {1/1} G(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{2/3} \exists y. G(\sigma, y) \land y \neq \one.
+\]
+\end{characterization}
+
+\begin{proof}
+  Analogous to the proof of Characterization \ref{char:bpp}.
+\end{proof}
+
+\subsection{$\ZPP$}
+
+In this section, we study a characterization for the $\ZPP$ complexity class (Definition \ref{def:zppinformal}),
+containing all the \emph{Zero Probabilistic-error Poly-time} languages, namely
+all the languages which can be decided by a PTM with zero probabilistic error.
+%
+\begin{defn}[$\ZPP$]
+\label{def:zpp}
+We say that a language $L\subseteq \Ss$ is in $\ZPP$ if and only if
+there is a
+Polynomial Probabilistic Turing Machine
+$M$ such that:
+\begin{align*}
+\forall \sigma \in \Ss. \mathit{Pr}[Y_{M,\sigma} = \one \land \sigma \not\in \Ss]=0;\\
+\forall \sigma \in \Ss. \mathit{Pr}[Y_{M,\sigma} = \zero \land \sigma \in \Ss]=0;\\
+\mathit{Pr}[Y_{M,\sigma} \neq \one \land Y_{M,\sigma} \neq \zero]< \frac 1 3.\\
+\end{align*}
+\end{defn}
+
+We would like to point out that Definition \ref{def:zppinformal} and \ref{def:zpp} are not the standard one, which is based on Las Vegas algorithms, i.e. algorithms with \emph{expected} polynomial complexity. However, within this work, we employed this one because $\PPT$ functions are Monte Carlo algorithm, i.e. probabilistic algorithms with \emph{worst case} polynomial complexity. For this reason, if is a more convenient starting point for the development of an $\Lmq$ characterization of that class.
+
+\noindent
+Theorem \ref{thm:zpprpcorp1} states that $\ZPP= \RP \cap \text{co-}\RP$,
+for this reason, it allows us to define a characterization of $\ZPP$
+leveraging the characterizations of $\RP$ and co-$\RP$.
+
+\begin{characterization}
+\label{char:zpp}
+We say that a language $L$ is in $\ZPP$ if (and only if)
+\[
+\exists F \in \Sigma^b_1.\RS \vdash \forall x \exists ! y. F(x, y)\land \forall \sigma \in L.\models \cq {2/3} F(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{1/1} \exists y. F(\sigma, y) \land y \neq \one
+\]
+and
+\[
+\exists G \in \Sigma^b_1.\RS \vdash \forall x \exists ! y. G(x, y)\land \forall \sigma \in L.\models \cq {1/1} G(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{2/3} \exists y. G(\sigma, y) \land y \neq \one.
+\]
+\end{characterization}
+\begin{proof}
+Consequence of Theorem \ref{thm:zpprpcorp1} and of Characterizations \ref{char:rp}, \ref{char:corp}.
+\end{proof}
+
+% Leveraging this last result, we can stress out how it is possible to give a
+% proof of a well known result concerning the classes $\ZPP$, $\RP$ and co-$\RP$
+% completely within the $\Lmq$ framework.
+% %
+% In our opinion, the possibility to give this kind of proof is
+% an insightful witness of our framework's capability to describe
+% semantical and machine-dependent complexity classes without directly dealing
+% with neither time complexity bounds nor probability distributions.
+%
+% \begin{theorem}
+%   \label{thm:zpp}
+%   $\ZPP =$ co-$\RP\cap \RP$
+% \end{theorem}
+%
+% \begin{proof}
+%   We start proving the trivial inclusion:
+%   assume $L \in \ZPP$. Then there is a $\RS$-provable $\Sigma^b_1$ formula $G$ such
+%   that
+%   $$
+%   \RS \vdash \forall x \exists ! y. G(x, y)\land \forall \sigma \in L.\models \cq {1/1} G(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{1/1}\exists y. G(\sigma, y) \land y \neq \one
+%   $$
+%   Form $\cq {1/1} G(\sigma, \one)$ we get $\cq {2/3} G(\sigma, \one)$ because
+%   $\frac{2}{3}\le 1$. Similarly, starting from $\cq{1/1} G(\sigma,  \zero)$,
+%   we obtain $\cq{2/3} G(\sigma,  \zero)$.
+%   assume $L \in$ co-$\RP\cap \RP$. Thus, there are two $\RS$-provable $\Sigma^b_1$ formul\ae{}
+%   $F$ and $G$ such that
+%   \[
+%   \forall \sigma \in L.\models \cq {2/3} F(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{1/1} \exists y. F(\sigma, y) \land y \neq \one
+%   \]
+%   \[
+%   \forall \sigma \in L.\models \cq {1/1} G(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{2/3} \exists y. G(\sigma, y) \land y \neq\one
+%   \]
+%   According to the definition of $\Sigma^b_1$-formula, the formula
+%   $$
+%   H(x, y):=  y=\one\to G(x, \one) \land y\neq\one\to F(x, y)
+%   $$
+%   is equivalent to
+%   $$
+%   y=\one\to \exists z. G'(x, \one) \land y\neq\one\to \exists z. F'(x, y)
+%   $$
+%   Moreover, supposing $z$ not free in $F$ and $z'$ not free in $G$, all the following formul\ae{} are equivalent:
+%   \begin{align*}
+%     y=\one\to \exists z. G'(x, \one) &\land y\neq \one\to \exists z'. F'(x, y) \\
+%     \exists z.y=\one\to G'(x, \one) &\land  \exists z'. y\neq \one\to F'(x, y) \\
+%     \exists z, z'.y=\one\to G'(x, \one) &\land  y\neq \one\to F'(x, y)
+%   \end{align*}
+%   The last formula,
+%   be it $H'$, is a $\Sigma^b_1$-formula.
+%   It also holds that:
+%   $$
+%   \RS \vdash \forall x.\exists! y. H'(x,y)
+%   $$
+%   Knowing that $H'$ is provably equivalent to $H$, we will take in exam $H$.
+%   Let $x\in \Ss$ be a generic string. $\RS \vdash G(x, \overline y)$ for
+%   an unique $\overline y$.
+%   %
+%   We proceed by cases on  $y= \one$. If it holds, then
+%   $\RS \vdash y\neq\one\to F(x, y)$ for vacuity of the premise
+%   and $\RS \vdash y=\one\to G(x, \one)$, so
+%   even $\RS \vdash H'$. The uniqueness is a consequence of the uniqueness of
+%   $\overline y$.
+%   If $\overline y \neq \one$, the claim is a consequence of
+%   $\RS \vdash \forall x. \exists ! y.  F(x, y)$.
+%   Finally, we show that:
+%   $$
+%   \forall \sigma \in L.\models \cq {1/1} H'(\sigma, \one) \land \forall \sigma \in \overline L.\models \cq{1/1} \exists y. H'(\sigma, y) \land y \neq\one
+%   $$
+%   Even in this case, leveraging the equivalence between $H$ and $H'$,
+%   we will take in exam $H$ instead of $H'$.
+%   Assume $\sigma \in \L$. Then, we obtain
+%   $$
+%   \mu (\llbracket G(\sigma, \one)\rrbracket)=1
+%   $$
+%   thus,
+%   \begin{align*}
+%   \llbracket \one=\one\to G(x, \one) \land \one\neq\one\to F(x, y)\rrbracket&=
+%   \left(\left(\Os \setminus\llbracket \one=\one\rrbracket\right) \cup \llbracket G(x, \one)\rrbracket \right) \cap \left((\Os \setminus \llbracket \one \neq \one \rrbracket) \cup \llbracket F(\sigma, \one)\rrbracket \right)\\
+%   &=\left(\emptyset \cup \Os \right) \cap \left(\Os \cup \llbracket F(\sigma, \one)\rrbracket \right)\\
+%   &=\left(\Os\cap \Os \right)=\Os
+%   \end{align*}
+%   which entails
+%   $$
+%   \cq{1/1}H'(\sigma, \one)
+%   $$
+%   Similarly, if $\sigma \not \in L$ we obtain that there is an $\overline y$ such that
+%   $$
+%   \mu (\llbracket F(\sigma, \overline y) \land \overline y \neq \one\rrbracket)=1 \Leftrightarrow \llbracket F(\sigma, y)\rrbracket = \Os \land \llbracket y \neq \one\rrbracket=\Os
+%   $$
+%   thus we want to show $\llbracket H(\sigma, \overline y)\land \overline y \neq \one \rrbracket = \Os$,
+%   because it entails the result we are aiming to, namely:
+%   $\llbracket \exists y. H(\sigma, y)\land y \neq \one \rrbracket = \Os$.
+%
+%   \small
+%   \begin{align*}
+%   \llbracket (\overline y=\one\to G(x, \one) \land \overline y\neq\one\to F(x, \overline y))\overline \rrbracket&=
+%   \left(\left(\Os \setminus\llbracket \overline y=\one\rrbracket\right) \cup \llbracket G(x, \one)\rrbracket \right) \cap \left((\Os \setminus \llbracket \overline y \neq \one \rrbracket) \cup \llbracket F(\sigma, \overline y)\rrbracket \right)\\
+%   &=\left(\Os \cup \llbracket G(x, \one)\rrbracket  \right) \cap \left(\emptyset \cup \Os\right)\\
+%   &=\left(\Os\cap \Os \right)=\Os
+%   \end{align*}
+%   which entails
+%   $$
+%   \cq{1/1}\exists y. H'(\sigma, y)\land y \neq \one
+%   $$
+% \end{proof}

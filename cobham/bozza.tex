@@ -1,0 +1,369 @@
+%!TeX spellcheck = en-US
+In the literature, it is widely agreed  that Cobham's function algebra \emph{et simila}
+--- e.g. Ferreira's PTCF --- are sound and complete with respect to the polynomial
+time computable functions $\FP$. Unfortunately,
+as far as we know, there is no proof of such result which is clear,
+detailed, self-contained and easily available.
+%
+For this reason, we decided to give, as a corollary of our results,
+a proof of that fact.
+%
+Even in this case, we show the two inclusions separately. We will first address
+the inclusion of $\FP$ in a Cobham style function algebra in Section \ref{sec:polyFcompleteness},
+then, in Section \ref{sec:polyFsoundness}, we show that even the opposite direction holds.
+%
+To do so, we employ the definitions of Turing Machines given in Chapter \ref{chap:preliminaries}
+to show that they can be reduced FSTMs,
+then we give a definition of a Cobham-Style function algebra $\fcob$ and prove it
+is equivalent to $\POR^-$, then leveraging
+some results we gave in Chapter \ref{chap:sfptopor}, we conclude that the
+the class of $\FP$ functions is equivalent to $\fcob$.
+
+
+
+\section{The class $\fcob$}
+
+Following~\cite{Ferreira88} and~\cite{Cobham1965}, we introduce the class $\fcob$ which will be proved to precisely characterize string-functions computable in polynomial time.
+
+\begin{defn}[The Class $\fcob$]
+The class $\fcob: \Ss^n \longrightarrow \Ss$ is
+the smallest class containing initial functions:
+\begin{itemize}
+\itemsep0em
+
+\item $\cob{E}(x)=\emptyset$;
+
+\item $\cob{P}^i(x_1,\dots, x_n)=x_i$, for $1\leq i\leq n$;
+
+\item $\cob{C}^\zero(x) = x\zero$ and
+$\cob{C}^\one(x) = x\one$;
+
+\item $\cob{Q}(x,y)=\one$ if and only if $x\subseteq y$,
+$\cob{Q}(x,y)=\zero$ otherwise;
+
+\end{itemize}
+and closed under composition and
+bounded recursion,
+where a function $f$ is defined by bounded
+recursion from $g, h_0, h_1$ as:
+\begin{align*}
+f(x_1,\dots, x_n,\eepsilon) &= g(x_1,\dots, x_n); \\
+%
+f(x_1,\dots, x_n, y\zero) &= h_0(x_1,\dots, x_n, y,
+f(x_1,\dots, x_n, y)) |_{t(x_1,\dots, x_n,y)}; \\
+%
+f(x_1,\dots, x_n,y\one) &= h_1(x_1,\dots, x_n,
+y, f(x_1,\dots, x_n,y))|_{t(x_1,\dots, x_n,y)};
+\end{align*}
+with $t$ term of $\Lpw$.
+\end{defn}
+
+The class $\fcob$ is equi-expressive with respect to the class $\POR^-$: indeed,
+even if the former class takes in input an additional functional argument,
+its functions cannot access it by means of the $\POR$'s querying function $Q$.
+
+Indeed, the $\POR^-$ has been defined only to decouple the combinatorial
+concerns of the reduction from $\SFP$ to $\POR$ from the measure-theoretic ones.
+The $\POR^-$ class by itself, has not got any concrete reason to be defined in that peculiar way.
+Thus, the definition of the $\fcob$ class is meant to remove from the definition of $\POR^-$
+the superfluous right-most argument which does not affect at all the
+result of the computation. As a consequence, it is easy to show
+equivalence of $\POR^-$ with the
+class $\fcob$ we have defined above.
+
+First, we show that each function in $\fcob$ can be represented by a function
+in $\POR^-$ which behaves exactly like it,
+independently form the value of its oracle $\omega$.
+
+\begin{remark}[$\fcob$ Soundness]
+  \label{rem:cobtopor}
+  $\forall f \in \fcob.\exists g_f \in\POR^-.
+  \forall \omega, \vec x. f(\vec x)=g_f(\vec x,\omega)$.
+\end{remark}
+\begin{proof}
+  By induction on the proof that a function is in Ferreira's $\fcob$.
+
+  \begin{itemize}
+    \item If the function is $\cob E$ , $E$ respects the property.
+    \item If the function is $\cob {P^n_j}$ , the correspondent $\POR$
+    projector respects the claim.
+    \item If the function is $\cob {C^\bool}$ , $S_\bool$ verifies the claim.
+    \item $\cob Q$ can be encoded by means of bounded recursion on notation, as :
+    \begin{align*}
+      \mathit{pref}(x, \epsilon, \omega) &:= \mathit{eq}(x, \zero, \omega); \\
+      \mathit{pref}(x, y\bool, \omega) &:= \mathtt{if}(\one, \mathit{pref}(x, y, \omega), \mathit{eq}(x, y\bool, \omega))|_{\one}
+    \end{align*}
+    where the functions $\mathtt{if}, \mathit{eq}$ are in $\POR^-$. The definitions
+    can found in Section \ref{sec:dynenc}.
+    The proof of the correctness can be done by induction of $y$.
+    \begin{itemize}
+      \item[$\eepsilon$] In this case $\mathit{pref}$ returns $\one$ if and only if $x=y=\epsilon$.
+      \item[$\tau\bool$] Suppose that $x$ is a prefix of $\tau \bool$, then they are equal or
+      $x$ is a strong prefix of $\tau\bool$. In the first case, the functions returns $\one$
+      as a consequence of the correctness of $\mathtt{if}$ and $\mathit{eq}$, proven
+      in Section \ref{sec:dynenc}. Otherwise $x$ is a prefix of $y$, thus the result is a consequence oh the IH.
+      Suppose that $x$ is not a prefix of $y$, they cannot be equal, so the result comes from the IH.
+    \end{itemize}
+    \item The composition and recursion on notation cases
+    follow by IH.
+  \end{itemize}
+\end{proof}
+
+Finally we state that each function $f \in \POR^-$ can be represented
+by means of a function $\fcob$ which, without taking any functional argument,
+behaves exactly like $f$ does.
+
+\begin{remark}[$\fcob$ Completeness]
+  \label{rem:portocob}
+  $\forall g \in\POR^-.\exists f_g\in \fcob.
+  \forall \omega, \vec x. g(\vec x, \omega)=f_g(\vec x)$.
+\end{remark}
+\begin{proof}
+  By induction on the proof that $g\in \POR$
+
+  \begin{itemize}
+    \item If the function is $E$, $\cob E$ is a witness for the existential.
+    \item If the function is ${P^n_j}$ , the correspondent $\fcob$
+    projector has the claimed property.
+    \item If the function is $S_\bool$, $\cob {C^\bool}$ verifies the claim.
+    \item $\POR^-$'s $C$ can be encoded by means of bounded recursion on notation, taking:
+    \begin{align*}
+    C(\eepsilon, z_\epsilon, z_0, z_1, \omega) &:= z_\epsilon;\\
+    C(x\bool, z_\epsilon, z_0, z_1, \omega) &:= z_b|_{z_0z_1}.
+  \end{align*}
+    \item The composition and recursion on notation cases
+    follow by IH.
+  \end{itemize}
+\end{proof}
+
+
+\section{From $\FP$ to a Cobham style Function Algebra}
+\label{sec:polyFcompleteness}
+
+In this section, we show that each $f \in \FP$ function is in $\fcob$ too.
+To do so, we start by reducing TMs to FSTM.
+The reduction is purely combinatorial:
+intuitively, we extend the transition function
+of the starting TM to match all the possible characters
+of the secondary tape. Thus we get a FSTM which behaves
+exactly like
+the starting TM. Then Lemma \ref{lemma:polyFtoCob} shows that
+there is a function $g$ in $\POR^-$ such that
+$\forall x, y \in \Ss. \forall \omega \in \Os. f(x, y)= g(x, y, \omega)$.
+Finally by Remark \ref{rem:portocob}, we have that there is a function $g'$ in $\fcob$
+such that $\forall \omega. g(x, y, \omega)= g(x, y)$. This entails that $f=g$ and,
+thus, that $\FP \subseteq \fcob$.
+
+\begin{lemma}
+  \label{lemma:polyFcompleteness}
+  Each ordinary poly-time computable function $f$ there is
+  a function in $\polyF$ $g$ such that:
+  $$
+  \forall x_1, x_2. f(x_1) = g(x_1, x_2).
+  $$
+\end{lemma}
+\begin{proof}
+  Given the (canonical) Turing Machines which computes $f$,
+  $M_f=\langle  \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$, we can define
+  the Finite Stream Turing Machine which computes $g$ as
+  $N=\langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\Delta(\delta)}\rangle$ where
+  the functional $\Delta$ extends all the transitions of the original machine
+  in order to match each of the characters on the secondary tape. Formally:
+%
+  $$
+  \Delta(\delta) := \bigcup \{\{\langle p, c_r, \zero, q, c_w, d \rangle,
+                                      \langle p, c_r, \one, q, c_w, d \rangle,
+                                      \langle p, c_r, \circledast, q, c_w, d \rangle| \langle p, c_r, q, c_w, d \rangle \in \delta \}.
+  $$
+  \noindent
+  Proceeding by induction on the steps of the ordinary Turing Machine that
+  the Finite Stream Turing Machine $N$ (restricted to its work tape), behaves
+  exactly as the Turing Machine $M$, it si possible to show that $N$ and $M$
+  produce the same output configuration with respect to their work tapes.
+\end{proof}
+
+\begin{cor}
+  $\FP \subseteq \fcob$.
+\end{cor}
+\begin{proof}
+  Suppose that $f \in\FP$. We must show that $f \in \fcob$, too.
+  Lemma \ref{lemma:polyFcompleteness} shows that there is a $f' \in \polyF$ such that
+  $$
+  \forall x_1, x_2 \in \Ss. f(x_1)=f'(x_1, x_2).
+  $$
+  % Thus, we can define $f''$ as follows:
+  % $$
+  % f''(x)=f'(x, \epsilon)
+  % $$
+  % obtaining
+  % $$
+  % \forall x\in \Ss. f(x_1)=f''(x_1)
+  % $$
+  From Lemma \ref{lemma:polyFtoCob}, we know that there is a function
+  $g \in \POR^-$ such that:
+  $$
+  \forall x_1, x_2 \in \Ss. \forall \omega \in \Os. f'(x_1, x_2)=g(x_1, x_2, \omega).
+  $$
+  Consequently, from Remark \ref{rem:portocob}, we observe that $\exists g' \in \fcob$
+  such that:
+  $$
+  \forall x_1, x_2\in \Ss \forall \omega \in \Os. g(x_1,  x_2, \omega)=g'(x_1, x_2).
+  $$
+  Joining together these results, and choosing some values for $\omega$, e.g. $\omega = \lambda x.\zero$, we obtain that:
+  $$
+  \forall x_1, x_2 \in \Ss. f(x)=g'(x_1, x_2).
+  $$
+  Take in exam the following function:
+  $$
+  g''(x):=g'(x, \eepsilon),
+  $$
+  it is trivial that $g''\in \fcob$ because such class is closed under composition. This concludes the proof, indeed we have that $f=g''$ and $g \in \fcob$.
+\end{proof}
+
+
+\section{From a Cobham style Function Algebra to $\FP$}
+\label{sec:polyFsoundness}
+
+In this section, we prove that the Cobham style function algebra
+$\fcob$ is sound with respect to ordinary Turing Machines.
+The is a mere consequence of some results
+we already established: Remark \ref{rem:cobtopor} proofs
+the soundness of this class with respect to $\POR^-$, then
+Theorem \ref{thmTaskC} proves a quantitative soundness of $\POR^-$ with respect to $\SFP$, thus the main concern of the proof is showing
+that in the functions in $\SFP$ we obtain there in this specific case
+are in $\FP$, too. This is done showing a reduction from STMs to TMs.
+%
+Before diving the claim and the detailed proof, we would like to point out that
+we are not meaning to show that, \emph{in general}, a STM can be reduced to
+an equivalent TM. But that this can be done under the strong assumption
+that the value on the oracle tape does not affect the result of the computation.
+%
+This particular result is part of the proof of Lemma \ref{lemma:polyFsoundness},
+in which we show that $\polyF$ is sound with respect to $\FP$.
+
+\begin{lemma}
+  \label{lemma:polyFsoundness}
+  Each function $f \in \fcob$ is in $\FP$, too.
+\end{lemma}
+\begin{proof}
+  Suppose that $f \in \fcob$. According to Remark \ref{rem:cobtopor}, there is a function $g \in \POR^-$ such that:
+  $$
+  \forall x\in \Ss.\forall \omega \in \Os. f(x)=g(x, \omega)
+  $$
+  so, said $f(x)=y$, we have that:
+  $$
+  \mu(\{\omega \in \Os| g(x, \omega)= y\})=1.
+  $$
+  Furthermore, from Theorem \ref{thmTaskC},
+  we know that there is a $h \in \SFP$ such that:
+  $$
+  \mu(\{\eta \in \{\zero, \one\}^\Nat| h(x, \eta)= y\})=1,
+  $$
+  which entails that:
+  $$
+  \forall \eta \in \{\zero, \one\}^\Nat. h(x, \eta)= y
+  $$
+  due to the polynomial time bound of $\SFP$.
+  Moreover, as a consequence of Lemmas
+    \ref{lemma:portosifp}, \ref{lemma:sifpratosifpla}, Proposition \ref{prop:SFPODimplSIFPLA}
+    and Lemma \ref{lemma:SFPODtoSFP}, we can suppose
+  without lack of generality, that
+  said $M_h=\langle \Qs, \Sigma, \delta, q_0\rangle$ the STM computing $h$,
+  $\delta$ is such that:
+  \begin{equation}
+    \forall c \in\Sigma.\forall  q \in \Qs. \delta(q, c, \zero)=\delta(c, q, \one).\tag{$*$}
+  \end{equation}
+  This because the program $P_g \in \SIFPRA$ whose semantics is equal to $g$
+  does not employ $\fl e$ expressions. Moreover, even the $\SIFPLA$ implementation
+  of $P_g$ does not use to $\rb$ expression, thus it is identical to $P_g$.
+  Consequently, its $\SFPOD$ correspondent function can be defined upon a machine
+  which does not consume the oracle tape, thus, $M_h$ is a
+  machine whose transition function $\delta$ has the property described above.
+  %
+  Finally, we can define a standard TM which behaves \emph{exactly} as $M_h$ does:
+  $M:= \langle \Qs, \Sigma, \Delta(\delta), q_0\rangle$, with
+  $$
+    \Delta(\delta) :=\{ \langle p, c_r, q, c_w, d\rangle | \exists \bool \in \Bool. \langle p, c_r, \bool, q, c_w, d\rangle \in \delta \}.
+  $$
+\noindent
+  Since $\delta$ satisfies Equation $(*)$, $\Delta(\delta)$ is a function, so
+  $M$ is a TM.
+  %
+ We show that for every $k \in \Nat$, said $\overline \eta= \lambda x.\zero$,
+ it holds that:
+  $$
+  \langle \sigma, q, \tau, \overline \eta\rangle \stmreach_\delta^k \langle \sigma', q', \tau', \overline \eta\rangle
+  \to
+  \langle \sigma, q, \tau\rangle \tmreach_{\Delta(\delta)}^k \langle \sigma', q', \tau'\rangle.
+  $$
+  The proof is by induction on $k$:
+  \begin{itemize}
+    \item [$0$] The claim is trivial.
+    \item [$n+1$] Suppose that:
+    $$
+    \langle \sigma, q, \tau, \overline \eta\rangle \stmreach_\delta^n \langle \sigma'', q'', \tau'', \overline \eta\rangle \stmtrans_\delta \langle \sigma', q, \tau', \overline \eta\rangle.
+    $$
+    The claim comes from the IH
+    observing that $\delta(q, c, \zero) =\Delta(\delta)(q, c)$ and thus that:
+    $$
+    \langle \sigma'', q'', \tau''\rangle \tmtrans_{\Delta(\delta)} \langle \sigma', q, \tau'\rangle
+    $$
+    as a consequence of the definition of $\stmtrans_\delta$ and $\tmtrans_\delta$
+    (Definitions \ref{df:STMTransition} and \ref{df:TMTransition}).
+  \end{itemize}
+
+  \noindent
+  As a consequence of this result, we know that for every $x \in \Ss$
+  the function computed by $M$
+  and called $h'$ is such that:
+  $$
+  \forall x \in \Ss. h'(x) = h (x, \overline \eta).
+  $$
+  Moreover, if the first machine
+  is poly-time, then even the second is so.
+  %
+  \noindent
+  To summarize, supposing $f \in \fcob$, we know that there is a function $g \in \POR^-$ such that:
+  $$
+  \forall x\in \Ss.\forall \omega \in \Os. f(x)=g(x, \omega).
+  $$
+  then there is also a function $h$ in $\SFP$ such that:
+  $$
+  \forall x\in \Ss.\forall \eta \in \Bool^\Nat. f(x)=h(x, \eta),
+  $$
+  which entails that:
+  $$
+  \forall x\in \Ss. f(x)=h(x,\overline \eta).
+  $$
+  So, since $\forall x \in \Ss. h'(x) = h (x, \overline \eta)$, we conclude that:
+  $$
+  \forall x\in \Ss. f(x)=h'(x).
+  $$
+  Finally, since $h' \in \FP$, we obtain $f \in \FP$.
+
+
+\end{proof}
+
+\section{Concluding the proof}
+
+In Section \ref{sec:polyFcompleteness}, we have shown that the $\fcob$ function
+algebra is complete with respect to the class $\FP$. Subsequently, in Section
+\ref{sec:polyFsoundness}, we have shown that  $\fcob$ is even sound with respect to
+$\FP$. These two results, if taken together, show that the class of functions computed by the
+Cobham style function algebra $\fcob$ coincides with the class of functions computed
+by polynomial Turing machines, namely $\FP$.
+%
+This result have been for long part of the folklore surrounding Cobham's function
+algebra, but as far as we know, among the literature there was not any detailed,
+self-contained and exhaustive proof of that fact.
+
+\begin{theorem}
+  $\FP=\polyF$.
+\end{theorem}
+\begin{proof}
+  Consequence of Lemmas
+  \ref{lemma:polyFcompleteness}
+  and
+  \ref{lemma:polyFsoundness}.
+
+\end{proof}

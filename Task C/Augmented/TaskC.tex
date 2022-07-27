@@ -1,0 +1,2050 @@
+% !TEX root = Conjecture.tex
+\begin{conditional}{\notappendix}
+  \paragraph{Introduction}
+  In the previous sections we have proved that
+  there is a strong correspondance between the
+  set of functions $\POR$ and the $\Sigma^b_1$
+  formul\ae{} of $\Lpw$, precisely that:
+
+  \[
+  \forall G \in \Sigma^b_1. \exists f_G \in \POR. \big(\RS, \omega \vdash \forall x. \exists ! y. G(x, y) \land \omega \in \llbracket G(x, y) \rrbracket\big)  \leftrightarrow f_G(x, \omega) = y
+  \]
+
+  and that
+
+  \[
+  \forall f \in \POR.\exists G_f \in \Sigma^b_1. \big(\RS, \omega \vdash \forall x. \exists ! y. G(x, y) \land \omega \in \llbracket G(x, y) \rrbracket\big) \leftrightarrow f_G(x, \omega) = y
+  \]
+
+
+   this means that each $\Sigma^b_1$ formula of the arithmetic $\Lpw$
+   can be mapped to a $\POR$ function and vice-versa. For this reason,
+   if we prove that the $\POR$ functions are exactly the $\PPT$ functions,
+   we could be able to arithmetize probabilistic complexity classes such as
+   $\BPP$.
+
+   More precisely, the goal of this part is to show that the following
+   claim holds
+
+  \begin{conj}
+    \label{conj:taskc}
+    The $\PPT$ functions are exactly the functions in $\POR$
+  \end{conj}
+\end{conditional}
+\begin{conditional}{\extendedorsup}
+
+   \paragraph{Outline}
+
+   In order to prove Conjecture \ref{conj:taskc}, we need to:
+
+   \begin{enumerate}
+     \item Define a formalism which can be proved equivalent to the
+     $\PPT$ functions with few effort. Such formalism is $\SFP$. Although
+     it will be introduced in Section \ref{sec:SFP}, we will prove the
+     correspondance between $\PPT$ and $\SFP$ only later,
+     while studying an arithmetical characterization
+     of $\BPP$, in Section \ref{sec:bpp}. This delay should not be too much of a problem
+     because the definition of $\SFP$ almost the same of $\PPT$ so, in our opinion,
+     their equivalence is almost trivial.
+     \item On top of the definition of $\SFP$, define its encoding in $\POR$
+     and prove it correct. This is carried out in Section~\ref{sec:SFPtoPOR}.
+     \item Finally, proce that each function in $\POR$ is in $\SFP$, too.
+     This reduction is presented in Section~\ref{sec:SFPtoPOR}.
+   \end{enumerate}
+\end{conditional}
+\begin{conditional}{\notappendix}
+
+  We will prove that the functions
+  that can be computed in the $\SFP$
+  formalism are precisely the ones
+  in $\POR$.
+  The present Section is tripartite.
+  First, in Section~\ref{sec:SFP}, we will define $\SFP$,
+  then in Section~\ref{sec:SFPtoPOR},
+  we will establish that all the functions that
+  are calculated by an $\SFP$-machine are in
+  $\POR$.
+  Finally, in Section~\ref{sec:PORtoSFP},
+  we will prove vice-versa that each $\POR$-function
+  can be computed by an
+  $\SFP$-machine.
+\end{conditional}
+
+
+
+
+
+
+
+
+
+
+%%% SUBSECTION
+%%% SFP-Formalism
+\subsection{$\SFP$ and other tools}
+
+\subsubsection{On $\SFP$ functions}
+\label{sec:SFP}
+
+\begin{conditional}{\notappendix}
+
+  As we mentioned above, the definition of $\SFP$ is intended to capture the concept
+  of Probabilistic Polynomial Time function. For this reason, when defining
+  $\SFP$, we would like to ground it on top of some kind of probabilistic Turing Machines.
+
+  Unfortunately, Probabilistic Turing Machines
+  as proposed in Definition \ref{def:PTMbarak} are not
+  suitable for the reduction we are aiming to. The randomness of these machines
+  is implicit, since its represented by a distribution of probability,
+  while $\POR$ encodes it by means of an oracle function
+  $\omega : \Ss \longrightarrow \Bool$.
+
+  \begin{defn}[Probabilistic Turing Machine, \cite{barak}]
+    \label{def:PTMbarak}
+    A probabilistic Turing machine (PTM) is a Turing machine with two
+    transition functions $\delta_0, \delta_1$. To execute a PTM $M$
+    on an input $x$, we choose in each step with probability $\frac 1 2$
+    to apply the transition function $\delta_0$ and with probability $\frac 1 2$
+    to apply $\delta_1$. This choice is made independently of all previous choices.
+  \end{defn}
+
+  For these reason we decided to use a slight variation of such model, which
+  uses a explicit read-only random tape instead of a probability function as
+  source od randomness for determining the transition.
+  This is what we call a Stream Machine.
+
+  \begin{defn}[Stream Machines, informally]
+  Stream machines are ordinary $k+1$-taped Turing Machines which use one of
+  their tape for storing an infinite stream of characters. This tape, which we will
+  also call \emph{oracle}, is read from left to right, one character for transition.
+  \end{defn}
+
+
+  The formalism of the Stream Machine is an useful intermediate between $\POR$
+  and $\PPT$. Indeed:
+  \begin{itemize}
+    \item It uses a tape as explicit source of randomness, which can
+    be easily represented by means of a function $\eta: \Nat \longrightarrow \Bool$.
+    This behaviour is consistent with $\POR$, which uses functions
+    $\omega: \Ss \longrightarrow \Bool$.
+    \item It is a particular instance of a multi-tape Turing Machine, so many well
+    known results about this formalism can be reused for the reduction from
+    $\POR$ to $\SFP$.
+    \item It is almost intuitively quivalent to the PTM formalism, so it will
+    be easy to prove that some interesting classe of function can be characterized
+    as subset of the funcions computed by stream machines.
+  \end{itemize}
+
+  The first class of functions which we will characterize as a subset of Stream
+  Machine is exactly $\SFP$.
+
+  \begin{defn}[$\SFP$, informally]
+    $\SFP$ is the class of functions $f: \Ss\times \Bool^\Nat \longrightarrow \Ss$ which can
+    be computed by a Stream Machine in polynomial time.
+  \end{defn}
+
+  In order to formalize the definition above, we need to formalize Stream Machines, too:
+
+
+
+
+  %%% DF
+  %%%   Stream Machine
+
+    \begin{defn}[Stream Machine]
+    A \emph{stream machine} is a quadruple
+    $M:= \langle \Qs,\Sigma, \delta_\SFP,q\rangle$,
+    where:
+    \begin{itemize}
+    \itemsep0em
+    \item $\Qs$ is a finite set of states ranged over by
+    $q_1,\dots, q_n$
+    %
+    \item $\Sigma$ is a finite set of characters ranged
+    over by $c_1,\dots, c_n$
+    %
+    \item $\delta_\SFP:\Qs \times \Sigmab \times
+    \{\zzero, \oone\} \longrightarrow \Qs
+    \times \Sigmab \times \{L,R\}$
+    is a transition function that describes the new configuration
+    reached by an $\SFP$-machine.
+    $L,R$ are two fixed constants and
+    $\Sigmab=\Sigma\cup \{\sstar\}$;
+    $\sstar$ represents the \emph{blank character}, so
+    $\sstar\notin \Sigma$
+    %
+    \item $q\in \Qs$ is an initial state,
+    \end{itemize}
+    Note that the assumption $\Sigma=\{\oone,\zzero\}$
+    would not be reductive.
+    \end{defn}
+
+    %% Notation
+    \begin{notation}
+    From now on we will denote the blank character
+    $\sstar$ as $c_{|\Sigma|+1}$.
+    \end{notation}
+
+    Usually, the configuration of an ordinary Turing Machine is a tuple
+    which keeps records the current state and some strings which represent the
+    state of the machine tape(s). Using strings for representing
+    the configuration of the tapes is possible only tape contains a finite
+    sequence of characters, but a Stream Machine uses a tape with an infinite
+    sequence of $\zzero$ and $\oone$ as source of randomness.
+    For this reason, while defining the configuration
+    of this class of Turing Machines, we decided to represent the value of the
+    oracle tape by means of a function $\eta \in \Bool^\Nat$.
+
+
+    %%% DF
+    %%% Configuration of a Stream Machine
+    \begin{defn}[Configuration of a Stream Machine]
+    The \emph{configuration of a stream machine $\MS$}
+    is a quadruple $\langle \sigma, q, \tau, \eta\rangle$,
+    where;
+    \begin{itemize}
+    \itemsep0em
+    \item $\sigma\in \Sigmab^*$
+    is the portion of the first tape on the left
+    of the head
+    %
+    \item $q\in \Qs$ is the current state of $\MS$
+    %
+    \item $\tau\in \Sigmab$ is the portion of the first
+    tape on the right of the head.
+    %
+    \item $\eta \in \{\zzero,\oone\}^{\Nat}$
+    is the portion of the second tape that has not been read yet.
+    \end{itemize}
+    \end{defn}
+
+
+    Now we would like to formalize the fact that at each step,
+    the machine queries a new value of its oracle tape.
+    While the shifting of the work tape can be naturally defined
+    by prefixing and postfixing of characters to strings, the same operation
+    is not that natural for the oracle tape because of its infinite size.
+    For this reason we need to define some shifting operation between
+    a function $\Nat \longrightarrow \Bool$ and a string $\sigma \in \Ss$.
+
+    \begin{defn}[Shifting operation]
+      Given a string $\sigma \in \Ss$ and a function
+      $\eta: \Nat \longrightarrow \Bool$, we define the shifting of $\eta$
+      by the prefix $\sigma$, denoted $\sigma\eta$ by induction on $\sigma$
+      as follows:
+
+      \begin{align*}
+      (\eepsilon \eta)(n) &:= \eta(n)\\
+      (b\tau)\eta(n) &:= \begin{cases}
+                          b & \text{ if } n = 0\\
+                          (\tau\eta)(n-1) & \text{otherwise}\\
+                        \end{cases}
+      \end{align*}
+
+    \end{defn}
+
+    This allows us to give a formal definition of the machine's transitions.
+
+    %%% DF
+    %%% Stream Machine Reachability Function
+    \begin{defn}[Stream Machine Transition Function]
+    Given a stream machine $M=\langle \Qs,
+    \Sigma, \delta, q\rangle$,
+    we define the partial transition function
+    $\vdash_{\delta} \Sigmab^* \times \Qs
+    \times \Sigmab^* \times \{\zzero,
+    \oone\}^{\Nat} \longrightarrow \Sigmab^*
+    \times \Qs \times \Sigmab^* \times \{\zzero,
+    \oone\}^{\Nat}$
+    between two configurations of $M_S$ as:
+    %
+    \begin{align*}
+    \langle \sigma, q, c\tau, \zzero \eta\rangle
+    \vdash_{\delta} \langle\sigma c', q', \tau, \eta\rangle
+    \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+    \delta (q,c,\zzero)
+    = \langle q',c',R\rangle
+    \\
+    %
+    \langle \sigma c_0, q, c_1\tau, \zzero
+    \eta\rangle
+    \vdash_{\delta} \langle \sigma, q', c_0c_1'\tau,
+    \eta\rangle
+     \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+    \delta (q, c_1,\zzero)
+    = \langle q', c_1', L\rangle  \\
+    %
+    \langle \sigma, q, c\tau, \oone \eta\rangle
+    \vdash_{\delta}
+    \langle \sigma c', q', \tau, \eta\rangle
+     \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+     \delta(q, c, \oone)=
+     \langle q', c', R\rangle \\
+     %
+     \langle \sigma c_0, q, c_1\tau,
+     \oone\eta\rangle
+     \vdash_{\delta} \langle \sigma,
+     q', c_0c_1' \tau, \eta \rangle
+      \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+     \delta(q, c_1,\oone)
+     = \langle q',c_1', L\rangle.
+    \end{align*}
+    \end{defn}
+
+    The function obtained composing $n$ times the reachability
+    function describes the configuration reached by the machine after $n$
+    steps of computation. This is stated as follows:
+
+
+
+    % DF
+    \begin{defn}[Stream Machine Reachability Functions]
+    Given a stream machine $M:=\langle \Qs,
+    \Sigma, \delta, q_0\rangle$,
+    we denote with $\{\reaches n {M}\}_n$
+    the smallest family of relations
+    for which:
+    \begin{align*}
+    \langle \sigma, q, \tau, \eta \rangle
+    &\reaches 0 M
+    \langle \sigma, q, \tau, \eta\rangle \\
+    %
+    \langle \sigma, q, \tau, \eta\rangle
+    \reaches n M \langle \sigma',
+    q', \tau',\eta'\rangle
+    \wedge \langle \sigma', q',
+    \tau', \eta'\rangle
+    &\vdash_{\delta}
+    \langle \sigma'', q', \tau'',
+    \eta'' \rangle \rightarrow
+    \langle \sigma,q,\tau, \eta\rangle
+    \reaches {n+1} M\langle
+    \sigma'', q'\tau'',\eta''\rangle.
+    \end{align*}
+    \end{defn}
+
+    We would also like to point out that
+    our machine doesn't use final states: the computation
+    is considered finished whenever the transition function isn't defined on
+    the current configuration. This choice isn't reductive, because we can imagine
+    to add a final state $q_F$ and a transition from all the configurations
+    on which the transition function is undefined to $q_F$.
+
+    For seek of completeness, we want to show that each $\reaches n M$ relation
+    is a function.
+  \end{conditional}
+
+  \begin{conditional}{\shortonly}
+    The following result can be easily proved by induction.\footnote{For
+    further details, see Section~\ref{sec:appC}}.
+  \end{conditional}
+
+  \begin{prop} If $M:=\langle \Qs,
+  \Sigma, \delta, q_0\rangle$ is a Stream Machine, it holds that
+  $\forall n.\reaches n M$ is
+  a function.
+  \end{prop}
+
+
+  \begin{conditional}{\appendixorsup}
+    %%% LEMMA
+    \begin{proof}
+    The proof is by induction on $n$.
+    \begin{itemize}
+    \itemsep0em
+    \item Let $n=0$. In this case $\reaches n M$
+    is the identity function.
+
+    \item We assume the claim to hold for $n$, and
+    prove it for $n+1$. For IH, $\reaches n M$
+    is a function. Then, since
+    $\vdash_{\delta}$ is a function,  $\reaches {n+1} M
+    = \ \reaches n M \circ
+    \vdash_{\delta}$ is a function, too.
+
+    \end{itemize}
+    \end{proof}
+  \end{conditional}
+
+  \begin{conditional}{\notappendix}
+
+    Now we would like to give a formal definition of the function computed
+    by a Stream Machine. This will allow us to define $\SFP$ as the set of
+    functions which can be
+    computed by polynomial Stream Machines.
+
+    First, we build a notion of final configuration.
+
+    %%% Notation
+    \begin{notation}[Final configuration]
+    Given a stream machine $M:=\langle\Qs,\Sigma,
+    \delta, q_0\rangle$
+    and a configuration
+    $\langle \sigma, q,\tau,\eta\rangle$,
+    we denote the condition
+    $\neg\exists\sigma',
+    q',\tau',\eta'.\langle \sigma,q,\tau\eta\rangle
+    \vdash_{\delta}\langle
+    \sigma',q',\tau',\eta'\rangle$
+    as $\langle\sigma,q,\tau,\eta\rangle
+    \not\vdash_{\delta}$.
+    \end{notation}
+
+    This allows us to define the function computed by a Stream Machine.
+
+    %%% DF
+    %%% Value Computed by a Stream Machine
+    \begin{defn}[Value Computed by a Stream Machine]
+    Given a machine
+    $M:=\langle \Qs,\Sigma,\delta,q_0\rangle$,
+    $M$ computes $\gamma$ on input $\sigma$
+    and oracle $\eta$ if and only if
+    $$
+    \exists n.\langle \eepsilon, q_0,\sigma, \eta\rangle
+    \reaches n M
+    \langle \gamma, q', \tau, \psi\rangle \not\vdash_{\delta}
+    $$
+    for some $\tau,q',\psi$.
+    In that case, we write $M(\sigma,\eta)=\gamma$.
+    \end{defn}
+
+    This outlines a function $f_M: \Ss \times \Bool^\Nat \longrightarrow \Ss$
+    for each Stream Machine $M$.
+
+    %%% DF
+    \begin{defn}[Polynomial Stream Machine]
+    An \emph{Polynomial Stream Machine}
+    is a Stream Machine $\MSFP :=
+    \langle \Qs,\Sigma,\delta,q_0\rangle$
+    such that,
+
+    $$
+    \exists p \in \POLY.\forall \sigma, \eta,
+    n. n > p(|\sigma|) \land \langle \eepsilon, q_0,\sigma, \eta\rangle
+    \reaches n {M_{\SFP}} \langle \gamma,
+    q', \tau, \psi\rangle \to \bot.
+    $$
+    % $$
+    % \exists p \in \POLY.\forall \sigma, \eta,
+    % n. \langle \eepsilon, q_0,\sigma, \eta\rangle
+    % \reaches n {M_{\SFP}} \langle \gamma,
+    % q', \tau, \psi\rangle \not\vdash_{\delta}
+    % \rightarrow n \leq p(|\sigma|).
+    % $$
+    \end{defn}
+    %
+    %
+
+    Finally, we can define the set $\SFP$.
+
+    \begin{defn}[$\SFP$]
+      \[
+      \SFP := \{ f \in \Ss \times \Bool^\Nat~|~ \text{There exists an Polynomial Stream
+      Machine $M$ such that }f=f_M\}
+      \]
+    \end{defn}
+
+    Because of the last definitions, later, we will abbrevite
+    \emph{Polynomial Stream Machines} with ``$\SFP$ machines''.
+    This because we have defined $\SFP$ as the set of
+    functions computable by \emph{Polynomial Stream Machines}.
+
+    We would like to stress out the fact that the definitions given so far
+    deal with single-input
+    single-tape machines only. This isn't reductive: we could naturally extend our
+    definitions to multi-input and multi-tape machines, in a similar way of how
+    thee extensions are defined for canonical Turing Machines.
+    Moreover, in the following parts, we will use multi-tape Stream Machines for
+    simplifying some proofs.
+
+    Now, it is quite simple to outine a road-map which will allow us to prove
+    Conjecture \ref{conj:taskc}.
+
+    \begin{enumerate}
+      \item Prove that each function in $\SFP$ can be computed by a function in $\POR$.
+      \item Prove that each function in $\POR$ can be computed by a function in $\SFP$.
+      \item Prove that $\SFP=\PPT$.
+    \end{enumerate}
+
+
+\begin{comment}
+    \noindent
+    The desired result can be now stated as:
+
+
+    %%% LEMMA
+    \begin{lemma}
+    For every deterministic $\SFP$-machine,
+    $M := \langle \Qs, \Sigma, \delta,q_0\rangle$,
+    there exists a $\POR$-function $f$, such that:
+    $$
+    f(\sigma,\eta)= M.
+    $$
+    \end{lemma}
+\end{comment}
+
+  Before proceding with the proofs of the results stated above, we'd like to
+  point out some observations:
+
+  \begin{enumerate}
+    \item $\POR$ and $\SFP$ are two inherently different sets:
+    \begin{align*}
+      \POR \subseteq & \bigcup_{i \in \Nat} \Ss^i\times \Os \to \Ss\\
+      \SFP \subseteq & \bigcup_{i \in \Nat} \Ss^i\times \{\zzero, \oone\}^\Nat \to \Ss
+    \end{align*}
+    \item Functions in $\SFP$ are determined by a polynomial prefix of their oracle,
+    while a similar result seems (and actually is) not true for $\POR$.
+  \end{enumerate}
+
+  These facts will require us some effort in the follwing encodings and will drive us
+  to state results which are weaker than the ones we proved for $\Lpw$ and $\POR$.
+
+  For instance, take in exam an hypothetic reduction from $\SFP$ to $\POR$:
+  it should not be difficult to imagine that a machine $M(x, \eta) \in \SFP$ can
+  be simulated by a function $f(x, \omega) \in \POR$, which at every simulated
+  step queries a different coordinate of its oracle $\omega$.
+
+  But the correspondance between $\eta$ and $\omega$, even if intuitive, isn't
+  trivial under a technical perspective because of the necessity
+  to link functions in $\Os$ to functions in $\Bool^\Nat$; this fact
+  drove us to define some mathematical structures, called \emph{Reduction Trees}
+  which will help us to prove the correctness of our encoding. \emph{Reduction Trees}
+  keep track of all the possible sequences of coordinates used by a probabilistic
+  function for querying the oracle and producing the result.
+
+
+  Moreover, when dealing with $\Sigma^b_1$ formul\ae{} in $\Lpw$
+  and $\POR$ functions, we could state lemmas without any measure
+  theoretic claim inside. This was due to the identity between the oracles
+  passed as parameters to $\POR$ functions and the oracles in the semantics
+  of a formula. For instance this allowed us to prove that:
+
+  \[
+  \forall G \in \Sigma^b_1. \exists f_G \in \POR. \big(\RS, \omega \vdash \forall x. \exists ! y. G(x, y) \land \omega \in \llbracket G(x, y) \rrbracket\big)  \leftrightarrow f_G(x, \omega) = y
+  \]
+
+  which itself entails that
+
+  \[
+  \forall G\in \Sigma^b_1. \exists f_G \in \POR.
+  \forall x, y. \{\omega \in \Os | f_G(x, \omega)=y\} = \llbracket G(x, y)\rrbracket
+  \]
+
+  Obviously, a similar identity can't be proved for $\POR$ and $\SFP$ because
+  we defined them on top of different sets of oracle-functions.
+  In order to fill this gap, we decided to show a weaker (but strong enough) result:
+  the encodings between $\POR$ and $\SFP$ preserve the measure of the
+  sets of oracles driving an input $x$ to an output $y$. Formally:
+
+  \[
+  \forall f\in \POR. \exists M_f \in \SFP.
+  \forall x, y.\mu\big( \{\omega \in \Os | f(x, \omega)=y\} \big)=
+  \mu \big(\{\eta \in \Bool^\Nat | M_f(x, \eta)=y\}\big)
+  \]
+
+  This oultines the necessity to define cylinders of oracle functions on top
+  of which we will be able to define the notion of measure.
+
+\subsubsection{Cylindes and Reduction Trees}
+
+By definition, the result of a random function isn not only determined
+by its input, but it depends on the source of randomness adopted, too.
+Depending on the value of the oracle function on some specific coordinates,
+the probabilistic function will drive to different outputs.
+
+For this reason we need to introduce two important structures which capture this
+phenomenon:
+
+\begin{enumerate}
+  \item Cylinder sets, for describing the oracles which drive a probabilistic
+  function to compute the same output $y$ on input $x$.
+  \item Reduction Trees, which describe the coordinates of the oracle which are useful
+  for producing an input and how the value of the oracle on these coordinates
+  affects the final result.
+\end{enumerate}
+
+  \begin{defn}[Cylinder set]
+    Given a set $\mathbb Q= \Bool^A$\footnote{  In the following part of our discussion we will be mostly intrested in cylinders
+      of $\Os$ and $\Bool^\Nat$. For this reason we will not specify whether we are considering
+      cylinders of a set or the others, because it can be inferred by the argument of the function
+}, we define the positive
+    cylinder associated to $\mathbb Q$ on coordinate $x$ as:
+    \[
+      P(x) = \{ \psi \in \mathbb Q | \psi(x)= \one \}
+    \]
+    similarly, we define the negative cylinders as:
+    \[
+      N(x) = \{ \psi \in \mathbb Q | \psi(x)= \zero \}
+    \]
+  \end{defn}
+
+
+  \begin{defn}[Reduction Tree]
+    An \rt A is a production of the following grammar:
+    \[
+    \mathit{Tree}::= \mathit T\ a\ (\mathit{Tree})\ (\mathit{Tree})\ |\ \mathit{nil}
+    \]
+    with $a \in A$.
+  \end{defn}
+
+  For deterministic paradigms, reduction trees are degenerate, because
+  they consist in lists, but when dealing with probabilistic paradigms, they
+  acquire significance because it's possible to associate one of these structures
+  to any fuctions ad any input.
+
+  \begin{example}
+    The \rt {\Ss} associated to the $\POR$ function $Q(Q(x, \cdot), \cdot)$ and input $\one\zero\one$
+    is represented in Figure \ref{fig:samplert}
+  \end{example}
+
+  \begin{figure}[]
+    \begin{tikzpicture}[node distance=2cm]
+        \node (a) {$\one\zero\one$};
+        \node[below left = 15mm and 22.5mm of a] (b) {$\zero$};
+        \node[below right = 15mm and 22.5mm of a] (c) {$\one$};
+
+        \node[below left = 15mm of b] (d) {$\zero$};
+        \node[below right = 15mm of b] (e) {$\one$};
+
+        \node[below left = 2 cm of c] (f) {$\zero$};
+        \node[below right = 2 cm of c] (g) {$\one$};
+
+
+        \draw[->] (a) edge (b);
+        \draw[->] (a) edge (c);
+
+        \draw[->] (b) edge (d);
+        \draw[->] (b) edge (e);
+
+        \draw[->] (c) edge (f);
+        \draw[->] (c) edge (g);
+
+    \end{tikzpicture}
+    \caption{\rt {\Ss} {\Ss} associated to $Q(Q(\one\zero\one, \cdot), \cdot)$
+    \label{fig:samplert}}
+    \label{}
+  \end{figure}
+
+  We can associate a sequence of cylinder sets to each path from the root
+  of a reduction tree to one of its leafs. The intersection of such set is exactly
+  the set of oracles which drive the function to produce the value on the leaf.
+  We can state define these sequence of cylinders by induction:
+
+  \begin{defn}[Cylinder Paths of a Reduction Tree]
+    Given a \rt {A} {B}, we define the set of cylinder paths as follows:
+    \begin{align*}
+      \mathit{cylp}(L\ b) &:= \Bool^A\\
+      \mathit{cylp}(T\ a\ t_0\ t_2) &:= \{N(a),t~ |~ t \in \mathit{cylp}(t_0)\} \cup \{P(a),t ~|~ t \in \mathit{cylp}(t_1)\}
+    \end{align*}
+  \end{defn}
+
+  \begin{defn}[Reduction Tree associated to a $\POR$ function]
+    We say that a \rt \Ss \Ss\  $t$ is associated to a function $f \in \POR$ and
+    input $x$ if and only if $\mathit{cylp}(t)= C(s^x_0), \ldots,  C(s^x_n)$
+    and $f(x,\bigcap_{i=0}^n C(s^x_i))$ is a singleton. If it is the case, we write
+    $t \in \RT\POR f x$.
+  \end{defn}
+
+
+  Similarly, we can define the notion of reduction Tree associated to a $\POR$
+  function:
+
+  \begin{defn}[Reduction Tree associated to a $\POR$ function]
+    We say that a \rt \Nat \Ss\ $t$ is associated to a $\SFP$ function $M$ and
+    input $x$ if and only if $\mathit{cylp}(t)= C(s^x_0), \ldots,  C(s^x_n)$
+    and $M(x,\bigcap_{i=0}^n C(s^x_i))=$ is a singleton. In this case we write
+    $t \in \RT\SFP M x$.
+  \end{defn}
+
+  Finally, these definitions allow us to state the claims which we will prove them
+  in the following sections:
+
+  \begin{prop}
+    For every $f: \Ss \times \Os \in \POR$ there exists a $M_f \in \SFP$ such that
+    for every $x \in \Ss$ and for every $t \in \RT{\POR} f x$ there exists a
+    Reduction Tree $\overline t \in \RT{\SFP} {M_f} {x}$ such that $\overline t$
+    is structurally identical to $t$ and for every path $C$ in $\mathit{cylp}(t)$,
+    the corresponding path $D$ in $\mathit{cylp}(\overline t)$ is such that
+    $f(x, C) = M_f(x, D)$.
+  \end{prop}
+
+  \begin{prop}
+    For every $M: \Ss \times \Bool^\Nat \in \SFP$ there exists a $f_M \in \POR$ such that
+    for every $x \in \Ss$ and for every $t \in \RT{\SFP} M x$ there exists a
+    Reduction Tree $\overline t \in \RT{\POR} {f_M} {x}$ such that $\overline t$
+    is structurally identical to $t$ and for every path $C$ in $\mathit{cylp}(t)$,
+    the corresponding path $D$ in $\mathit{cylp}(\overline t)$ is such that
+    $M(x, C) = f_M(x, D)$.
+  \end{prop}
+
+
+
+\end{conditional}
+
+
+
+
+
+
+
+
+
+
+%%% SUBSUBSECTION
+%%% Proving the Lemma
+\subsection{From $\SFP$ to $\POR$ functions}
+\label{sec:SFPtoPOR}
+
+
+\begin{conditional}{\shortonly}
+  %%% PARAGRAPH
+  %%% Encoding of an SFP-Machine
+  \paragraph{Encoding of an $\SFP$-Machine, Bottom-Up.}\label{sec:SFP2}
+  We define an encoding
+  to simulate the execution of an $\SFP$-machine.
+  %
+  For simplicity's sake, we will only
+  point to its main steps.\footnote{The
+  complete description can be found in Section~\ref{sec:appC}.}
+  First, we introduce
+  some basic data structures
+  and functions.
+  %
+  For example, since we represent
+  $\SFP$-machines
+  as tuples of elements,
+  we will need to express such structures.
+  %
+  Furthermore, since we defined
+  the transition function by cases,
+  we need some control structures
+  to implement this behavior.
+
+  In particular, in order to implement a
+  $\SFP$-machine
+  in a formalism
+  which manipules the symbols of a set $\Dd$,
+  we need to implement
+  in $\Dd$ the following structures:
+  \emph{natural numbers},
+  \emph{Boolean values},
+  \emph{strings} of a binary alphabet,
+  and \emph{Tuples}.
+  Natural numbers would
+  allow us to encode characters
+  and states, while
+  tuples encode tapes and configurations.
+  %
+  For each encoded set $X$, we also need an injection
+  $\Phi_X : X \longrightarrow D_X$ sufficiently easy to compute.
+  For instance, we will use $\Dd_S$ to denote the image of the set $S$,
+  model its encoding over $\Dd$, while
+  $\overlineN{n} \in \Dd_\Nat$
+  denotes the encoding of the number $n\in \Nat$
+  in the domain $\Dd$,
+  $\mathbbm{1},
+  \mathbbm{O} \in \Dd_{\{\zzero,\oone\}}$
+  indicates the encoding of the (resp.) true
+  and false Boolean value
+  in $\Dd$, and
+  $\sigma,\tau\in \Dd$ denotes
+  the representation of a string over the
+  alphabet $\{\zzero,\oone\}$ (a string in
+  $\Ss$) in the domain. %$\Dd$.
+  %and ranges the tuples on the following  meta-variables: $t_0,t_1,\dots, t_n$.
+
+  As anticipated, also some functions are
+  required.
+  Let us consider some of the most important ones.
+  In order
+  to perform computations on
+  natural numbers,
+  we need at least
+  \emph{addition},
+  \emph{subtraction},
+  \emph{multiplication}, and
+  \emph{exponentiation}.
+  %
+  %All these functions have signature: $\Dd_\Nat\times \Dd_\Nat \longrightarrow \Dd_\Nat$.
+  %
+  %{For each of these functions, call it $\Star$,  it must hold that: $(\forall n,m,o\in \Nat)( n\Star m=o \rightarrow \overlineN{n} \Star \overlineN{m} =\overlineN{o})$.}
+  %
+  Boolean values can be defines as a subset
+  of natural numbers.
+  So, if we are able to define $\Dd_\Nat$,
+  we are also able to define $\Dd_{\{\zzero,\oone\}}$
+  as $\{\Zzero,\Oone\}$
+  %as {its} subset
+  and to implement
+  Boolean values and functions as
+  subsets of the natural numbers and functions
+  defined on such values.
+  %For example, we can assign $\Zzero$ to the false Boolean value and $\Oone$ to the true one.
+  %
+
+  Due to Booleans we are able to define the
+  \emph{conditional function}
+  over a generic set $S$,
+  %(an $\mathtt{if}$ expression), %$\mathtt{if} :  \Dd_{{\{\zzero,\oone\}}} \times \Dd_S \times \Dd_S \longrightarrow \Dd_S$,
+  \emph{logical connectives},
+  and the bounded iteration structure,
+  %(a $\mathtt{for}$ expression),
+  satisfying
+  the commonly intended specification.
+  %
+  The conditional is important to
+  determine the configuration following the
+  current one, while
+  the bounded iteration
+  structure allows us to simulate
+  the execution of an $\SFP$-machine
+  up to its polynomial bound.
+  %
+  %For all our data structures we need a binary function $\eq$ that returns $\oone$ if its parameters are equal  with respect to the identity and $\zzero$ otherwise.
+  %
+  To access the $\omega$ tape binary strings are needed.
+  In particular, we will use a simple function of random access
+
+  such that:
+  $
+  \forall \sigma \in \Dd_{\{\zzero,\oone\}^\Nat}. \forall n\in \Dd_\Nat. \sigma[\overlineN{n}] = \Oone \leftrightarrow \text{the } n\text{-th bit of } \sigma \text{ is } \Oone.
+  $
+  We also introduce functions for handling tuples,
+  which are crucial to simulate the transition
+  function and the movement of the machine's head.
+
+  Due to these basic structures and functions,
+  we are able to effectively introduce the encoding
+  of an $\SFP$-machine
+  and an emulating interpreter,
+  to both describe the static aspects of the stream
+  machine
+  and to emulate its dynamic behavior.
+  %The encoding of the transition function, $\delta_\SFP$, is finite as  the domain of $\delta_\SFP$ is. The encoding of the transition function uses only data structures introduced, i.e.~natural numbers and tuples. The transition function is represented extensively, by enumerating all its members. The encoding of tuples and configurations are needed as well.
+  %Now that we have described all the static aspects of the stream machine, we can define functions allowing us to emulate its dynamic behavior.
+  %It is also proved that all these functions can effectively be used  to emulate the execution of a stream machine.
+
+\end{conditional}
+
+\begin{conditional}{\appendixorsup}
+  \paragraph{Basic data structures and functions.}
+  Now, let us suppose that we want to implement $\SFP$ on a formalism
+  $B$ which manipulates sequences of character in a set $\Dd$. To do so we
+  need some primitive data structures which allow us to represent a generical
+  machine $M \in \SFP$ and which support some basic operation on top of which
+  we can easily implement the behaviour of the machine $M$.
+
+  This choice isn't univocal, but chosing subsets of $\Dd$ on which it is simple to
+  build a \emph{natural} omomorphism with the orignal sructres will simplify our job.
+
+  Specifically, we decided to implement the following data structures:
+  \begin{itemize}
+  \itemsep0em
+  \item
+  \emph{Natural numbers}
+
+  \item
+  \emph{Boolean values}
+
+  \item
+  \emph{Strings} of a binary alphabet,
+
+  \item
+  \emph{Tuples}.
+  \end{itemize}
+
+  The reason which drove us to take these specific sets was the fact that
+  natural numbers will allow us to encode enumerable sets, which are necessary,
+  for example, for describing the machine's state and characters. Boolean values
+  are necessary for implementing control structures, which will simplify
+  the implementation of the machine. Moreover, Tuples will be useful for
+  the implementation of collections, such as sets and lists. For instance,
+  binary strings will be implemented as tuples of binary values and will be
+  used for representing the machine's tapes.
+
+  The structures mentioned above, if taken all together, form an algebraic
+  structure characterized by a finite collection of data sets and a finite set
+  of functions closed on those sets. We want the encoding from $\SFP$ to the
+  destination formalism $B$ to preserve such algebraic structure, namely: to
+  be an isomorphism.
+
+  For instance, suppose that we want to
+  represent the function $\mathit{odd}: \Nat \longrightarrow \Bool$
+  in our destination formalism. It is natural that we also want the encoded
+  function $\mathit{odd'}$ to be a function from the \emph{encoding of $\Nat$} to
+  the \emph{encoding of $\Bool$}. And that, be our encoding $\overline \cdot$
+  $\forall n \in \Nat.\forall b \in \Bool. \mathit{odd}(n)=b\to
+  \mathit{odd}''(\overline n)=\overline b$.
+
+  We can state this fact formally as follows:
+
+  \begin{defn}
+    We say that a morphism $\Phi(\langle \langle X_1, \ldots, X_n\rangle, O\rangle)=:
+    \langle \langle \Phi_{\Dd_{X_1}}, \ldots, \Phi_{\Dd_{X_n}}\rangle, \Phi_{Q}(O)\rangle$
+    is a correct encoding of the structure
+     $\langle \langle X_1, \ldots, X_n\rangle, O\rangle$, with
+     $O\subseteq X_i^{X_j}$ to the structure:
+     $\langle \langle \Dd_{X_1}, \ldots, \Dd_{X_n}\rangle, Q\rangle$ if and only if:
+     \begin{itemize}
+       \item All the $\Phi_{X_i}: X_i \longrightarrow D_{X_i}$ are injective functions.
+       \item The functor $\Phi_Q$ is such that $\forall X_i.\forall X_j.
+       \forall o \in O. \Phi_Q(o(x_j, x_i))= \Phi_{Q}(o)(\Phi_{X_j}(x_j),
+        \Phi_{X_i}(x_i))$.
+     \end{itemize}
+  \end{defn}
+
+  Suppose that we have a correct encoding from
+
+  %%% notation
+  \begin{notation}
+  Let us use $\Dd_S$ to denote the image of the set $S$,
+  model its encoding over $\Dd$,
+  {$\overlineN{n} \in \Dd_\Nat$
+  to denote the encoding of the number $n\in \Nat$
+  in the domain $\Dd$,
+  $\mathbbm{1} \in \Dd_{\{\zzero,\oone\}}$
+  to denote the encoding of the true Boolean value
+  and $\mathbbm{0} \in \Dd_{\{\zzero,\oone\}}$ to denote
+  the false Boolean value as represented
+  in $\Dd$,}
+  $\sigma,\tau\in \Dd$ to indicate
+  the representation of a string over the
+  alphabet $\{\zzero,\oone\}$ (a string in
+  $\Ss$) in the domain $\Dd$,
+  and range the tuples on the following
+  meta-variables: $t_0,t_1,\dots, t_n$.
+  \end{notation}
+  %
+  %
+  %
+  \noindent
+  On top of the data structures
+  that we have introduced,
+  we need some basic functions.
+  In particular, in order
+  to perform computations on
+  natural numbers,
+  we need at least the following functions:
+  %\begin{itemize}
+  %\item
+  \emph{addition}, denoted by  +,
+  %\item
+  \emph{subtraction}, denoted by –,
+  %\item
+  \emph{multiplication}, denoted by {$\cdot$},
+  %\item
+  \emph{exponentiation}, represented with the
+  common power notation.
+  %\end{itemize}
+  The latter function will be useful to express
+  the complexity bound of an $\SFP$-machine
+  that is a polynomial.
+  All these functions have signature: $\Dd_\Nat\times
+  \Dd_\Nat \longrightarrow \Dd_\Nat$.
+  {For each of these functions,
+  call it $\Star$,
+  it must hold that: $(\forall n,m,o\in \Nat)(
+  n\Star m=o \rightarrow \overlineN{n} \Star \overlineN{m}
+  =\overlineN{o})$}.
+
+  Boolean values can be defines as a subset
+  of natural numbers.
+  So, if we are able to define $\Dd_\Nat$,
+  we are also able to define
+  {$\Dd_{\{\zzero,\oone\}}$}
+  as {its} subset
+  $\{\Zzero,\Oone\}$ and to implement
+  Boolean values and functions as
+  subsets of the natural numbers and functions
+  defined on such values.
+  For example, we can assign $\Zzero$ to the false
+  Boolean value and $\Oone$ to the true one.
+  %
+  Due to Booleans we are able to define a
+  \emph{conditional function} over a generical set $S$,~i.e. the $\mathtt{if} : \Dd_{{\{\zzero,\oone\}}}
+  \times \Dd_S \times \Dd_S \longrightarrow \Dd_S$,
+  which respects its commonly intended specification,
+  and logical connectives.
+  In particular, the $\mathtt{if}$-function
+  is an important control function
+  to determine the configuration that follows the
+  current one.
+  %
+  We need also the bounded iteration
+  structure,~i.e. a $\mathtt{for}$ expression,
+  which allows us to simulate
+  the execution of an $\SFP$-machine
+  up to its polynomial bound.
+  %
+  For all our data structures
+  we need a binary function $eq$
+  that returns $\Oone$
+  if its parameters are equal
+  with respect to the identity and $\Zzero$
+  otherwise.
+
+  Binary strings are needed to access the $\omega$ tape.
+  In particular, we will use a simple function
+  of random access with the following signature:
+  $
+  {\cdot[\cdot]} : {\Dd_{\{\zzero,\oone\}^{\Nat}}} \times \Dd_\Nat \longrightarrow  {\{\Zzero,\Oone\}},
+  $
+  such that:
+  $$
+  \forall \sigma \in {\Dd_{\{\zzero,\oone\}^\Nat}}.
+  \forall n\in \Dd_\Nat. \sigma[{\overlineN{n}}] =
+  \Oone \leftrightarrow \text{the } n\text{-th bit of } \sigma
+  \text{ is } {\Oone}.
+  $$
+  {Let
+  $\Tuples^n_S$ denotes the set of homogeneous tuples
+  of elements in $S$ with cardinality $n$.}
+
+
+
+  Finally,
+  we need the following functions for handling
+  tuples:
+  \begin{itemize}
+  \itemsep0em
+  \item A family of constructors, which
+  are used to build tuples of finite dimension.
+  These functions are denoted by angular brackets
+  and have the following signature:
+  $$
+  \langle \cdot, \cdots, \cdot\rangle : \Dd^n_S \longrightarrow
+  \Dd_{\Tuples^n_S}.
+  $$
+  For example,
+  {$\langle \overlineN{\zzero}, \overlineN{\oone}\rangle$}
+  is the instantiation
+  of the tuple's constructor on the encoding of
+  $\zzero$ and $\oone$ as first and second arguments.
+
+  \item A function which computes the size of a tuple,
+  denoted as $|\cdot |:\Dd_{\Tuples^n_s} \longrightarrow
+  \Dd_\Nat$.
+
+  \item A family of projectors, which are used to
+  extract values from a tuple,
+  and denoted as $\pi_i:\Dd_\Nat \times \Dd_{\Tuples^n_S}
+  \longrightarrow {\Dd}_S$,
+  where $i$ is the position of the element returned by
+  the projector.
+  If the index of the element
+  is greater than the tuple's size,
+  we assume that the projection
+  function returns a default value.
+
+  \item Four manipulators:
+  \begin{itemize}
+  \item A unary function, called
+  $\rmr :\Dd_{\Tuples^n_S} \longrightarrow
+  \Dd_{\Tuples^{n-1}_S}$, which deletes
+  the rightmost element of a tuple.
+
+  \item A unary function, called
+  $\rml: \Dd_{\Tuples^n_S} \longrightarrow
+  \Dd_{\Tuples^{n-1}_S}$,
+  which deletes the leftmost element
+  of a tuple.
+
+  \item A unary function, called $\addr:
+  \Dd_S\times \Dd_{\Tuples^n_S}
+  \longrightarrow \Dd_{\Tuples^{n+1}_S}$,
+  which inserts an element in the rightmost
+  position of a tuple.
+
+
+  \item  A unary function, called $\addl:
+  \Dd_S\times \Dd_{\Tuples^n_S}
+  \longrightarrow \Dd_{\Tuples^{n+1}_S}$,
+  which inserts an element in the leftmost
+  position of a tuple.
+  \end{itemize}
+  \end{itemize}
+  Specifically, the last two modifiers
+  will be useful when
+  handling tapes and transition,
+  since they allow us to simulate
+  the movement of
+  the machine's head.
+
+
+
+
+
+  \begin{defn}[Correctness of Encoding for Tuples]
+  An implementation of tuples is \emph{correct}
+  if and only if:
+  \begin{align*}
+  \forall n.\forall 1\leq i\leq n. \pi_i\big(\langle x_1,\dots,
+  x_n\rangle\big) &= x_i \\
+  %
+  \exists x.\forall i \ge n.\pi_i\big(\langle
+  x_1,\dots, x_n\rangle \big) &= x.
+  \end{align*}
+  \end{defn}
+
+
+
+
+
+
+
+
+  %%% PARAGRAPH
+  \paragraph{Complex Data Structures
+  and Functions.}
+  On top of the data structures we have
+  just defined, we can introduce
+  the encoding of an $\SFP$-machine
+  and an emulating
+  interpreter as described below.
+
+
+  The encoding of the transition function,
+  $\delta_\SFP$, is finite as the domain
+  of $\delta_\SFP$ is.
+  Let $\{t_0,\dots, t_N\}$
+  be the \emph{finite} subset of the
+  set
+  $(\Qs, \Sigmab, \{\zzero,\oone\})
+  \times (\Qs, \Sigmab \times \{L,R\})$,
+  describing the function.
+
+
+
+  %% def : Encoding of Transition Function
+  \begin{defn}[Encoding: Transition Function]\label{def:encTrans}
+  The encoding of a machine's transition function is defined as:
+  $$
+  \enct\big(\{t_0,\dots, t_N\}\big)=  \langle g(t_0,
+  \dots,g(t_{|\delta_{\SFP}|})\rangle
+  $$
+  and $g$ as:
+  $$
+  g\big(\big\langle\langle q_i,c_j,b\rangle,
+  \langle q_k,c_l,D\rangle\big\rangle\big) :=
+  \begin{cases}
+  \langle {\overlineN{i}, \overlineN{j},
+  \overlineN{k}, \overlineN{l}}, \Zzero, b\rangle
+  \ \ \ &\text{if } D=L \\
+  \langle {\overlineN{i}, \overlineN{j},
+  \overlineN{k}, \overlineN{l}}, \Oone, b\rangle
+  \ \ \ &\text{otherwise.}
+  \end{cases}
+  $$
+  \end{defn}
+  %%
+  \noindent
+  Observe that the definition
+  above only uses the data structures
+  introduced in the previous paragraph,
+  namely natural values and tuples.
+  Furthermore, the transition function
+  is represented extensively, by
+  enumerating all its members.
+
+  The representations of
+  tuples and configurations
+  are defined in a the same way.
+
+  %% defn
+  \begin{defn}[Encoding: Tape]\label{def:encTape}
+  We encode all the finite portion of a tape
+  $\sigma:= c_i, \dots, c_k$ as:
+  $$
+  \tenc(c_i,\dots, c_k) := \langle {\overlineN{i},
+  \dots, \overlineN{k}}\rangle.
+  $$
+  \end{defn}
+
+
+
+  %% defn
+  \begin{defn}[{Encoding: Configuration}]\label{def:encConf}
+  The representation of the configuration
+  of a stream machine is defined as the
+  4-tuple $\langle \sigma, {\overlineN{i}},
+  \tau, {\overlineN{k}}\rangle$, such that:
+  \begin{itemize}
+  \itemsep0em
+  \item $\sigma=\tenc(\sigma')$,
+  {with $\sigma'$ is the shortest portion of the
+  tape that starts from the cell on
+  the immediate left of the head and is followed
+  (on its left) by an infinite sequence of blank characters
+  $\sstar$.}
+
+  \item ${\overlineN{i}}$ is the encoding of the index of the
+  current state $q_i$.
+
+  \item ${\tau} = \tenc(\tau')$,
+  where $\tau'$ is the shortest portion of the tape
+  that starts from the cell under the head,
+  continues on its right and is followed
+  (on its right) by an infinite sequence of blank characters
+  $\sstar$.
+
+  \item {$\overlineN{k}$} is the encoding of the length
+  of the prefix of the oracle tape
+  that has already been consumed.
+  \end{itemize}
+  \end{defn}
+
+
+  \begin{remark}
+  The encoding of the initial state
+  of a stream machine, $\langle \eepsilon,
+  q_0,\sigma, \omega\rangle$
+  is {$\big\langle \langle \rangle,
+  \Zzero, \tenc(\sigma),
+  \Zzero \big\rangle$}.
+  \end{remark}
+
+
+
+
+  Now that we have described all the
+  static aspects of the stream machine,
+  we can define some functions that
+  allow us to emulate
+  the dynamic behavior of the machine.
+
+\end{conditional}
+
+
+%%% LEMMA
+%%% lemma:SFPimplementation
+\begin{lemma}[$\SFP$ Implementation]\label{lemma:SFPimpl}
+Each formalism which works on a domain
+$\Dd$ in which it is possible to express
+the data structures, functions and control
+primitives described by our encoding
+and that is closed under
+composition, is at least as expressive as
+the stream machines are.
+\end{lemma}
+
+\begin{proof}[Proof Sketch]
+Here we will only show a sketch of the proof. For a more comprehensive one,
+the reader is invited to consult the Section~\ref{sec:appC} of the appendix.
+\\
+Let $M_{S}:= \langle \Qs,\Sigma, \delta_\SFP,q_0 \rangle$
+be a stream machine and $t:= enct(\TT)$.
+We can encode the transition function of a machine by means of
+a tuple which has an entry for each different configuration.
+The configuration entry is describex by means of a tuple which contains
+the integers corresponding to the values on the tapes and the current state,
+together with the information about the first head movement and the new character.
+We can argue that this piece of information is enough, because the second
+tape is read-only and left to right.
+%
+Given an encoding $t$, and a current configuration $c$, we can define
+the function $matcht$ which computes the matching transition, by cases,
+matching the representation of the current configuration with the values
+stored in $t$.
+%
+After that, with the control structures that we described above,
+we can define a function $apply$ which applies a transition to a state,
+resulting with a new configuration.
+%
+Finally we need a function that emulates the execution of the machine
+for a fixed number of steps, passed as a parameter. A step consists in a lookup
+of the configuration that matches $c$ in $t$ and in the application of such
+transition to $t$, ending up with a new configuration $c'$. We call such function
+$step$ and define it by induction on the number of steps.
+%
+Finally we define $eval_M(\sigma, \oone)$ fixing a polynomial number of
+steps to the $step$ function.
+
+\end{proof}
+%
+\noindent
+Given this result,
+we will only need to represent in the
+$\POR$ formalism
+all the functions that we have described above
+to conclude the proof.
+
+
+
+
+
+
+
+
+
+
+
+
+%%% PARAGRAPH
+%%% Expressivity of the POR formalism
+\paragraph{Expressivity of the $\POR$ Formalism}
+
+It can be also shown that all the encodings
+and functions over the set $\Dd$
+can be expressed in $\POR$.
+We will skip here the meticulous details
+of this implementation, just considering a few examples.
+Let us start with data structures.
+The set $\Dd$ corresponds to the set $\Ss$
+of binary strings.
+Strings over $\Bool$ are native
+in $\POR$ so they need not be implemented
+($\Dd_\Ss$ is $\Ss$ itself).
+Moreover, the only random access to such strings
+will be the reading of some bits of the oracle
+$\omega$, for which $\POR$ has the primitive
+function, $\query$.
+Numbers will be represented in unary notation,
+starting from the $\oone$ string,
+i.e.~$\Dd_\Nat=\oone^+$.
+
+As seen in Section~\ref{sec:POR},
+binary strings
+are the only datatype in the
+$\POR$ formalism.
+In order to prove the expressibility
+in $\POR$
+of our
+encoding of $\SFP$-machines,
+some auxiliary functions are
+need.
+Just to take an example into
+account, the constant
+string is expressed in $\POR$
+as follows.
+
+
+%% DF
+%% Constant String
+\begin{defn}[Constant String]
+A \emph{constant string}
+$c_0c_1\dots c_n$
+is expressed in $\POR$ as:
+$$
+c_0c_1\dots c_n := \Sf_{c_n}(
+\cdots(\Sf_{c_1}(\Sf_{c_0}(E(\oone,\omega),
+\omega),\omega)\cdots),\omega).
+$$
+\end{defn}
+%
+%
+\noindent
+It is also required to show how
+to express natural numbers
+and functions.
+Also in this case, let us just
+consider one example of encoding.
+
+
+%% DF
+\begin{defn}
+The encoding of $\Nat$ over $\Ss$
+is defined as follows:
+\begin{align*}
+\ooverline{0} &:= \Sf_\oone(\eepsilon,\omega) \\
+\ooverline{n+1} &:= \Sf_ \oone(\ooverline{n},\omega).
+\end{align*}
+\end{defn}
+%
+%
+\noindent
+Arithmetic functions can easily be on natural numbers by induction.
+Then, complex cases,
+such as predicates
+and tuples are considered.
+
+
+As anticipated when discussing the encoding of Booleans in
+Section~\ref{sec:SFP2}, we can represent them as $\ooverline 0$ and $\ooverline 1$.
+%
+We can also leverage the case-by-case definition of bounded iteration
+for giving the definition of the $\mathtt{if}$ statement as above.
+\begin{align*}
+\mathtt{if}'(x_1, x_2, \epsilon, \oone)&:= \epsilon\\
+\mathtt{if}'(x_1, x_2, y\zero, \oone)&:= x_2|_{x_1x_2}\\
+\mathtt{if}'(x_1, x_2, y\one, \oone)&:= x_1|_{x_1x_2}\\
+\mathtt{if}(t, f, c, \oone) &:= \mathtt{if}'(t, f, c, \oone)
+\end{align*}
+
+In order to represent the tuples, we use Odifreddi's notation as described in~\cite[p. 183]{Odifreddi}.
+The encoding uses of a couple of functions $\mathcal D$
+and its left inverse $\mathcal H$.
+
+\begin{defn}[Encoding and Decoding Functions]
+
+\begin{align*}
+\mathcal D(\sigma\zero) &:= \mathcal D(\sigma)\one\zero\\
+\mathcal D(\sigma\one) &:=  \mathcal D(\sigma)\one\one
+\end{align*}
+
+\begin{align*}
+\mathcal H (\sigma \one\zero)&=\mathcal H(\sigma)\zero\\
+\mathcal H (\sigma \one\one)&=\mathcal H(\sigma)\one\\
+\end{align*}
+\end{defn}
+
+\begin{defn}[Tuple Constructors]
+We define the family of tuple constructors as the family of function defined as below and indexed by $n$:
+\[
+\langle x_0, x_1, \ldots, x_n\rangle_\omega := 00 \mathcal D (x_n) 00 \ldots 00 \mathcal D (x_1) 00 \mathcal D(x_n) 00 \mathcal D(\ooverline n) 00
+\]
+\end{defn}
+
+
+\begin{lemma}\label{lemma:PORimpl}
+Our encoding of stream machines
+can be expressed by functions of $\POR$.
+\end{lemma}
+
+\begin{proof}
+We can show that with the functions described above, it is possible to implement
+the functions $matcht$, $apply$, $step$ and $eval$ that we described in Lemma~\ref{lemma:SFPimpl}. For a more comprehensive construction proof of this result,
+the reader can consult Section~\ref{sec:appC} of the Appendix.
+\end{proof}
+
+
+
+
+%%% PARAGRAPH
+%%% Concluding the Proof
+\paragraph{Concluding the Proof.}
+Now, by Lemma~\ref{lemma:SFPimpl},
+we have an encoding-formalism
+which is provably (at least) as expressive
+as stream machines
+and, by Lemma~\ref{lemma:PORimpl},
+such an encoding formalism
+is definable by $\POR$-functions.
+So, we can conclude that every function
+that can be expressed by an
+$\SFP$-machine, can be expressed in $\POR$
+as well.
+
+
+%%% PROPOSITION
+%%% Proposition1
+\begin{prop}\label{Proposition1}
+For each $\SFP$-machine $\MSFP
+:= \langle \Qs,\Sigma,\delta_\SFP,q_0\rangle$,
+there is a $\POR$-function $f$,
+such that:
+$$
+f(\sigma,\omega) = \MSFP(\sigma,\omega).
+$$
+\end{prop}
+%
+%
+\noindent
+Furthermore,
+
+
+%%% LEMMA
+\begin{lemma}
+The encoding of the initial state
+of an $\SFP$-machine
+$\MSFP(\sigma,\omega)$
+inn $\POR$
+is polynomial in the size of $\sigma$.
+\end{lemma}
+
+
+%%% LEMMA
+%%% lemma7
+\begin{lemma}
+The representation in $\POR$
+of the complexity bound of an $\SFP$-machine
+$\MSFP$$(\sigma,\omega)$
+in $\POR$ is polynomial in the size
+of $\sigma$
+\end{lemma}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%% SUBSECTION
+%% From POR-functions to SFP-machines
+\subsection{From $\POR$-functions
+to $\SFP$-machines}\label{sec:PORtoSFP}
+
+The first encoding was direct, but
+maybe too technical.
+On the contrary, the proof of its converse,~i.e.
+that each function in $\POR$
+can be computed by an $\SFP$-machine,
+is indirect and relies on three intermediate
+formalisms, namely the $\POR^{-}$-formalism,
+the $\SIMP$-formalism, and
+{the multi-tape Turing machine's one}.
+The proof proceeds as follows:
+\begin{enumerate}
+%
+\item We first introduce the $\POR^{-}$-formalism,
+and encode each $\POR$-function in a $\POR^-$-function.
+%
+\item Then, we define the $\SIMP$-formalism with its syntax and operational
+semantics.
+%
+\item We encode each $\POR^-$-function in a correct $\SIMP$-program.
+%
+\item We implement an interpretation for $\SIMP$-language
+on a multi-tape Turing machine, and show that the number of steps
+required by the {interpreter} is polynomially bounded by
+the size of the input.
+%
+\item Finally, we show that each multi-tape Turing machines can be
+encoded in an $\SFP$-machine with a polynomial overhead.
+\end{enumerate}
+
+\subsubsection{The $\POR^-$-formalism}
+
+The class of $\POR^{-}$ functions is defined by removing
+from the $\POR$-formalism
+the query function, $\query$.
+%
+We basically introduce this class to prove that
+each oracle, $\omega$, can be queried only
+on its initial prefix, whose size
+is polynomial in the size of the input.
+For this reason, the necessity of an infinite
+long sequence of random bits vanishes.
+%
+Furthermore, proceeding in this way,
+we deal with the oracle as with a standard
+argument of a $\POR^-$-function.
+%
+So, we do not need to copy such tape
+in the corresponding $\SFP$:
+differently, we would have to start copying
+a polynomially big prefix the oracle at the very
+beginning of the execution of the machine
+without even knowing the size of the input.
+
+
+%% defn
+%% The Class POR^-
+\begin{defn}[The Class $\POR^-$]
+The \emph{class} $\POR^-$ is the smallest class of functions
+in the form $\Ss^{n+1}$ to $\Ss$ containing:
+\begin{itemize}
+\itemsep0em
+\item The function $E^-$, such that $E^-(x,\nu)=\eepsilon$
+%
+\item The function $P^-{n}_i(x_1,\dots, x_n,\nu)=x_i$,
+for $n,\in\Nat$ and $1\leq i\leq n$
+%
+\item The function $H^{-}_n(x_1,\dots, x_n,\nu)=\nu$ for $n\in\Nat$
+%
+\item The function $C^{-}_b(x,\nu)=x\conc b$, for $\mathbf{b}\in\{\zzero,\oone\}$
+%
+\item The function
+$$
+Q^{-}(x,y,\nu) = \begin{cases}
+\oone \ \ \ &\text{if } x \ssubseteq y \\
+\zzero \ \ \ &\text{otherwise}
+\end{cases}
+$$
+\end{itemize}
+and closed under:
+\begin{itemize}
+\item Composition: $f^-$ is defined from $g,h_1,h_k\in\POR^-$ as:
+$$
+f(x_1,\dots, x_n,\nu) = g\big(h_1(x_1,\dots, x_n,\nu),\dots, h_k(x_1,\dots, x_n,\nu),\nu\big).
+$$
+\item Bounded iteration with bound $t$: $f^-$ is defined from $g,h_0,h_1\in \POR^-$
+\begin{align*}
+f(x_1,\dots, x_n,\eepsilon,\nu) &= g(x_1,\dots, x_n,\nu) \\
+f(x_1,\dots, x_n,y\zzero,\nu) &= h_0\big(x_1,\dots, x_n,y,f(x_1,\dots, x_n,y,\nu)\big)|_{t(x_1,\dots, x_n,y,\nu)} \\
+f(x_1,\dots, x_n,y\oone,\nu) &= h_1\big(x_1,\dots, x_n,y, f(x_1,\dots, x_n,y,\nu)\big)|_{t(x_1,\dots, x_n,y,\nu)}.
+\end{align*}
+\end{itemize}
+\noindent
+For simplicity's sake, we will represent with $ite(g,h_1,h_2,t)$ the function
+obtained by applying the bounded iteration rule to $g,h_0,h_1 \in\POR^-$
+and with bound $t$.
+\end{defn}
+
+In order to show that all the $\POR$ functions are also in $\POR^-$, we will prove
+that all the functions in $\POR$ use only a polynomial prefix of the oracle $\omega$.
+
+\begin{lemma}\label{main:SFPlemma9}
+{For each $f\in \POR$, the following holds:
+$$
+\forall x_1,\dots,x_n.\forall \omega.\exists p\in \POLY
+\big(f(x_1,\dots, x_n,\omega)| \leq p(|x_1|,\dots, |x_n|\big).
+$$}
+\end{lemma}
+\begin{proof}
+The result comes by infuciton on the syntax of $f$, an thanks to an auxilairy lemma which bounds the size of the terms of $\Lpw$. For a comprehensive proof of the result, the reader is invited to consult Section \ref{app:sec:PORtoSFP} of the appendix.
+\end{proof}
+
+A similar result can be stated for the functions $g \in \POR^-$, namely:
+
+\begin{lemma}
+For any $f\in \POR^-$,
+$$
+\forall x_1,\dots, x_n.\forall \nu.\exists p\in \POLY
+\big(|f(x_1,\dots, x_n,\nu)| \leq p(|x_1|,\dots, |x_n|, |\nu|)\big).
+$$
+\end{lemma}
+
+Since all the strings obtained by a $\POR$ function
+are polynomially bounded, we can conclude that every
+$\POR$-function queries its
+oracle function only with
+strings of polynomial length.
+
+For this reason, the $\POR^-$ functions are expressive enough
+to enocde all the $\POR$ functions: an additional and polynomially
+long sequence of {$\zzero$} and
+{$\oone$} bits can substitute the oracle function.
+Let us start the formalization
+due to the definition above.
+
+\begin{lemma}[Prefix] \label{main:lemma:prefix}
+Fore any $f\in \POR$,
+\footnotesize
+$$
+\exists p \in \POLY. \forall x_1,\dots, x_k.
+\forall \omega, \omega'\big(
+\omega_{p(|x_1|,\dots, |x_k|)}=
+\omega'_{p(|x_1|,\dots, |x_k|)}
+\rightarrow f(x_1,\dots, x_k,\omega)
+=f(x_1,\dots, x_k,\omega')\big).
+$$
+\end{lemma}
+\begin{proof}
+See Theorem \ref{lemma:prefix} of the Appendix.
+\end{proof}
+
+In order to fully substitute the oracle,
+we need to perform some
+further encodings.
+In particular, we need a $\POR^-$-function
+that simulates the access to the oracle:
+\begin{align*}
+lft({\eepsilon},\nu) &:= \eepsilon \\
+lft(y{\mathbf{b}},\nu) &:= y|_y \\
+\\
+nlft(x,\eepsilon,\nu) &:= x \\
+nlft(x,y\mathbf{b},\nu) &:= lft(nlft(x,y,\nu),\nu)|_y \\
+\\
+access(x,y\mathbf{b},\nu) &:= lst(nlft(rv(\nu,\nu),x,\nu),\nu).
+\end{align*}
+With a little abuse of notation,
+we reused the function
+$lft$ and $rv$ that we showed being in $\POR$.
+Although we will not {define} it explicitly,
+the same construction can be used in order
+to prove that such functions are in
+$\POR^-$ too.
+
+\begin{remark}
+Notice that the following holds:
+\begin{align*}
+\forall \sigma, \nu .lft(\sigma, \nu) &\subseteq \sigma \\
+\forall \sigma,\tau,\nu .nlft(\sigma,\tau,\nu) &\subseteq \sigma \\
+\forall \sigma,\tau,\nu .nlft(\sigma,\tau \mathbf{b},\nu)
+&\subseteq nlft(\sigma,\tau,\nu).
+\end{align*}
+\end{remark}
+
+%%% Lemma
+%%% lemma:implPOR-
+\begin{lemma}[Implementation of $\POR$ in $\POR^-$]\label{lemma:implPOR-}
+For any $f\in \POR$,
+$$
+\exists p\in \POLY.\exists g\in\POR^-.\forall q\in \POLY
+p\lesssim q.\forall x_1,\dots, x_n,\omega\big(f
+(x_1,\dots, x_n,\omega) = g(x_1,\dots, x_n,
+\omega_{q(x_1,\dots,x_n)})\big).
+$$
+\end{lemma}
+\begin{proof}
+Lemma~\ref{lemma:prefix} shows
+that there is a bound on the size of the
+portion
+of the oracle that is actually read by $f$.
+Wr use such bound for $p$.
+We proceed by induction on the definition of $f$.
+\begin{itemize}
+%
+\item If $f$ is $E$, Lemma~\ref{lemma:prefix} provides
+bound {0}.
+Indeed, $E(x,\omega)=E^-(\omega,\nu)$, where
+$\nu$ is any polynomially prefix of $\omega$.
+%
+\item If $f$ is $\Sf_0,\Sf_1,\Cf,$ or $P^i$ the proof
+is similar to the previous one.
+%
+\item If $f$ is $\query$, its implementation
+in $\POR^-$ is $access(x,\nu)$.
+So, $\query(\sigma,\omega)=access(\sigma,\nu)$,
+where $\nu$ is any prefix of $\omega$
+longer than $|\sigma|$.
+%
+\item In the case of composition, by IH
+we know that for any $i$, such that
+$1\leq i\leq k$,
+$\exists p_i\in \POLY.\forall q_i\in \POLY\big(
+p_i\lesssim q_i \rightarrow h_i(x_1,\dots, x_n,\omega)
+= h_i'(x_1,\dots, x_n,\omega_{q_i(|x_1|,\dots, |x_n|)})\big)$,
+with $h'_i \in \POR^-$ for each
+$i$.
+Similarly, we know that
+$\exists p_f\in \POLY.\forall q_f\in \POLY
+.p\lesssim q.f(x_1,\dots, x_k,\omega)
+= f'(x_1,\dots, x_k,\omega_{q_f(|x_1|,\dots, |x_k|)})$,
+with $f'\in \POR^-$.
+We can start by introducing the polynomials
+$p_i$ and $p_f$ by IH.
+Then, we compose $p_f$ with the polynomials
+that express the size of the arguments
+of such functions, which exist for Lemma~\ref{SFPlemma9},
+obtaining $p_f'$ that
+expresses the actual size of the prefix
+for $\omega$, read by $f$.
+Now, we can apply Lemma~\ref{lemma:construction},
+in order to obtain a polynomial which
+is universally greater than the starting ones,
+call it $p$.
+Finally, since any polynomial which is universally greater than $p$
+is also universally greater than $p_i$s
+and $p_f$, we can conclude by applying IH.
+%
+\item In the case of bounded recursion,
+by IH $\exists p_g\in \POLY.\forall_{q_g}\in
+\POLY\big(p_q\lesssim q_g \rightarrow
+g(x_1,\dots, x_k,\omega)=g'(x_1,\dots, x_k,\omega_{q_g(|x_1|,
+\dots, |x_k|)})\big)$,
+with $g'\in \POR^-$,
+is bounded by a polynomial
+$p_g$ in its input.
+Similarly, we know that $\exists p_0,p_1 \in \POLY.
+\forall q_0,q_1\in \POLY
+\big(p_0\lesssim q_0 \wedge
+p_1\lesssim q_1 \rightarrow
+h_0(x_1,\dots, x_k,x_{k+1},\omega)=
+h_0'(x_1,\dots, x_k,x_{k+1},\omega_{q_0(|x_1|,\dots, |x_k|,
+|x_{k+1}|)})
+\wedge
+h_1(x_1,\dots, x_k,x_{k+1},\omega)=h_1'
+(x_1,\dots, x_k,x_{k+1},\omega_{p_1(|x_1|,
+\dots, |x_k|,|x_{k+1}|)})\big)$.
+As for the previous case, we use Lemma~\ref{SFPlemma9},
+to obtain an upper bound to the size
+of the recursive call that allows us to express
+$p_0$ and $p_1$ in function
+of $x_1,\dots, x_k$,
+call them $p_0'$ and $p_1'$.
+Now, we can introduce a polynomial
+universally greater than the one obtained
+by applying Lemma~\ref{lemma:construction}
+to get $p$.
+This allows us to use all the IHs and
+to conclude the sub-derivation.
+\end{itemize}
+\end{proof}
+
+So, we can conclude that
+the $\POR^-$ formalism coincides
+with Ferreira's $\BRS$~\cite{Ferreira90}.
+
+
+$\BRS$ is proved to be polynomially interpretable
+by a single tape Turing machine,
+which is a particular class the $\SFP$ one.\footnote{Unfortunately,
+as far as the authors know, the proof of this result
+is not available}
+For the sake of self-containment,
+we explicitly prove that the $\POR^-$-formalism
+can be interpreted by a
+single tape Turing machine with polynomial
+complexity.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsubsection{The $\SIMP$ formalism}
+
+The $\SFP$ paradigm, which is a subclass
+of the Turing machine's model,
+is far from being functional,
+while $\POR$ is such.
+%
+As these two formalisms
+are radically different,
+a direct encoding of the
+$\POR$ -- or even of the $\POR^-$ -- formalism in
+$\SFP$ would be complicated.
+%
+In order to simplify the whole encoding,
+we will pass through an intermediate imperative
+paradigm, the \emph{String's Imperative
+and Minimal Paradigm}, $\SIMP$.
+%
+As we disucssed above, similar results have already
+been stated; for this reason we will only show
+some definitions, the claim and a scketch
+of the proof. We invite the curious readers
+to consult Section \ref{sec:simp:app} of the
+Appendix for a complete and a rigorous proof.
+
+The $\SIMP$ paradigm is defined by an enumerable
+set of correct paradigms
+and an operational semantics.\footnote{
+{Notice
+that, by a slight abuse of notation which
+is quite common in the literature,~e.g.~\cite{Winskel},
+in what follows, we will use $\eepsilon,\zzero,\oone$
+in the language of $\SIMP$.}}
+
+%%% defn
+\begin{defn}[{$\SIMP$-Language}]
+The \emph{language of $\SIMP$ programs}
+is $\Lstm$,~i.e. the set of strings
+produced by the non-terminal symbol
+$\mathsf{Stm}$ defined by:
+\begin{align*}
+\mathsf{Id} &::= X_i \midd Y_i \midd
+S_i \midd R \midd Q \midd Z \midd T \\
+%
+\mathsf{Exp} &::= \epsilon \midd \mathsf{Exp.\zzero}
+\midd \mathsf{Exp.\oone} \midd
+\mathsf{Id} \midd \mathsf{Exp} \sqsubseteq
+\mathsf{Exp} \midd
+\mathsf{Exp} \wedge \mathsf{Exp} \midd
+\neg \mathsf{Exp} \\
+%
+\mathsf{Stm} &::= \mathsf{Id} \leftarrow \mathsf{Exp}
+\midd \mathsf{Stm};\mathsf{Stm} \midd
+\mathbf{while}(\mathsf{Exp})\{\mathsf{Stm}\}
+\midd \mathbf{skip};.
+\end{align*}
+with $i\in \Nat$.
+\end{defn}
+
+\begin{defn}[Semantics of $\SIMP$]
+On the $\SIMP$ language we can define two relations:
+
+\begin{itemize}
+\item The relation $\rightharpoonup$ which describes the
+semantics of the expressions.
+\item The relation $\triangleright$ which describes the
+semantics of the statements.
+\end{itemize}
+\end{defn}
+
+Combining the two relations above, we can describe the
+structural operational semantics of the $\SIMP$ language.
+
+
+
+%%% defn
+\begin{defn}
+The value described by a correct
+$\SIMP$ program, $P$, is $\mathcal{F}(P):
+{\Lstm} \longrightarrow (\Ss^n
+\longrightarrow \Ss)$,
+where $F$ is defined as above:\footnote{We use the prefixed
+notation for $\triangleright$, instead of the infixed one,
+in order to express the store associated to the program
+and the starting store that are between the curly brackets.}
+$$
+F := \lambda x_1,\dots, x_n.\triangleright
+\big(\langle P, [][X_1\leftarrow x_1],\dots
+[X_n\leftarrow x_n]\rangle\big)(R).
+$$
+\end{defn}
+
+Now that we have define the notion of value described by a
+program, we can state the reasult which we are aiming to,
+namely that each $\POR^-$ function can be represented by a
+$\SIMP$ program.
+
+
+
+
+
+
+
+
+
+
+
+
+%%% Lemma
+%%% lemma:implPOR-SIMP
+\begin{lemma}[Implementation of $\POR^-$ in $\SIMP$]\label{lemma:implPOR-SIMP:main}
+For each $f\in \POR^-$, there is a $P\in {\Lstm}$:
+$$
+\forall x_1\dots x_n.F(P)(x_1,\dots, x_n) = f(x_1,\dots, x_n).
+$$
+\end{lemma}
+
+The proof of this result uses a large number of
+thecnical and shows by induction the full encoding any
+synctactic set of $\POR^-$ functions. For these reasons, we decided
+to show the proof of this result in the appendix only; for more details,
+the reader can consult Section \ref{sec:simp:app} of the Appendix.
+
+Another important claim is that our constructions are polynomial, i.e.
+each programs requires at most polynomial number of $\triangleright$ transitions
+to terminate.
+
+\begin{prop}[Complexity of $\SIMP$]
+For each $f \in \POR^-$, $\LL(f)$ takes
+a number of steps which
+is polynomial in the size of the
+arguments of $f$.
+\end{prop}
+
+
+
+
+
+
+
+
+
+
+The last non-trivial reduction which we need to show
+is the one from $\SIMP$ towards a multi-taped Turing Machine.
+
+%%% Proposition
+\begin{prop}
+\label{prop:simptm}
+Each program $p\in \SIMP$,
+which is polynomial and uses $k$ registers
+can be simulated with polynomial complexity
+on a $k+2$-tape Turing machine which
+uses a {$\Sigma=\{\zzero,\oone\}$}
+and $*$ as blank character.
+\end{prop}
+
+We won't even give a fromal proof of such result in the Appendix
+because showing the machine itself would reuire a too large and
+over-detailed construction.
+We will only give a rigorous description
+of the machine's behaviour, without showing it explicitly.
+The description can be found
+at the end of Section \ref{sec:simp:app} of the Appendix.
+
+
+
+
+
+
+
+
+
+Finally, Proposition \ref{prop:simptm} entails
+the results which we were addressing:
+
+%% Corollary 1
+\begin{cor}
+Each polynomial $\SIMP$-function
+can be executed
+with a polynomial complexity
+on a single-tape Turing machine,
+which uses a {$\Sigma=\{\zzero,\oone\}$}
+and $*$ as a blank character.
+\end{cor}
+
+
+
+%%% Corollary 2
+\begin{cor}\label{SFPcor2}
+Each polynomial $\SIMP$-function
+can be computed by {an $\SFP$-machine}.
+\end{cor}
+\begin{proof}
+The result comes from the fact that
+$\SFP$-machines are extensions of
+single-tape Turing machines,
+and that a $\SIMP$-program can be executed
+on a single-tape Turing {machine}
+with a polynomial complexity.
+\end{proof}
+
+
+
+%%% Proposition 4
+\begin{prop}\label{SFPprop4}
+Each $f\in \POR$ can be computed by {an
+$\SFP$-machine}.
+\end{prop}
+
+\begin{proof}
+By Lemmas~\ref{lemma:implPOR-},
+every function which is in $\POR$ is in
+$\POR^-$ too.
+By Lemma~\ref{lemma:implPOR-SIMP} too.
+Finally, we conclude by Corollary~\ref{SFPcor2}.
+\end{proof}
+
+
+
+
+
+%% Theorem
+\begin{theorem}
+$\POR=\SFP$.
+\end{theorem}
+\begin{proof}
+By considering Proposition~\ref{SFPprop1} and
+Proposition~\ref{SFPprop4}.
+\end{proof}

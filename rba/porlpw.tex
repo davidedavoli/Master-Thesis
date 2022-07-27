@@ -1,0 +1,823 @@
+%!TeX spellcheck = en-US
+\section{The $\POR$ Function Algebra and $\RS$ Theory}
+\label{sec:PORandLpw}
+
+In this section, we collect the definitions of the
+$\POR$ (Section \ref{sec:POR}) function algebra and the system of axioms $\RS$,
+(Section \ref{sec:S13}).\footnote{
+We would like to precise that for brevity we call $\RS$ both the system of axioms
+and the theory they induce. However, to be proper, we should refer the theory using a different name.
+} Before doing so, for clarity's sake,
+we define the notational conventions we are adopting in this whole work.
+This is done in Section \ref{sec:notation}.
+
+
+\subsection{Notational preliminaries}\label{sec:notation}
+
+\begin{defn}[Sets]~
+  \begin{itemize}
+  \item We call $\Bool=\{\zzero,\oone\}$ the set of bits.
+  \item $\Ss=\Bool^*$
+  is the set of binary strings of finite
+  length.
+  \item $\Os=\Bool^\Ss$
+    indicates the set of functions from $\Nat$ to $\Bool$.
+  \end{itemize}
+\end{defn}
+
+Notice that given $\omega\in \Bool$ and $x \in \Ss$,
+$\omega(x)$ denotes \emph{one}
+specific bit $b \in \Bool$,
+the so-called $x$-th bit of $\omega$.
+Meta-variables $\omega',\omega'',\dots$
+are used to denote the elements $\Os$.
+
+For every $x,y \in \Ss$,
+we will use $x \subseteq y$
+to express that $x$ is an \emph{initial} or
+\emph{prefix substring} of $y$.
+% Formally:
+%
+%
+% \begin{defn}[String length]
+%   Let $|\cdot|: \Ss \longrightarrow \Nat$ denote the
+%   length-map of a string,~i.e.
+%   \begin{align*}
+%     |\eepsilon| &:=0\\
+%     |\sigma \bool| &:=1+ |\sigma|\\
+% \end{align*}
+% \end{defn}
+%
+Within $\Ss$, we define two binary operations
+(determining a ring) which allow us to define
+strings on top of other strings.
+
+\begin{defn}[String concatenation]
+  Given two strings $x,y \in \Ss$,
+  we denote with
+  $x\cconc y$ (which will always be
+  abbreviated as simply $xy$)
+  the concatenation of $x$ and $y$.
+\end{defn}
+
+\begin{defn}[Binary Product]
+  Given two strings $x,y \in \Ss$,
+  we define their binary product,
+  denoted $x\bm\times y$, the string
+  obtained by concatenating
+  $x$ with itself for $|y|$-times. Formally:
+  \begin{align*}
+    x \times \eepsilon &:= \eepsilon\\
+    x \times y\bool &:= (x\times y)\conc x.
+  \end{align*}
+\end{defn}
+
+\subsection{The Class $\POR$}\label{sec:POR}
+
+The $\POR$ class of function is strongly inspired by Ferreira's PTCA
+\cite{Ferreira90}, which itself is a Cobham style function algebra \cite{Cobham1965}.
+%
+The main difference between $\POR$ and Ferreira's PTCA is that $\POR$
+functions carry an additional functional argument $\omega: \Ss \longrightarrow \Bool$
+which is intended to be used as a source of random bits. To do so, a novel function
+is added to the set of base functions, i.e. the query function $Q(x, \omega)= \omega(x)$.
+
+%% defn
+%% The Class POR
+\begin{defn}[The Class $\POR$]
+The \emph{class $\POR$} is the smallest class of
+functions from
+$\Ss^n\times \Os$ to $\Ss$, containing:
+\begin{itemize}
+\itemsep0em
+%
+\item The \emph{empty} function $E(x,\omega)=\eepsilon$;
+%
+\item The \emph{projection} functions $P^n_i(x_1,\dots, x_n,\omega)=x_i$, for
+$n\in \Nat$ and $1\leq i\leq n$;
+%
+\item The \emph{word-successor} $\Sf_{\bbool}(x,\omega)=x\bbool$, for every $\bbool\in\Bool$;
+%
+\item The \emph{conditional} function
+\begin{align*}
+\Cf(\eepsilon, y, z_\zzero,z_\oone,\omega) &= y \\
+\Cf(x\bbool, y,z_\zzero, z_\oone,\omega) &= z_\bbool,
+\end{align*}
+where $\bbool\in \Bool$.
+%
+\item The \emph{query} function $\query(x,\omega)=\omega(x)$;
+\end{itemize}
+and closed under:
+\begin{itemize}
+%
+\item \emph{Composition}, such that $f$
+is defined from $g,h_1,\dots, h_k$
+as
+$$
+f(\vec{x},\omega)=g(h_1(\vec{x},\omega), \dots,
+h_k(\vec{x},\omega),\omega).
+$$
+%
+\item \emph{Bounded recursion on notation},
+such that $f$ is defined from
+$g,h_0,h_1$ as
+\begin{align*}
+f(\vec{x},\eepsilon, \omega) &= g(\vec{x},\omega); \\
+f(\vec{x}, y\zzero,\omega) &= h_0\big(\vec{x},y,f(\vec{x},y,\omega),\omega\big)|_{t(\vec{x},y)}; \\
+f(\vec{x},y\oone,\omega) &= h_1\big(\vec{x},y,f(\vec{x},y,\omega),\omega\big)|_{t(\vec{x},y)},
+\end{align*}
+\noindent
+where $t$
+is defined from
+$\eepsilon,\zzero,\oone,\cconc,
+\times$ by explicit definition, which means that $t$ can be obtained by a finite term using composing the functions $\conc$ and $\times$ on the constants $\eepsilon$, $\zzero$, $\oone$ and the variables $\vec x$ and $y$.\footnote{This language is identical to the one of $\Lpw$ terms, Definition \ref{def:lpwterms}.}
+\end{itemize}
+\end{defn}
+
+
+
+
+
+
+
+
+
+% \begin{remark}
+% {
+% Notice that Ferreira's characterization~\cite{Ferreira90},
+% not only does not include the
+% query function $\query$, but also the
+% conditional is not used.
+% Instead, it contains the ``substring-conditional'' function:
+% $$
+% \emph{S}(x,y,\omega) = \begin{cases}
+% \oone \ \ \ &\text{if } x \subseteq y \\
+% \zzero \ \ \ &\text{otherwise}
+% \end{cases}
+% $$
+% Nevertheless,
+% we can define it due by bounded recursion.
+% First, let $f_{\Tail}(x,\omega)$ be defined as follows:
+% \begin{align*}
+% \emph{Tail}(\eepsilon,\omega) &= \eepsilon \\
+% %
+% \emph{Tail}(x\bbool,\omega) &= x|_x.
+% \end{align*}
+% %
+% %
+% Then, let $Eq(x,y,\omega)$ be:
+% \begin{align*}
+% \emph{Eq}(x,\eepsilon,\omega) &= \Cf(x,\oone,\zero,\zero,\omega) \\
+% %
+% \emph{Eq}(x,y\zzero,\omega) &= \Cf(x, \zero,
+% \emph{Eq}(\emph{Tail}(x), y,\omega), \zero, \omega)|_{\one} \\
+% %
+% \emph{Eq}(x,y\oone,\omega) &= \Cf(x, \zero, \zero,
+% \emph{Eq}(\emph{Tail}(x),y,\omega),\omega)|_{\one}.
+% \end{align*}
+% Finally, we can define $\emph{S}(x,y,\omega)$ as:
+% \begin{align*}
+% \emph{S}(x,\eepsilon,\omega) &= \Cf(x,\oone,\zzero,\zzero,
+% \omega) \\
+% %
+% \emph{S}(x, y\zzero, \omega) &=
+% \Cf\big(x,\oone, \Cf \big(\emph{Eq}(x,y\zzero,\omega),
+% \emph{S}(x,y,\omega), \oone,\oone,\omega\big),
+% \emph{S}(x,y,\omega),\omega\big) \\
+% %
+% \emph{S}(x,y\oone,\omega) &=
+% \Cf\big(x, \oone,
+% \emph{S}(x,y,\omega),
+%  \Cf\big(\emph{Eq}(x,y\oone,\omega),
+% \emph{S}(x,y,\omega),\oone,\oone,\omega)\big),\omega\big)
+% \end{align*}}
+% \end{remark}
+% %
+% %
+% \noindent
+% Actually even the conditional function $\Cf$
+% could be defined by bounded recursion
+% as follows:
+% \begin{align*}
+% \Cf(\eT, y, z_0, z_1,\omega) &= y \\
+% %
+% \Cf(x\zzero, y, z_0, z_1,\omega) &= z_0|_{z_0} \\
+% %
+% \Cf(x\oone, y, z_0, z_1, \omega) &= z_1|_{z_1}.
+% \end{align*}
+% but we will take it as a primitive function of
+% $\POR$ to make the the realizability interpretation
+% of Section~\ref{sec:TaskB} better readable.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%% SUBSECTION
+%%%% THE THEORY \RS
+%%%% sec:S13
+\subsection{The Theory $\RS$}\label{sec:S13}
+
+The theory $\RS$ is a bounded arithmetic inspired by Ferreira's \cite{Ferreira90}.
+This first-order theory relies on the following components:
+
+\begin{itemize}
+  \item A first-order language $\Lpw$ with equality whose terms represent strings, introduced in Section \ref{subsub:lpw}.
+  \item A quantitative semantics $\llbracket \cdot\rrbracket$ associating a measurable set to each formula, which is described in Section \ref{subsub:semantics}.
+  \item A set of axioms, and a derivation system, discussed in Section \ref{subsub:S13}.
+\end{itemize}
+
+
+
+%%% PARAGRAPH
+%%% The Language L_PW
+\subsubsection{The Language $\Lpw$.}\label{subsub:lpw}
+The language $\Lpw$ is the
+first-order language
+with equality defined in~\cite{FerreiraOitavem},
+augmented by a predicate symbol
+$\Flip(\cdot)$, as described below:
+
+
+%%% defn
+%%% Terms
+\begin{defn}[Terms]
+  \label{def:lpwterms}
+Let $x,y,\dots$ denote variables.
+Terms are defined by the following grammar:
+$$
+t,s ::= x \midd \epsilon \midd \zero \midd \one
+\midd t \conc s \midd t\times s.
+$$
+\end{defn}
+
+
+%%% Notation
+\begin{notation}
+The symbol $\conc$ is usually omitted:
+$t\conc s$ is abbreviated as $ts$.
+\end{notation}
+
+
+%%% defn
+%%% Formul\ae{}
+\begin{defn}[Formul\ae{}]
+Let $x,y,\dots$ denote variables and
+$t,s,\dots$ terms.
+Formul\ae{} are defined by the following
+grammar:
+$$
+F, G ::= \Flip(t) \midd t=s \midd t\subseteq s
+\midd \neg F \midd F\wedge G \midd F\vee G
+\midd F\rightarrow G \midd \exists x.F \midd
+\forall x.F.
+$$
+\end{defn}
+
+As a syntactical facilitation, we define some notations which do not extend the
+language's expressive power, yet they enable us to write more concise and clear formul\ae{}.
+
+%% Notation
+\begin{notation}[Exponentiation]~
+  \begin{itemize}
+    \item For every term $t$ of $\Lpw$, the abbreviation
+    $\one^t$ stands for the term $\one\times t$.
+    \item Given two terms of $\Lpw$ $t,s$,
+    the formula $t\preceq s$ is syntactic
+    sugar for $\one^t\subseteq \one^s$,
+    meaning that
+    the length of $t$ is
+    less than or equal to that of $s$.
+    \item If
+      $t,r,s$ are strings, the
+      abbreviation $t|_r=s$
+      denotes the following formula:
+      $$
+      (\one^r\subseteq \one^t
+      \wedge s\subseteq t \wedge \one^r=\one^s)
+      \vee (\one^t\subseteq \one^r \wedge s=t)
+      $$
+      saying that $s$ is the \emph{truncation}
+      of $t$ at the length of $r$.
+  \end{itemize}
+\end{notation}
+
+As for Buss' arithmetic, even our arithmetic relies on bounded quantification.
+This is done with the aim of keeping the size of the terms within the formul\ae{}
+under control and then, to keep the functions' time complexity within specific classes.
+%
+To this aim, Buss introduces two different flavors of quantification, namely
+bounded quantification and
+sharply bounded quantification (Definition \ref{def:bussboundedquantifiers});
+within our framework, they respectively correspond to
+ bounded quantification and subword quantification.
+
+%%% Notation
+\begin{notation}[Bounded Quantification]
+In $\Lpw$, \emph{bounded
+quantification} is quantification
+in the form $\forall x\preceq t.F$,
+which abbreviates
+$\forall x.
+\one^x\subseteq \one^t\rightarrow F$,
+or
+$\exists x\preceq t.F$.
+%which denotes  $(\exists x)(\one^x\subseteq \one^t\wedge F)$, where the formula $t\preceq s$ is syntactic sugar for $\one^t\subseteq \one^s$.
+%
+\end{notation}
+This form of quantification, similarly to Buss' bounded quantification $Q x \le k$\footnote{With $k \in \Nat$ and $Q\in\{\forall, \exists\}$}, ranges over $O(2^{|k|})$ values of $x$.
+
+\begin{notation}[Subword quantification]
+\emph{Subword quantification}
+is quantification in the form
+$\forall x\subseteq^* t$ and
+$\exists x\subseteq^* t$,
+such that $\forall x\subseteq^* t.F$
+and $\exists x\subseteq^* t.F$
+abbreviate (resp.)
+$\forall x.(\exists w \subseteq t.(wx\subseteq t)
+\rightarrow F$
+and $\exists x.(\exists w\subseteq t.(wx
+\subseteq t) \wedge F)$.
+%where the formula $t\subseteq^* s$ is  syntactic sugar for $(\exists r\subseteq s)(rt\subseteq^* s)$.
+%
+\end{notation}
+\noindent
+As for Buss' sharp quantification, $\forall x \le |k|$, allows the variable $x$ to range over a set of values whose size is linear in $k$.
+%
+For readability's sake, in the following,
+we also abbreviate the so-called
+\emph{initial subword quantifications}
+$\forall x.x\subseteq t \rightarrow F$
+as $\forall x\subseteq t.F$
+and $\exists x.x\subseteq t \wedge F$
+as $\exists x\subseteq t.F$.
+
+
+
+
+
+
+%%% SUBSECTION
+%%% Semantics for Formul\ae{} in L_PW
+%%% sec:semantics
+\subsubsection{Semantics for Formul\ae{} in $\Lpw$}\label{subsub:semantics}
+
+Upon $\Lpw$, we can define different semantics: for the aims of this work,
+we want our semantics to capture measure-related concerns about $\Lpw$'s
+formul\ae{}. To this end,
+we introduce the alternative,
+\emph{quantitative}
+semantics for $\Lpw$-terms and formul\ae{} inspired by~\cite{ADLP21}.
+Terms are interpreted in
+a standard way, so mapping constants to canonical strings and
+functions to members of $\Ss^{\Ss\times \Ss}$.
+This is done in Definition~\ref{df:terms} below.
+On the other hand, the semantics for formul\ae{}
+is inherently
+quantitative,
+as any formula is associated with a (measurable)
+set, $\llbracket F\rrbracket \in \sigma(\mathscr{C})$.
+%
+Intuitively, the \emph{quantitative} semantics of $\Lpw$ associates to
+a formula $F$ the set of characteristic functions $\omega \in \sigma(\mathscr{C})$
+such that, if these functions are employed as $\Flip$'s interpretations for
+the \emph{qualitative}
+semantics of $\Lpw$, then $F$ is valid. In order to convey this intuition,
+we first introduce the standard \emph{qualitative} semantics then
+the \emph{quantitative} one and, finally, in Remark \ref{rem:quantqual} we then show their relation.
+
+
+
+
+
+
+%%% defn
+%%% Interpretation of Terms
+\begin{defn}[Interpretation for Terms]\label{df:terms}
+An environment $\xi:\mathcal{G}\mapsto \Ss$,
+where $\mathcal{G}$ is the set of term variables,
+is a mapping that assigns to each variable
+a string.
+Given a term $t$ in $\Lpw$ and an environment
+$\xi$,
+the \emph{interpretation of $t$ in $\xi$}
+is the string $\llbracket t\rrbracket_\xi \in \Ss$
+inductively defined as follows:
+
+\begin{minipage}{\linewidth}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{align*}
+\llbracket \epsilon\rrbracket_\xi &:=\eepsilon \\
+\llbracket \zero\rrbracket_\xi &:=\zzero \\
+\llbracket \one \rrbracket_\xi &:=\oone
+\end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.6\linewidth}
+\begin{align*}
+\llbracket x\rrbracket_\xi &:= \xi(x) \in \Ss \\
+\llbracket t\conc s\rrbracket_\xi &:=\llbracket t\rrbracket_\xi
+ \llbracket s\rrbracket_\xi \\
+\llbracket t\times s\rrbracket_\xi &:=\llbracket t\rrbracket_\xi
+\times \llbracket s\rrbracket_\xi.
+\end{align*}
+\end{minipage}
+\end{minipage}
+\end{defn}
+
+The standard, \emph{qualitative}
+model for terms and formul\ae{}
+of $\Lpw$ consists in
+$\mathscr{W} = (\Ss, \cconc, \times)$.
+In this case, logical operators are interpreted
+in the canonical way and
+$\Flip(\cdot)$
+is treated as a standard, unary predicate
+of first-order logic, which is interpreted
+as a subset of $\Ss$.
+
+%%% defn
+%%% Qualitative Semantics for L_PW-Formul\ae{}
+\begin{defn}[Qualitative Semantics for $\Lpw$-Formul\ae{}]
+  \label{def:qualsem}
+Given a formula $F$ in $\Lpw$
+and an interpretation $\rho
+=(\xi,\omega^{\mathtt{FLIP}})$, where $\xi :\mathcal{G}\rightarrow
+\Ss$ and $\omega^{\mathtt{FLIP}} \in \Os$,
+the \emph{interpretation of $F$ in $\rho$},
+$\llbracket F\rrbracket_\rho$,
+is inductively defined as follows:
+
+\begin{minipage}{\linewidth}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{align*}
+\llbracket \Flip(t)\rrbracket_\rho &:=
+\begin{cases}
+1 \ \ \ &\text{if } \omega^{\mathtt{FLIP}}(\llbracket t\rrbracket_\xi)
+=\oone \\
+0 \ \ \ &\text{otherwise}
+\end{cases} \\
+%
+\llbracket t=s\rrbracket_{\rho} &:=
+\begin{cases}
+1 \ \ \ &\text{if } \llbracket t\rrbracket_{\xi}
+= \llbracket s\rrbracket_\xi \\
+0 \ \ \ &\text{otherwise} \\
+\end{cases} \\
+%
+\llbracket t\subseteq s\rrbracket_\rho
+&:=
+\begin{cases}
+1 \ \ \ &\text{if } \llbracket t\rrbracket_\xi \ssubseteq
+\llbracket s\rrbracket_\xi \\
+0 \ \ \ &\text{otherwise}
+\end{cases}
+\end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\begin{align*}
+\llbracket \neg G\rrbracket_\rho &:= 1 -
+\llbracket G\rrbracket_\rho \\
+%
+\llbracket G\wedge H\rrbracket_\rho &:=
+min\{\llbracket G\rrbracket_\rho, \llbracket H\rrbracket_\rho\} \\
+%
+\llbracket G\vee H\rrbracket_\rho &:=
+max\{\llbracket G\rrbracket_\rho, \llbracket H\rrbracket_\rho\} \\
+%
+\llbracket G\rightarrow H\rrbracket_\rho
+&:= max\{(1-\llbracket G\rrbracket_\rho), \llbracket H\rrbracket_\rho\} \\
+%
+\llbracket \forall x.G\rrbracket_\rho &:= min\{\llbracket G
+\rrbracket_{(\xi\{x\leftarrow s\}, \omega^{\mathtt{FLIP}}\})} \ | \ s\in \Ss\} \\
+%
+\llbracket \exists x.G\rrbracket_\rho &:=
+max\{\llbracket G\rrbracket_{(\xi\{x\leftarrow s\}, \omega^{\mathtt{FLIP}}\})} \ | \ s \in \Ss\}.
+\end{align*}
+\end{minipage}
+\end{minipage}
+\end{defn}
+
+
+The model $\mathscr{W}$
+can be extended to a probability space
+by considering as the underlying
+sample space $\Os$.
+There are standard ways of building
+a well-defined $\sigma$-algebra and
+a probability space over $\Os$.
+
+\begin{defn}
+  \label{def:cylsigmaalgebra}
+  For every countable set $A$, each $K$ a finite subset of $A$
+  and $H\subseteq \Bool^K$, each subset of $\Bool^A$ of the form:
+  $$
+  \mathsf{C}(H) = \{\omega \in \Bool^A\ | \ \omega|_K \subseteq H\},
+  $$
+  are called \emph{cylinders} over $A$,~\cite{Billingsley}.\footnote{To be precise, these objects
+  are a slight variation of {Billingsley}'s \emph{cylinders}, which
+  are subsets of $\{\zero, \one\}^\Nat$.}
+\end{defn}
+
+Let $\mathscr{C}$
+denote the set of all
+cylinders and the $\sigma$-algebra generated by cylinders over $\Os$.
+The smallest $\sigma$-algebra
+including $\mathscr{C}$,
+which is Borel's,
+is indicated as $\sigma(\mathscr{C})$.
+There is a natural way of defining a probability
+measure $\mu$
+on $\mathscr{C}$, the canonical way is described in Definition \ref{def:mu}.
+
+\begin{defn}[Cylinder measure, \cite{Billingsley}]
+  \label{def:mu}
+  Be $S \subseteq \{\zero, \one\}^A$ for a countable $A$,
+  $K$ a finite subset of $A$
+  and $H\subseteq \Bool^K$,
+  (in this context $A=\Ss$, but later $A$ we will tale in exam even the case $A=\Nat$)
+  such that:
+  $$
+    S=\{\omega \in \{\zero, \one\}^A\, |\, \omega|_K \in H\}
+  $$
+  then, we define $\mu(S)$ as follows:
+  $$
+  \mu(S)= \frac {|H|}{2^{|K|}}.
+  $$
+\end{defn}
+
+Without proving that Definition \ref{def:mu} is a measure over the $\sigma$-field
+$\sigma(\mathscr C)$, we still cannot introduce any quantitative semantics for
+$\Lpw$.
+These results are in Chapter \ref{app}:
+in Remark \ref{rem:mufun}, we prove that $\mu$ is a function, while in
+Remark \ref{rem:mumeas}, we show that $\mu$ is a measure function on $\sigma(\mathscr C)$.
+
+
+%Definition \ref{def:mu} is well-founded because of the definition of $\sigma$-algebra, indeed $\overline {\mathsf{C}_b}={\mathsf{C}_{\overline b}} $.
+Due to the existence of $\mu$, the canonical model $\mathscr{W}=(\Ss,\cconc,\times)$
+can be generalized to
+$\mathscr{P}=(\Os, \cconc,\times, \sigma(\mathscr{C}),
+\mu_\mathscr{C})$.
+As anticipated, this new semantics has a concrete application
+based of probability experiments. Indeed,
+when interpreting
+sequences in $\Os$
+as the outcome of Bernoulli's process,
+the set of sequences such that
+the $n$-th
+coin flip's result is
+$\oone$ (for any fixed $n\in \Nat$)
+is assigned measure
+$\frac{1}{2}$,
+meaning that each random bit is uniformly
+distributed and independent of the
+others. Namely:
+$$
+\llbracket \Flip(t)\rrbracket_\xi := \mathsf C(\{\llbracket t\rrbracket_\xi\mapsto \one\}).
+$$
+
+
+%%% defn
+%%% Quantitative Semantics
+\begin{defn}[Quantitative Semantics]\label{def:quantsem}
+Given a formula
+$F$ and an environment $\xi:\mathcal{G}\rightarrow
+\Ss$, where $\mathcal{G}$
+is the set of term variables,
+the \emph{interpretation of F in $\xi$},
+$\llbracket F\rrbracket_\xi$,
+is the (measurable) set of sequences
+%\in \sigma(\mathscr{C})$
+inductively defined as follows:
+
+\begin{minipage}{\linewidth}
+\begin{minipage}[t]{0.4\linewidth}
+\begin{align*}
+\llbracket \Flip(t)\rrbracket_{\xi} &:= \{\omega \ | \
+\omega(\llbracket t\rrbracket_{\xi}) = \oone\} \\
+%\mathsf{C}_{X^1_{|\llbracket t\rrbracket_\xi|}} \\
+\llbracket t=s\rrbracket_\xi &:= \begin{cases}
+\Os \ \ &\text{if } \llbracket t\rrbracket_\xi = \llbracket s\rrbracket_\xi \\
+\emptyset \ \ &\text{otherwise}
+\end{cases} \\
+\llbracket t\subseteq s\rrbracket_{\xi} &:=
+\begin{cases}
+\Os \ \ \ &\text{if } \llbracket t\rrbracket_\xi
+\ssubseteq \llbracket s\rrbracket_\xi \\
+\emptyset \ \ \ &\text{otherwise}
+\end{cases}
+\end{align*}
+\end{minipage}
+\hfill
+\begin{minipage}[t]{0.5\linewidth}
+\begin{align*}
+\llbracket \neg G\rrbracket_\xi &:=
+\Os\setminus\llbracket G\rrbracket_\xi \\
+\llbracket G\vee H\rrbracket_\xi &:= \llbracket G\rrbracket_\xi \cup \llbracket H\rrbracket_\xi \\
+%
+\llbracket G\wedge H\rrbracket_\xi &:=
+\llbracket G\rrbracket_\xi \cap \llbracket H\rrbracket_\xi \\
+%
+\llbracket G\rightarrow H\rrbracket_\xi &:=
+(\Os\setminus\llbracket G\rrbracket_\xi)
+\cup \llbracket H\rrbracket_\xi \\
+%
+\llbracket \exists x.G\rrbracket_\xi &:=
+\bigcup_{i\in\Ss} \llbracket G\rrbracket_{\xi\{x\leftarrow i\}} \\
+%
+\llbracket \forall x.G\rrbracket_\xi &:=
+\bigcap_{i\in \Ss}\llbracket G\rrbracket_{\xi\{x\leftarrow i\}}.
+\end{align*}
+\end{minipage}
+\end{minipage}
+%where $|\llbracket t\rrbracket_\xi|$ denotes the length of $\llbracket t\rrbracket_\xi\in \Ss$.
+\end{defn}
+\noindent
+The semantics is well-defined since
+the sets $\llbracket \Flip(t)\rrbracket_\xi$,
+$\llbracket t=s\rrbracket_\xi$
+and $\llbracket t\subseteq s\rrbracket_\xi$
+are measurable
+and measurability is preserved by all
+the logical operators.
+
+
+
+
+
+
+
+
+
+
+%%% NOTATION
+\begin{notation}
+For readability's sake, in the following part of this work, we may abbreviate
+the former interpretation as $\llbracket \cdot
+\rrbracket_\omega$
+and the quantitative interpretation
+$\llbracket \cdot\rrbracket_\xi$
+simply as $\llbracket \cdot\rrbracket$.
+\end{notation}
+
+As we mentioned before, the \emph{quantitative} and the \emph{qualitative} semantics are strictly related one with each other:
+
+
+\begin{remark}
+\label{rem:quantqual}
+For each $\Lpw$ formula $F$, environment $\xi$, function $\omega \in \Os$ and each interpretation $\rho=(\omega, \xi)$, let $\llbracket \cdot \rrbracket_\xi$ the \emph{quantitative} semantics for $\Lpw$ described in Definition \ref{def:quantsem} and $\llbracket \cdot \rrbracket_{\rho}$ the \emph{qualitative} semantics for $\Lpw$ described in Definition \ref{def:qualsem},
+then it holds that:
+$$
+\llbracket F\big\rrbracket_{(\xi, \omega)} = 1 \leftrightarrow
+\omega \in \llbracket F \rrbracket_\xi.
+$$
+\end{remark}
+\begin{proof}
+  The proof goes by induction on $F$'s syntax. The only base case is $\Flip$'s, which is a direct consequence of Definitions \ref{def:quantsem} and \ref{def:qualsem}. All the other cases are trivial consequences of the induction hypothesis(es) and the definitions of the two semantics.
+\end{proof}
+%%%% PARAGRAPH
+%%%% THE THEORY \RS
+\subsubsection{The Theory $\RS$.}
+\label{subsub:S13}
+
+As we anticipated in the previous sections, the theory $\RS$ includes
+the axioms by~\cite{Ferreira90} as
+expressed in $\Lpw$ using any derivation system for classical first-order logic, such as, for example, sequent calculus or natural deduction.
+%
+As for Buss' Bounded Arithmetic, our characterization relies on syntactically defined formul\ae{}. In particular, the $\POR$ class will be captured by particular $\Sigma^b_1$ formul\ae{}.
+
+
+%%% Sigma^b_1-Formula
+\begin{defn}[$\Sigma^b_1$-Formula]\label{df:Sigmab1}
+A $\Sigma^b_0$-formula  is a subword quantified formula,
+i.e. a formula belonging to the smallest
+class of $\Lpw$ containing atomic
+formul\ae{} and closed under Boolean operations
+and subword quantifications.
+A \emph{$\Sigma^b_1$-formula}
+in $\Lpw$ is a formula of the form
+$\exists x.\big(x\preceq t(\vec{z})\wedge
+F(\vec{z},x)\big)$,
+where $F$ is a subword quantified formula. For simplicity, we will call $\Sigma^b_1$ the class
+containing all and only the $\Sigma^b_1$-formul\ae{}.
+\end{defn}
+% \noindent
+% Every string $s\in \Ss$
+% can be seen as a term $\overline{s}$
+% of $\Lpw$, such that
+% $\overline{\eepsilon}=\epsilon,
+% \overline{s\zzero} = \overline{s}\conc\zero$
+% and $\overline{s\oone}=\overline{s}\conc\one$,~e.g.
+% $\overline{\zzero\zzero\oone}
+% = \zero\conc\zero\conc\one$.
+
+
+%\begin{notation}[{$s$-word}]\label{sword}
+%Given a string $s\in \Ss$, let us inductively  define the corresponding {\emph{s-word}},  denoted $\overline{s} \in \Lpw$, as follows:
+%\begin{align*}
+%\overline{\eepsilon} &:= \epsilon \\
+%\overline{s\cconc\zzero} &:= \overline{s}\zero \\
+%\overline{s\cconc\oone} &:= \overline{s}\one.
+%\end{align*}
+%\end{notation}
+
+
+
+
+
+
+% Theory \RS
+\begin{defn}[Theory $\RS$]
+  \label{def:S13}
+The theory $\RS$ is defined by
+axioms belonging to two classes:
+\begin{itemize}
+\itemsep0em
+\item \emph{Basic} axioms:
+\begin{enumerate}
+\itemsep0em
+\item $x\epsilon=x$;
+\item $x(y\zero)=(xy)\zero$;
+\item $x(y\one)=(xy)\one$;
+\item $x\times \epsilon=\epsilon$;
+\item $x\times y\zero=(x\times y)x$;
+\item $x\times y\one =(x\times y)x$;
+\item $x\subseteq \epsilon \leftrightarrow
+x=\epsilon$;
+\item $x\subseteq y\zero \leftrightarrow
+x\subseteq y \vee x=y\zero$;
+\item $x\subseteq y\one \leftrightarrow
+x\subseteq y \vee x=y\one$;
+\item $x\zero=y\zero \rightarrow x=y$;
+\item $x\one=y\one \rightarrow x=y$;
+\item $x\zero\neq y\one$;
+\item $x\zero\neq \epsilon$;
+\item $x\one \neq \epsilon$.
+\end{enumerate}
+
+\item Axiom scheme for \emph{induction on
+notation}:
+$$
+B(\epsilon) \wedge \forall x.\big(B(x)
+\rightarrow B(x\zero)\wedge B(x\one)\big)
+\rightarrow \forall x.B(x),
+$$
+where $B$ is a $\Sigma^b_1$-formula
+in $\Lpw$.
+\end{itemize}
+And closed under the rules of standard first-order classical logic.
+\end{defn}
+\noindent
+
+% An \emph{extended $\Sigma^b_1$-formula}
+% is any formula of $\Lpw$
+% that can be constructed in a finite
+% number of steps
+% by starting with subword quantifications and bounded
+% existential quantifications.
+%
+% \begin{prop}[\cite{Ferreira90}]
+% In $\RS$ any extended $\Sigma^b_1$-formula
+% is logically equivalent to a $\Sigma^b_1$-formula.\footnote{
+% Actually,
+% Ferreira proves this result for his theory
+% $\Sigma^b_1$-NIA~\cite[pp. 148-149]{Ferreira88},
+% but it clearly holds for $\RS$ as well.}
+% \end{prop}

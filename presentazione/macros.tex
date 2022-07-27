@@ -1,0 +1,395 @@
+\newcommand{\query}{\emph{Q}}
+\newcommand{\Sf}{\emph{S}}
+\newcommand{\Cf}{\emph{C}}
+
+\newcommand{\POR}{\mathcal{POR}}
+\newcommand{\FOL}{\mathsf{FOL}}
+\newcommand{\MQPA}{\mathsf{MQPA}}
+\newcommand{\SIFP}{\mathsf{SIFP}}
+\newcommand{\RA}{{\mathsf{RA}}}
+\newcommand{\LA}{{\mathsf{LA}}}
+\newcommand{\SIFPRA}{\mathsf{SIFP_{\RA}}}
+\newcommand{\SFPOD}{\mathbf{SFP_{\mathbf{OD}}}}
+\newcommand{\SIFPLA}{\mathsf{SIFP_{\LA}}}
+\newcommand{\lang}[1]{{\mathcal L ({#1})}}
+
+
+\newcommand{\Bool}{\mathbb{B}}
+\newcommand{\Ss}{\mathbb{S}}
+\newcommand{\Os}{\mathbb{O}}
+\newcommand{\Nat}{\mathbb{N}}
+
+%\newcommand{\zzero}{\mathbf{0}}
+%\newcommand{\oone}{\mathbf{1}}
+\newcommand{\zzero}{\zero}
+\newcommand{\oone}{\one}
+\newcommand{\eepsilon}{\bm{\epsilon}}
+\newcommand{\cconc}{\bm{\conc}}
+%\newcommand{\ttimes}{\bm{\times}}
+
+\newcommand{\ssubseteq}{\bm{\subseteq}}
+
+\newcommand{\zero}{\mathtt{0}}
+\newcommand{\one}{\mathtt{1}}
+\newcommand{\bool}{\mathtt{b}}
+\newcommand{\bbool}{\mathtt{b}}
+
+
+\newcommand{\tTerm}{{\mathbf t}}
+\newcommand{\fTerm}{{\mathbf f}}
+\newcommand{\vTerm}{{\mathbf v}}
+\newcommand{\bbT}{{\mathbf b}}
+\newcommand{\uT}{{\mathsf u}}
+\newcommand{\vT}{{\mathsf v}}
+\newcommand{\arrowT}{\Rightarrow}
+\newcommand{\RS}{{\mathit{RS}^1_2}}
+
+
+\newcommand{\Lpw}{\mathcal{L}}
+\newcommand{\Lmq}{\mathcal{L}^{\mathsf{MQ}}}
+\newcommand{\Lbuss}{\mathcal{L}_{\mathsf{Buss}}}
+
+\newcommand{\Flip}{\mathtt{Flip}}
+
+\newcommand{\midd}{\; \; \mbox{\Large{$\mid$}}\;\;}
+\newcommand{\conc}{\frown}
+
+\newcommand{\suc}{\mathtt{S}}
+\newcommand{\PA}{\mathsf{PA}}
+
+\newcommand{\DIA}{\mathbf{D}}
+\newcommand{\BOX}{\mathbf{C}}
+
+\newcommand{\longv}[1]{{}}
+
+\newcommand{\rt}[1]{\(#1\)-Reduction-Tree}
+\newcommand{\RT}[3]{\mathit{RT}_{#1}(#2, #3)}
+
+
+
+\newcommand{\id}{\mathsf{Id}}
+\newcommand{\stm}{\mathsf{Stm}}
+\newcommand{\xp}{\mathsf{Exp}}
+\newcommand{\fl}[1]{\mathsf{Flip(}#1\mathsf{)}}
+\newcommand{\rb}{\mathsf{RandBit()}}
+\newcommand{\while}[2]{\mathbf{while}(#1)\{#2\}}
+\newcommand{\If}[2]{\mathbf{if}(#1)\{#2\}}
+\newcommand{\sk}{\mathbf{skip};}
+\newcommand{\halt}{\mathbf{halt};}
+\newcommand{\takes}{\leftarrow}
+\newcommand{\store}{\Sigma}
+\newcommand{\as}[2]{[#1 \leftarrow #2]}
+\newcommand{\ssos}{\triangleright}
+\newcommand{\sred}{\rightharpoonup}
+\newcommand{\ccrt}{\mathit{ccrt}}
+
+\newcommand{\leadstola}{{\leadsto_\LA}}
+\newcommand{\leadstora}{{\leadsto_\RA}}
+\newcommand{\leadstolan}[1]{{\leadsto_\LA^{#1}}}
+\newcommand{\leadstoran}[1]{{\leadsto_\RA^{#1}}}
+
+%\newcommand{\LL}{\mathfrak L}
+\newcommand{\LL}[1]{{\mathfrak L_{#1}}}
+
+\newcommand{\MM}{\mathfrak M}
+\newcommand{\copyb}{\mathit{copyb}}
+\newcommand{\trunc}{\mathit{trunc}}
+
+%\newtheorem{theorem}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{remark}{Remark}
+%\newtheorem{lemma}{Lemma}
+\newtheorem{cor}{Corollary}
+%\newtheorem{example}{Example}
+
+
+\theoremstyle{definition}
+\newtheorem{defn}{Definition}
+\newtheorem{notation}{Notation}
+\newtheorem{ex}{Example}
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%%%%%%
+%%%% CONJECTURE
+
+
+\newcommand{\df}{\mathsf{d}}
+
+\renewcommand{\C}{\mathbf{C}}
+\newcommand{\cq}[1]{\mathbf{C}^{#1}}
+\newcommand{\dq}[1]{\mathbf{D}^{#1}}
+
+\newcommand{\BPP}{\mathbf{BPP}}
+\newcommand{\PBPP}{\mathbf{PBPP}}
+\newcommand{\RP}{\mathbf{RP}}
+\newcommand{\ZPP}{\mathbf{ZPP}}
+\newcommand{\PP}{\mathbf{PP}}
+
+%\newcommand{\PTM}{\mathbf{PTM}}
+\newcommand{\PPT}{\mathbf{PPT}}
+\newcommand{\FBPP}{\mathbf{FBPP}}
+\newcommand{\SIMP}{\mathbf{SIMP}}
+\newcommand{\SFIP}{\mathbf{SFIP}}
+\newcommand{\BRS}{\mathbf{BRS}}
+
+\newcommand{\SFP}{\mathbf{SFP}}
+\newcommand{\FP}{\mathbf{FP}}
+\newcommand{\Lstm}{L(\mathsf{Stm})}
+
+
+\theoremstyle{theorem}
+\newtheorem{conj}{Conjecture}
+\newtheorem{characterization}{Characterization}
+
+
+
+
+
+
+
+%% TASK B
+\newcommand{\PORo}{\POR^\lambda}
+
+\newcommand{\sT}{\mathsf{s}}
+
+\newcommand{\zT}{\mathsf{0}}
+\newcommand{\oT}{\mathsf{1}}
+\newcommand{\eT}{\mathsf{\epsilon}}
+\newcommand{\bT}{\mathsf{b}}
+%% ??
+\newcommand{\cdotT}{\cdot}
+\newcommand{\Tail}{\mathsf{Tail}}
+\newcommand{\Trunc}{\mathsf{Trunc}}
+\newcommand{\Cond}{\mathsf{Cond}}
+\newcommand{\flipcoin}{\mathsf{Flipcoin}}
+\newcommand{\Rec}{\mathsf{Rec}}
+
+\newcommand{\TT}{\mathtt{T}}
+\newcommand{\FF}{\mathtt{F}}
+\newcommand{\GG}{\mathtt{G}}
+\newcommand{\HH}{\mathtt{H}}
+\newcommand{\KK}{\mathtt{K}}
+\newcommand{\CC}{\mathtt{C}}
+
+\newcommand{\PV}{\mathsf{PV}^\omega}
+
+
+\newcommand{\BT}{\mathsf{B}}
+\newcommand{\BNeg}{\mathsf{BNeg}}
+\newcommand{\BOr}{\mathsf{BOr}}
+\newcommand{\BAnd}{\mathsf{BAnd}}
+\newcommand{\Eps}{\mathsf{Eps}}
+\newcommand{\boolT}{\mathsf{Bool}}
+\newcommand{\Zero}{\mathsf{Zero}}
+\newcommand{\Eq}{\mathsf{Eq}}
+\newcommand{\Times}{\mathsf{Times}}
+\newcommand{\Sub}{\mathsf{Sub}}
+\newcommand{\Conc}{\mathsf{Conc}}
+
+\newcommand{\subseteqT}{\subseteq}
+
+
+\newcommand{\ooverline}[1]{\overline{\overline{#1}}}
+\newcommand{\func}[1]{f_{\mathrm{#1}}}
+
+\newcommand{\NP}{\mathbf{NP}}
+
+\newcommand{\varO}{\mathbf{x}}
+\newcommand{\varT}{\mathbf{y}}
+\newcommand{\termO}{\mathbf{t}}
+\newcommand{\termT}{\mathbf{u}}
+\newcommand{\termF}{\mathbf{w}}
+
+
+\newcommand{\realize}{\ \circledR\ }
+
+\newcommand{\EM}{EM}
+\newcommand{\MP}{MP}
+
+\newcommand{\enc}{\sharp}
+\newcommand{\app}{\mathsf{app}}
+
+
+\newcommand{\topO}{\mathbbm{1}}
+
+\newcommand{\PIND}{PIND}
+\newcommand{\uTerm}{\mathtt{U}}
+
+
+%%% TASK C
+
+\newcommand{\fcob}{\mathcal{F}_{\mathsf{Cob}}}
+\newcommand{\cob}[1]{{#1}_{\mathcal{D}}}
+
+
+\newcommand{\MS}{M_S}
+\newcommand{\Qs}{\mathcal{Q}}
+\newcommand{\sstar}{\circledast}
+\newcommand{\reaches}[2]{\triangleright^{#1}_{#2}}
+\newcommand{\Sigmab}{\hat{\Sigma}}
+
+\newcommand{\POLY}{\mathsf{POLY}}
+\newcommand{\MSFP}{M_\SFP}
+\newcommand{\Dd}{\mathbb{D}}
+
+\newcommand{\Oone}{\overlineN{\oone}}
+\newcommand{\Zzero}{\overlineN{\zzero}}
+
+\newcommand{\overlineN}[1]{\widetilde{#1}}
+
+\newcommand{\Star}{*}
+
+\newcommand{\Tuples}{\mathbb{T}}
+
+\newcommand{\ovverline}[2]{{\underline{#1}}_{#2}}
+\newcommand{\rmr}{\mathit{rmr}}
+\newcommand{\rml}{\mathit{rml}}
+\newcommand{\addr}{\mathit{addr}}
+\newcommand{\addl}{\mathit{addl}}
+\newcommand{\enct}{\mathit{enct}}
+\newcommand{\tenc}{\mathit{tenc}}
+\newcommand{\matcht}{\mathit{matcht}}
+\newcommand{\apply}{\mathit{apply}}
+\newcommand{\step}{\mathit{step}}
+\newcommand{\eval}{\mathit{eval}}
+
+\newcommand{\Const}{\Sf}
+\newcommand{\concat}{\mathit{concat}}
+\newcommand{\rv}{\mathit{rv}}
+\newcommand{\reverse}{\mathit{reverse}}
+\newcommand{\ras}{\mathit{ras}}
+\newcommand{\las}{\mathit{las}}
+
+\newcommand{\rel}{\mathit{rel}}
+\newcommand{\lel}{\mathit{lel}}
+\newcommand{\ral}{\mathit{ral}}
+\newcommand{\lal}{\mathit{lal}}
+\newcommand{\rrl}{\mathit{rrl}}
+\newcommand{\lrl}{\mathit{lrl}}
+\newcommand{\srrl}{\mathit{srrl}}
+\newcommand{\simulate}{\mathit{sim}}
+
+\newcommand{\Succ}{\Sf}
+\newcommand{\Succb}{\Sf_2}
+\newcommand{\pd}{\mathit{pd}}
+\newcommand{\op}{\mathit{op}}
+\newcommand{\mult}{\mathit{mult}}
+
+\newcommand{\odd}{\mathit{odd}}
+\newcommand{\even}{\mathit{even}}
+\newcommand{\eq}{\mathit{eq}}
+
+\newcommand{\lst}{\mathit{lst}}
+\newcommand{\fst}{\mathit{fst}}
+
+\newcommand{\rmsep}{\mathit{rmsep}}
+
+%\newcommand{\rt}[2]{\(#1\)-Reduction-Tree}
+%\newcommand{\RT}[3]{\mathit{RT}_{#1}(#2, #3)}
+
+\newcommand{\rrs}{\mathit{rrs}}
+\newcommand{\res}{\mathit{res}}
+\newcommand{\lrs}{\mathit{lrs}}
+\newcommand{\les}{\mathit{les}}
+
+\newcommand{\sa}{\mathit{sa}}
+
+\newcommand{\dectape}{\mathit{dectape}}
+
+\newcommand{\Ll}{\mathbb{L}}
+
+\newcommand{\Tt}{\mathbb{T}}
+
+\newcommand{\blank}{\circledast}
+
+\newcommand{\stmreach}{\lvert\triangleright}
+\newcommand{\stmtrans}{\Vdash}
+
+\newcommand{\tmreach}{\triangleright}
+\newcommand{\tmtrans}{\vdash}
+
+%\newcommand{\reaches}[2]{\triangleright^{#1}_{#2}}
+\newcommand{\reachesf}[2]{{\overline{\triangleright}}^{#1}_{#2}}
+
+
+
+\newcommand{\m}[1]{\textcolor{black}{#1}}
+
+\newcommand{\g}[1]{\textcolor{black}{#1}}
+
+\newcommand{\polyF}{\mathcal{PTF}}
+\newcommand{\Id}{\mathit{Id}}
+
+\newcommand{\tmstep}{\vdash}
+
+
+\newcommand{\listenc}[2]{\langle{#1}\rangle^{#2}_{\Ll}}
+
+
+
+
+%%% conditional printing
+
+\newcommand{\Df}{\mathcal{D}}
+\newcommand{\Hf}{\mathcal{H}}
+
+
+\newcommand{\PL}{\mathbf{PL}}
+
+\newcounter{short}
+\setcounter{short}{0}
+\newcounter{appendix}
+\setcounter{appendix}{1}
+\newcounter{extended}
+\setcounter{extended}{2}
+
+
+\newcounter{num}
+\setcounter{num}{10}
+\newcounter{commenting}
+\setcounter{commenting}{0}
+
+\newcommand{\always}{0}
+\newcommand{\everything}{1}
+\newcommand{\appendixorsup}{2}
+\newcommand{\shortonly}{3}
+\newcommand{\shortorsup}{4}
+\newcommand{\extendedorsup}{5}
+\newcommand{\onlyappendix}{6}
+\newcommand{\notappendix}{7}
+
+\newcommand{\lshort}{0}
+\newcommand{\lappendix}{1}
+\newcommand{\lextended}{2}
+\newcommand{\leverything}{x}
+
+\newenvironment{conditional}[1]%
+        {%
+            \ifthenelse{\NOT \(%
+              \(\equal{#1}{\always} \AND 1 > 0\) \OR%
+              \(\equal{#1}{\appendixorsup} \AND \(\equal{\level}{\lappendix} \OR \equal{\level}{\lextended} \OR \equal{\level}{\leverything}\)\) \OR%
+              \(\equal{#1}{\shortorsup} \AND \(\equal{\level}{\lshort} \OR \equal{\level}{\lappendix} \equal{\level}{\lextended} \OR \equal{\level}{\leverything}\)\) \OR%
+              \(\equal{#1}{\extendedorsup} \AND \(\equal{\level}{\lextended} \OR \equal{\level}{\leverything}\)\) \OR%
+              \(\equal{#1}{\shortonly} \AND \(\equal{\level}{\lshort} \OR \equal{\level}{\leverything}\)\) \OR%
+              \(\equal{#1}{\onlyappendix} \AND \(\equal{\level}{\lappendix} \OR \equal{\level}{\leverything}\)\) \OR%
+              \(\equal{#1}{\notappendix} \AND \(\equal{\level}{\lshort} \OR \equal{\level}{\lextended} \OR \equal{\level}{\leverything}\)\)%
+            \)}%
+                    {\setcounter{commenting}{1}\expandafter\comment}%
+                    {}%
+                    }%
+         {%
+            \ifthenelse{\value{commenting} = 1}%
+                    {\setcounter{commenting}{0}\expandafter\endcomment}%
+                    {}%
+          }

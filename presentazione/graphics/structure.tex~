@@ -1,0 +1,34 @@
+\documentclass[5mm]{standalone}
+\usepackage{amsmath}
+\usepackage{amsthm}
+\usepackage{tikz}
+\input{../macros.tex}
+\usetikzlibrary{arrows}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
+\begin{document}
+\begin{tikzpicture}[->, node distance=2cm, semithick]
+ \node[text width=3cm, align= center] (H) {Hierarchy: };
+ \node[text width=3cm, align= center, below = 2cm of H] (A) {Algebra for $P$-Time functions: };
+ \node[text width=3cm, align= center, below = 2cm of A] (T) {Theory for $P$-Time functions: };
+ \node[right = 2cm of H] (PH) {$PH$};
+ \node[right = 2cm of PH] (eq1) {$\equiv$};
+ \node[right = 4cm of PH] (BH) {$BH$};
+ \node[right = 2cm of BH] (s1) {$\subset$};
+ \node[right = 4cm of BH] (OBH) {$OBH$};
+ \path let \p1 = (eq1) in let \p2 = (A) in node  at (\x1,\y2) (cf)          {Bounded Recursion on Notation};
+ \path let \p1 = (cf) in let \p2 = (T) in node (Si2) at (\x1, \y2)          {$S^1_2$};
+ \path let \p1 = (A) in let \p2 = (OBH) in node (POR) at (\x2, \y1)   {$\POR$};
+ \node (pf) at ($(cf)!0.7!(POR)$)    {$P$-Functions};
+ \path let \p1 = (pf) in let \p2 = (Si2) in node (PTCA) at (\x1, \y2) (PTCA)   {PTCA};
+ \path let \p1 = (POR) in let \p2 = (PTCA) in node (Si3) at (\x1, \y2)          {$\RS$};
+ \draw[-] (PH) edge (cf);
+ \draw[-] (BH) edge (cf);
+ \draw[-] (BH) edge (pf);
+ \draw[-] (OBH) edge (POR);
+ \draw[-] (cf) edge (Si2);
+ \draw[-] (pf) edge (PTCA);
+ \draw[-] (POR) edge (Si3);
+\end{tikzpicture}
+\end{document}
+

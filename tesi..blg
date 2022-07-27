@@ -1,0 +1,5 @@
+[0] Config.pm:311> INFO - This is Biber 2.16
+[0] Config.pm:314> INFO - Logfile is 'tesi..blg'
+[73] biber:340> INFO - === dom giu 26, 2022, 19:28:46
+[116] Utils.pm:400> ERROR - Cannot find 'tesi..bcf'!
+[116] Biber.pm:132> INFO - ERRORS: 1

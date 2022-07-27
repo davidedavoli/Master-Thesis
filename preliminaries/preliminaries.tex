@@ -1,0 +1,965 @@
+%!TeX spellcheck = en-US
+
+Before getting into the main concern of this thesis --- i.e. the development
+of a bounded arithmetic for randomized computation --- we would like to
+briefly recall some some standard notions which are nevertheless fundamental
+for our work.
+%
+To this aim, within the following sections, we will fix the notation for
+standard Turing Machines, recall some basic results
+of Probability and Measure
+Theory,
+describe some basic aspects of the probabilistic computational paradigm and, finally,
+we will recall the main results of S. Buss' bounded arithmetic.
+%
+However,
+these sections each one independent from the others and
+none of them contains peculiar details affecting the following part of this
+work. For these reasons, the reader that feels confident on these subject
+can directly jump to the next chapter, in which we define our Randomized
+Bounded Arithmetic and prove it equivalent to the thereby introduced $\POR$
+function algebra.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{Turing Machines}
+
+In this section, we define Turing Machines. This is aimed to
+fix the notation of all the similar computational paradigms which will be introduced
+in what follows.
+% For sake of consistecny with the other
+% models Turing-like machines defined in this work, even in this case
+% we will follow the same approach
+% used in the definition of STMs: for instance, the head will
+% write the character on its immediate right, and we will not make use of final states.
+
+%%% DEFN Stream Turing Machine
+\begin{defn}[Turing Machine]\label{df:TM}
+A \emph{Turing machine} is a quadruple
+$M:= \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta} \rangle$, where:
+\begin{itemize}
+\itemsep0em
+\item $\m{\Qs}$ is a finite set of states ranged over by
+$\m{q_i}$ and similar meta-variables.
+%
+\item $\m{q_0} \in \m{\Qs}$ is an initial state.
+%
+\item $\m{\Sigma}$ is a finite set of characters
+ranged over by $\m{c_i}$ \emph{et simila}.
+%
+\item $\m{\delta}: \m{\hat{\Sigma}}
+\times \m{\Qs}
+\longrightarrow \m{\hat{\Sigma}} \times \m{\Qs} \times \m{\hat{\Sigma}} \times \{\m{L},\m{R}\}$
+is a transition function describing the new configuration
+reached by the machine,
+\end{itemize}
+where  \m{$L$} and \m{$R$} are two fixed and distinct symbols,
+e.g.~\m{$\zero$} and \m{$\one$},
+$\m{\hat{\Sigma}}=\m{\Sigma} \cup \{\m{\blank}\}$
+and \m{$\blank$} represents the
+\emph{blank character}, such that $\m{\blank} \not \in
+\m{\Sigma}$.
+\end{defn}
+%
+\noindent
+As for other flavors of Turing machines of this work,
+without loss of generality, we will take in exam single-taped machines
+with a binary alphabet only.
+%
+%
+%
+%
+%%% Notation
+%\begin{notation}
+%In the following, let us use $\m{c}_{|\m{\Sigma}|+1}$ to denote the blank character $\m{\blank}$.
+%\end{notation}
+%
+%
+%
+The \emph{configuration} of a ordinary TM is
+a tuple which keeps track of the current state
+and some strings representing the state of the
+machine tape(s).
+
+
+%%% DEFINITION
+%%% CONFIGURATION
+\begin{defn}[Configuration of a TM]\label{df:TMConfiguration}
+The \emph{configuration of a TM}
+is a triple $\langle \m{\sigma},
+\m{q}, \m{\tau}\rangle$,
+where:
+\begin{itemize}
+\itemsep0em
+%
+\item $\m{\sigma} \in \hat{\Sigma}^*$
+is the portion of the work tape on the left of the head;
+%
+\item $\m{q}\in A$ is the current state of the machine;
+%
+\item $\m{\tau} \in \hat{\Sigma}^*$ is the portion of the
+work tape on the right of the head.
+%
+\end{itemize}
+\end{defn}
+%
+%
+\noindent
+The shift of the tape is naturally defined by
+pre-fixing and post-fixing characters to strings
+%
+%
+%
+%
+%
+The dynamic behavior of a TM is defined
+recurring to a transition function.
+
+
+%%% DEFINITION
+%%% STM Transition Function
+\begin{defn}[TM Transition Function]\label{df:TMTransition}
+Given a TM, $M=\langle
+\m{\Qs}, \m{q}, \m{\Sigma}, \m{\delta}\rangle$,
+we define the \emph{partial transition function}
+$\tmtrans \delta: \hat{\Sigma}^* \times
+\Qs \times \hat{\Sigma}^* \longrightarrow
+\hat{\Sigma}^* \times
+\Qs \times \hat{\Sigma}^*$
+between two configurations as:
+%
+\begin{align*}
+\langle \m{\sigma}, \m{q}, \m{c\tau}\rangle
+%
+\tmtrans_{\delta}
+%
+\langle \m{\sigma c'}, \m{q'}, \m{\tau}\rangle
+%
+\ \ \ \ \ &\text{if} \ \m{\delta}(\m{q},\m{c}) =
+\langle \m{q'}, \m{c'}, \m{R}\rangle \\
+%
+%
+%
+\langle \m{\sigma c_0},
+\m{q}, \m{c\tau}\rangle
+\tmtrans_{\delta}
+\langle \m{\sigma},
+\m{q'}, \m{c_0c_1'\tau}\rangle
+%
+\ \ \ \ \ &\text{if} \ \m{\delta}(\m{q}, \m{c_1}) = \langle
+\m{q'}, \m{c_1'}, \m{L}\rangle.
+\end{align*}
+%
+\end{defn}
+%
+%
+%
+\noindent
+The transitive closure of $\tmtrans$ yields the reachability
+function between configurations of the machine, as defined below:
+
+%%% DEFINITION
+%%% REACHABILITY FUNCTION
+
+\begin{defn}[TM Reachability Function]\label{df:TMReachability}
+Given a TM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+$\{\tmreach^n_M\}_n$ is the smallest
+family of relations such that:
+%
+%
+%
+\begin{align*}
+\langle \m{\sigma}, \m{q}, \m{\tau}\rangle
+&\tmreach^0_M
+\langle \m{\sigma}, \m{q}, \m{\tau}\rangle \\
+%
+%
+\big(\langle \m{\sigma}, \m{q}, \m{\tau}\rangle
+\tmreach^n_M
+\langle \m{\sigma'}, \m{q'}, \m{\tau'}\rangle\big)
+%
+\wedge
+%
+\big(\langle \m{\sigma'}, \m{q'}, \m{\tau'}\rangle
+%
+&\tmtrans_\delta
+%
+\langle \m{\sigma''}, \m{q''}, \m{\tau''}\rangle\big)
+\rightarrow
+\big(\langle \m{\sigma}, \m{q}, \m{\tau}\rangle
+\tmreach^{n+1}_M
+\langle \m{\sigma''}, \m{q''}, \m{\tau''}\rangle\big).
+\end{align*}
+\end{defn}
+%
+%
+%
+%
+\noindent
+Even in this case, without loss of generality,
+we assume that TMs do not use final states:
+computation is regarded as concluded
+whenever the transition function
+is undefined on the current configuration.
+
+
+\begin{prop}\label{proptm}
+For any TM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma},\m{\delta}\rangle$
+and $n\in \Nat$,
+$\tmreach^n_M$ is a \emph{partial} function.
+\end{prop}
+\begin{proof}
+  Trivial, by the fact that $\tmtrans$ is a function and because
+  the composition of two functions is a function, too.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{notation}[Final Configuration]
+Given a TM,
+$M=\langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$,
+and a configuration
+$\langle \m{\sigma}, \m{q}, \m{\tau}\rangle$,
+we write
+$\langle \m{\sigma}, \m{q}, \m{\tau}\rangle \not\tmtrans_{\delta}$
+when there are no $\m{\sigma'}, \m{q'}, \m{\tau'}$
+such that
+$\langle \m{\sigma}, \m{q}, \m{\tau}\rangle
+\tmtrans_{\delta} \langle \m{\sigma'}, \m{q'},
+\m{\tau'}\rangle$.
+\end{notation}
+%
+%
+%
+\noindent
+Finally, let us introduce the notion of function computable by TMs.
+
+
+
+
+
+%%% COMPUTATION of STM
+\begin{defn}[TM Computation]\label{def:TMcomputation}
+Given a TM,
+$M = \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$
+and a function $g: \Ss \longrightarrow \Ss$,
+we say that
+\emph{$M$ computes $f$}, written $f_M = g$ if and only if
+for every string $\sigma\in \Ss$,
+there are $n\in \Nat$
+and a $\m{\tau}\in \Ss, \m{q'} \in \Qs$,
+such that:
+$$
+\langle \m{\eepsilon}, \m{q_0}, \m{\sigma}\rangle
+\ \tmreach^n_M \
+\langle \m{\gamma}, \m{q'}, \m{\tau}\rangle
+\not\vdash_{\delta},
+$$
+%for some $\m{\tau}, \m{q'$} and $\m\psi$ and
+with $f(\sigma)$ being
+the longest suffix of $\m{\gamma}$ not including
+$\m{\blank}$.
+\end{defn}
+
+
+
+
+\begin{defn}[Poly-Time Turing Machine]\label{df:PTM}
+A \emph{poly-time stream Turing machine}
+is an TM,
+$M= \langle \m{\Qs}, \m{q_0}, \m{\Sigma}, \m{\delta}\rangle$
+such that:
+$$
+\exists p\in \textsf{POLY}.
+\forall \m{\sigma} \in \Ss,
+\eta \in \Bool^\Nat.
+\exists n \leq p(|\m{\sigma}|)
+\big(\langle \m{\eepsilon},
+\m{q_0}, \m{\sigma}, \m{\eta} \rangle
+\tmreach^n_{M}
+\langle \m{\gamma}, \m{q'}, \m{\tau}, \m{\psi}\rangle \not\vdash_{\delta}.
+$$
+\end{defn}
+%
+%
+\noindent
+We define the class of functions which
+are computable by poly-time TMs.
+
+
+%%% The Class SFP
+\begin{defn}[The Class $\FP$]\label{df:FP}
+$$
+\FP := \{ f \in \Ss \times \Bool^\Nat \ | \
+f = f_{M}\text{ for some polynomial TM, $M$}\}
+$$
+
+\end{defn}
+%
+%
+\noindent
+
+
+
+
+
+
+
+
+
+
+
+
+\section{On Measure Theory and Probability Thery}
+
+This section is aimed to introduce some basic notions and notations of Measure
+and Probability theory with the aim to
+the introduction of those basic technical notions which will be necessary to follow
+the following discussions.
+%
+The reader who is interested in a deeper and complete introduction
+to Probability Theory can consult Feller's
+``An Introduction to Probability Theory and its Applications'' \cite{feller1968introduction}
+or Billingsley's  ``Probability and Measure'' \cite{Billingsley}.
+%
+In particular, Billingsley's work has been taken as a reference in many parts of this work.
+
+Probabilities studies how it is possible to \emph{measure} the degree of certainty of some events.
+Let $\Omega$ be an arbitrary set of events.
+In Probability Theory, the algebra of sets describing probabilistic events and their composition is called a ``field''.
+
+\begin{defn}[Field]
+  A filed $\mathcal F$ is a pair $\langle \Omega, F\rangle$ such that $F \subseteq \mathcal P(\Omega)$ and:
+  \begin{itemize}
+    \item $\Omega \in F$;
+    \item $X \in F \to \overline X \in F$;
+    \item $X \in F \land Y \in F \to  X \cap Y \in F$.
+  \end{itemize}
+\end{defn}
+
+\noindent
+Due to the presence of complementation, observe that the third
+condition in the definition of a field could be restated
+recurring to intersection rather than set
+union, obtaining an equivalent definition. This result can be
+trivially shown by induction on the proof that a set belongs to a
+specific field.
+%
+Moreover, we would like to point out that the elements of a field can only be finite or co-finite with respect to $\Omega$.
+
+If we relax this finitary condition, we end up defining a different
+algebraic structure, called $\sigma$-field, or $\sigma$-algebra.
+
+\begin{defn}[$\sigma$-field]
+  A $\sigma$-field $\Sigma$ is a set $\Sigma \subseteq P(\Omega)$ such that:
+  \begin{itemize}
+    \item $\Omega \in F$;
+    \item $X \in F \to \overline X \in F$;
+    \item $X_1, X_2, \ldots \in \Nat. \to \bigcup_{i \in \Nat} X_i \in F$.
+  \end{itemize}
+\end{defn}
+
+\noindent
+If $\Sigma$ is a $\sigma$-field, then the pair $\langle \Omega,
+\Sigma\rangle$ are called \emph{measurable spaces}. This epithet is due to
+the possibility to use these sets to define measure functions $\mu:
+\Sigma \longrightarrow \mathbb R$, peculiar functions associating a
+real number to each set.
+
+
+The elements of a $\sigma$-field intuitively represent all the possible
+outcomes of a random experiment and, within a probabilistic context,
+are called \emph{events}. Thus, assignment of a degree of certainty to each possible random event can be accomplished by defining a function
+which assigns to each element of a $\sigma$-field a value, representing
+the certainty of that event.
+%
+However a function, in ordered to be a \emph{measure function},
+must verify some constraints
+upon its values.
+
+\begin{defn}[Measure Function]
+  If $\langle \Omega, \Sigma\rangle$ is a measure space, then a function $\mu: \Sigma \longrightarrow \mathbb R$ is a \emph{measure function} if and only if:
+  \begin{itemize}
+    \item $\forall X \in \Sigma. \mu(X)\ge 0$;
+    \item $\mu(\emptyset)=0$;
+    \item For all the countable collections $\{X_i\}_{i \in \Nat}$, if all the $X_i$ are pairwise disjoint, then:
+    $$
+    \mu\left (\bigcup_{i \in \Nat} X_i \right)= \sum_{i \in \Nat}\mu(X_i).
+    $$
+  \end{itemize}
+\end{defn}
+
+However, there is a class of measure functions
+with stronger constrains which are those actually employed Probability Theory
+to measure the degree of certainty of probabilistic events.
+% following with the definition
+% of a field containing all the possible events, we are also interested
+% in defining a function which assigns a degree of certainty to each possible event within the field.
+
+\begin{defn}[Probability Measure]
+  If $\mathcal F := \langle \Omega, F\rangle$ is a field and $P: \Sigma \longrightarrow \mathbb R$, then $P$ is a probability measure if and only if:
+  \begin{itemize}
+    \item $\forall X \in \Sigma. 0 \le  \mu(X)\le 1$;
+    \item $\mu(\emptyset)=0 \land\mu(\Omega)=1$;
+    \item For all the countable collections $\{X_i\}_{i \in \Nat}$, if all the $X_i$ are pairwise disjoint, then:
+    $$
+    \mu\left (\bigcup_{i \in \Nat} X_i \right)= \sum_{i \in \Nat}\mu(X_i).
+    $$
+  \end{itemize}
+\end{defn}
+
+\begin{remark}
+  All the probability measures are measures, while the converse does not hold.
+\end{remark}
+
+These are all the ingredients we need to define a probability space:
+
+\begin{defn}[Probability Space]
+  If $\langle \Omega, \Sigma\rangle$ is a measurable space and $P$,
+  then the triple $\langle \Omega, \Sigma, P\rangle$ is called
+  \emph{Probability Space}.
+\end{defn}
+
+Events by themselves are the pure outcome of a probabilistic
+experiment. For this reason it is often useful to
+define functions associating each possible
+event to a generical interpretation. These functions are called ``random variables''.
+
+\begin{defn}[Random Variable]
+  If $\langle \Omega, \Sigma, P\rangle$ is a probability space and
+  $K\neq \emptyset$ is a set, a function $Z: \Omega \longrightarrow K$
+  is a random variable.
+\end{defn}
+
+As for ordinary events, it is possible to associate a degree of
+certainty to each possible value assumed by a random variable. This
+is simply done recurring to the measure of their pre-image.
+
+\begin{defn}[Probability of a Random Variable]
+  If $\langle \Omega, \Sigma, P\rangle$ is a probability space and
+  $Z: \Omega \longrightarrow K$ is a random variable,
+  then we define the probability distribution of the variable $Z$ as the function $\mathit{Pr}: K \longrightarrow [0,1]$ defined as follows:
+  $$
+  \mathit{Pr}[Z = k] = P(Z^{-1}(\{k\})).
+  $$
+  Fixed a set $K$, we call $\mathbb D(K)$ the set of all the probability distributions over $K$.
+\end{defn}
+
+These few notions are everything required to walk through the
+probabilistic concerns of this work. For a better understanding of
+these notion, we take in exam a school-book like example of
+probability theory:
+
+\begin{ex}
+  Let us build a model for the experiment of rolling a dice, in order to determine the probability of getting an outcome which is greater or equal than $4$. Then, the set $\Omega$ of all the possible outcomes of the experiment can be defined as $\Omega:=\{1,2,3,4,5,6\}$.
+  Basing on $\Omega$, we can define a probability space as follows:
+  \begin{itemize}
+    \item $\Sigma:=\mathcal P (\Omega)$;
+    \item $P:=X \mapsto \frac{|X|}{|\Omega|}$.
+  \end{itemize}
+  The triple $\langle \Omega, \Sigma, P\rangle$ is a probability
+  space: indeed $\Sigma$ is a finite $\sigma$ algebra on $\Omega$ and
+  $P$ is a probability measure.
+  Finally, our experiment can be modeled by means of the random
+  variable $Z: \Omega \longrightarrow \{0, 1\}$ defined as follows:
+  $$
+  Z(x):= \begin{cases}
+  1 & \text{ if }x\ge 4\\
+  0 & \text{ otherwise. }
+  \end{cases}
+  $$
+  Finally, we can quantify $\mathit{Pr}[Z=1]$ as follows:
+  $$
+  \mathit{Pr}[Z=1]=P(Z^{-1}(1))=P(\{4, 5, 6\})= \frac{|\{4, 5, 6\}|}{|\Omega|}= \frac 3 6 = \frac 1 2.
+  $$
+
+\end{ex}
+
+
+
+
+
+\section{Randomized Computation}
+
+Standard deterministic computation is defined upon TMs.
+This computational model features all the
+capabilities of a standard calculus formalism, indeed, as meant by Alan Turing,
+computation can be represented as a process of rewriting some expressions
+following predefined rules~\cite{rogers1987theory}.
+%
+However, although the TM computational model is sufficiently
+expressive to shape mathematical computations, it is still not capable to
+capable to model \emph{purely random events}.
+
+Even though the existence of randomness is itself debatable, there
+are real world experiments --- such as a coin toss, for instance ---
+whose outcome is sufficiently uncertain to be considered random  for practical purposes.
+%
+Thus, it makes sense to consider computational models which, during
+the computation, may take purely random choices.
+%
+Random algorithm are nowadays pervasive in many fields of Computer Science,
+such as Cryptography, Numerical Analysis and Machine Learning.
+
+Intuitively, the output of a random algorithm \emph{can be}
+uncertain. Thus, if a random algorithm is employed to solve a
+problem, the solution it proposes \emph{can be} uncertain ---
+and, in many cases, it is.
+%
+For an algorithm, producing  uncertain or approximated solutions is not an advantage,
+especially if this feature is considered by itself. However,
+sometimes probabilistic algorithms can solve computationally
+hard problems with simple algorithms, low error and lower time
+complexity than any non-random solution.
+In the Introduction, we have already mentioned some of
+these cases: the Polynomial Identity Testing Problem (PIT) and the Primality Test.
+While PIT is known to be in $\BPP$,
+there is no evidence of this problem being in $\mathbf P$; contrarily the
+Primality Test problem has been shown being in both $\BPP$ and $\mathbf P$,
+but the time consumption of the probabilistic Miller Rabin Test
+on is sensibly lower than the AKS
+algorithm which is up to now, the fastest non-random algorithm \cite{shoup2009computational}.
+% In what follows, we will take in exam the Primality Test problem in order to
+% show how admitting a rather small probability of code
+% allows to solve complex problems efficiently.
+%
+In complexity theory, the trade-off between approximation and time
+consumption leads to the definition of complexity classes which
+capture a new notion of feasibility based on Random Computation.
+
+Within this section, we introduce the definition a of a
+computational model for randomized computation and we define some
+complexity classes which model a probabilistic notion of
+feasibility, discussing their inter-relations and properties.
+
+\begin{restatable}[Probabilistic Turing Machines \cite{AroraBarak}]{defn}{defptm}
+  \label{def:ptminformal}
+A \emph{probabilistic Turing machine}
+is a Turing machine with two transition functions, namely $\delta_0,\delta_1$.
+%
+Given an input $x$, the PTM chooses at each step
+with probability $\frac{1}{2}$ to apply
+the transition function $\delta_0$ and with the same probability to apply $\delta_1$.
+%
+This choice is independent from all the previous ones.
+\end{restatable}
+
+To model the semantics of a Probabilistic Turing Machines (PTM, for short),
+we cannot recur to functions from strings to strings, because the output
+of the computation is the outcome of a stochastic process, so it results in
+a probability distribution. Indeed, called $\Ss$ the set of binary strings, the semantics
+of a PTM is a function
+$$
+f: \Ss \longrightarrow \mathbb D (\Ss).
+$$
+\noindent
+Within the class of PTM-computable functions, we can identify a thinner class
+imposing a polynomial time bound: the class of $\PPT$ functions.
+
+\begin{restatable}[Class $\PPT$]{defn}{defppt}
+  \label{def:pptinformal}
+The \emph{class $\PPT$} is the class of random functions
+from $\Ss$ to $\mathbb D(\Ss)$
+which are computable by a PTM in at most a polynomial
+number of steps.
+\end{restatable}
+
+Notice that when defining $\PPT$ we could make a slightly different requirement on the time complexity of those functions: indeed, we could require their \emph{expected} time consumption to be at most polynomial. This dichotomy is pervasive in probabilistic complexity: usually, algorithm with \emph{worst case} time bounds are called \emph{Monte Carlo} algorithm, while algorithm with \emph{average case} time bounds are usually called \emph{Las Vegas} algorithms.
+
+Characterizing feasible decisional problem by means of
+probabilistic algorithms, we are interested
+in two properties of these procedures: of course we re interested
+polynomial time complexity ---
+which can be captured by the $\PPT$ class --- but we also want to impose
+limitations to the amount of error these algorithms can make.
+%
+An example of how it is possible to capture both these property is the
+\emph{Bounded error Probabilistic Poly-time} complexity class $\BPP$.
+
+\begin{restatable}[Class $\BPP$]{defn}{defbpp}
+  \label{def:bppinformal}
+We say that a language $L\subseteq \Ss$ is in $\BPP$ if and only if,
+said $f_L$ the characteristic function of the language,
+there is a $\PPT$ function $f$ such that:
+$$
+\forall x \in \Ss.\mathit{Pr}[f(x)=f_L(x)]\ge \frac 2 3.
+$$
+\end{restatable}
+
+One can argue that $\frac 1 3$ of wrong detections
+can not be considered \emph{low error}. However, we must also take in account
+that, since it is possible to evaluate the same probabilistic function multiple
+times, it has been shown that the amount of error of a $\BPP$ function can
+be reduced arbitrarily preserving the program's poly-time consumption,
+\cite[Lemma 7.9]{AroraBarak}.
+%
+The class $\BPP$ is usually referred to as a \emph{double sided error} class.
+Indeed the probability of error is equal for all the strings which are in the language
+and those who are not.
+%
+One may also be interested in studying randomized algorithms which do not allow
+false positive or false negatives or even both of them. These three possibility
+represent three different nuances of feasibility within the probabilistic
+framework. Any of them is captured by a different complexity class.
+
+\begin{restatable}[Class $\RP$]{defn}{defrp}
+  \label{def:rpinformal}
+We say that a language $L\subseteq \Ss$ is in $\RP$ if and only if
+there is a
+$\PPT$ function $f$ such that:
+\begin{align*}
+\forall \sigma \in L. Pr[f(\sigma) = \one]\ge \frac 2 3\\
+\forall \sigma \not\in L. Pr[f(\sigma) = \zero]= 1.
+\end{align*}
+\end{restatable}
+\noindent
+It is almost trivial to see that $\RP$ is included within $\BPP$:
+take an $\RP$ function $f$ deciding $L$:
+the probability of error of $f$ is always
+smaller than $\frac 1 3$, which is the definition of $\BPP$. Thus, $L \in \BPP$.
+
+Usually, the complexity classes which are not trivially known to be closed
+under complementation --- $\NP$ and $\RP$ are among those classes ---
+cause the introduction of the class containing all the
+complementations of their problems as a class as on its own. This
+would be useless for classes which are closed under complementation, because that
+novel class would be identical to the original one.
+
+The complementary of $\RP$ is co-$\RP$ and is the class of
+languages $L$ such that there is a $\PPT$ function $f_L$ accepting
+the members of $L$
+with no probabilistic error at all
+and refusing the strings which not belonging to $L$
+with probability of error smaller than $\frac 1 3$.
+This is another example of \emph{one-sided} probabilistic error.
+The definition of this class can be formally
+stated as follows:
+
+\begin{restatable}[Class co-$\RP$]{defn}{defcorp}
+  \label{def:corpinformal}
+We say that a language $L\subseteq \Ss$ is in co-$\RP$ if and only if
+there is a
+$\PPT$ function $f$ such that:
+\begin{align*}
+\forall \sigma \in L. Pr[f(\sigma) = \one]= 1\\
+\forall \sigma \not\in L. Pr[f(\sigma) = \zero]\ge \frac 2 3.
+\end{align*}
+\end{restatable}
+
+\noindent
+Even in this case, one can observe that co-$\RP\subseteq \BPP$.
+%
+Finally one can be interested in stressing even more the error requirements
+allowing no error at all. The complexity class thus obtained is called $\ZPP$
+and contains all those languages which are known to
+be solvable with no probabilistic error with polynomial time complexity,
+which is quite peculiar, especially considering that the random choices
+of the algorithm, for these programs do not cause any probabilistic outcome.
+%
+This even thinner complexity class is called $\ZPP$, which stands for \emph{``Zero Probabilistic Poly-time error''}.
+
+\begin{restatable}[Class $\ZPP$]{defn}{defzpp}
+  \label{def:zppinformal}
+We say that a language $L\subseteq \Ss$ is in $\ZPP$ if and only if,
+said $f_L$ the characteristic function of $L$,
+there is a
+$\PPT$ function $f$ such that:
+\begin{align*}
+  \forall \sigma \in \Ss. \forall \bool \in \{\zero, \one\} f(\sigma)=k &\to f_L(\sigma)=1 \\
+  \forall \sigma \in \Ss. \mathit{Pr}[f(\sigma)\not\in \{\zero, \one\}]&< \frac 1 3.
+\end{align*}
+\end{restatable}
+%
+\noindent
+In this definition, we require that the machine has no margin of error on all
+its answer, however we admit the possibility that it in some cases it may output
+a value different from $\zero$ and $\one$: this kind of answer should be interpreted as
+``I do not know''. The definition of $\ZPP$ given above is not the standard one, but is an alternative characterization which requires the algorithm to be a \emph{Monte Carlo} algorithm rather than a \emph{Las Vegas} one. This because our Randomized Bounded Arithmetic characterizes the $\PPT$ functions, which are defined on top of \emph{Monte Carlo} algorithms, so this definition will allow a more natural characterization of such class in Chapter \ref{chap:characterization}.
+
+
+It is possible to see that this class is included within $\BPP$, it is a consequence of
+$\ZPP = \RP \cap \text{co-}\RP$, which we prove in Theorem \ref{thm:zpprpcorp1}.
+This result also entails that $\ZPP$ is closed under complementation.
+
+\begin{theorem}
+  \label{thm:zpprpcorp1}
+  $\ZPP = \RP \cap \text{co-}\RP$.
+\end{theorem}
+\begin{proof}
+  We first show that $\ZPP \subseteq \RP \land \ZPP \subseteq \text{co-}\RP$.
+  We examine only the second proposition: $\ZPP \subseteq \text{co-}\RP$.
+  Let $f_L$ be the decision function for a language $L \in \ZPP$,
+  take the following decision function for $L$:
+  $$
+  g(x) := \begin{cases} \one & \text{if } f(x)\neq \zero \land f(x)\neq \one \\ \zero & \text{otherwise.}\end{cases}
+  $$
+  Suppose that $\sigma \in L$, then $f(\sigma)=\one \lor (f(\sigma)\neq \zero \land f(\sigma)\neq \one)$,
+  so $\mathit{Pr}[g(\sigma)=\one]=1$. Otherwise, assume that $\sigma \not \in L$
+  $f(\sigma)=\zero \lor (f(\sigma)\neq \zero \land f(\sigma)\neq \one)$. In the first case,
+  $g(\sigma)=\zero$, while in the second case $g(\sigma)=\one$ causing a wrong detection,
+  but by definition of $\ZPP$, we know that it can happen with probability smaller than
+  $\frac 1 3$. So $g \in \text{co-}\RP$. The proof that $\ZPP \subseteq \RP$ is analogous.
+  Now we show that $\RP \cap \text{co-}\RP \subseteq \ZPP$.
+  Suppose that $f_1$ is a $\PPT$ function such that $f_1(\sigma)=\one$ if $\sigma \in L$,
+  and for $\sigma \not \in L$ $f_1(\sigma)=\one$ with probability smaller than $\frac 1 3$.
+  Similarly, suppose that $f_2$ is a $\PPT$ function such that $f_2(\sigma)=\zero$ if $\sigma \not \in L$,
+  and for $\sigma \in L$ $f_1(\sigma)=\zero$ with probability smaller than $\frac 1 3$.
+  Then consider the $\PPT$ function $g$ defined as follows:
+  $$
+  g(x):=\begin{cases} f_1(x) & \text{if }f_1(x)=\zero\\
+  f_2(x) & \text{if }f_2(x)=\one\\
+  \one\one & \text{otherwise. }\end{cases}
+  $$
+  Suppose that $\sigma \in L$, then $g(\sigma)=\one\one$ only if $f_2(\sigma)=\zero$,
+  which happens with
+  probability smaller than $\frac 1 3$. Similarly, if $\sigma \not \in L$, then
+  $f(x)=\one\one$ if and only if $f_1(\sigma)=\zero$, which happens with probability
+  smaller than $\frac 1 3$.
+\end{proof}
+
+\begin{figure}[t]
+  \centering
+  \begin{tikzpicture}
+    \node (BPP) {$\BPP$};
+    \node[above left = 2cm and 2cm of BPP] (RP) {$\RP$};
+    \node[below left = 2cm and 2cm of BPP] (coRP) {co-$\RP$};
+    \node[left = 4cm of BPP] (ZPP) {$\ZPP=\RP\cap$ co-$\RP$};
+
+    \draw[->] (ZPP) edge node[fill=white] {$\subseteq$} (RP);
+    \draw[->] (ZPP) edge node[fill=white] {$\subseteq$} (coRP);
+    \draw[->] (RP) edge node[fill=white] {$\subseteq$}  (BPP);
+    \draw[->] (coRP) edge node[fill=white] {$\subseteq$} (BPP);
+
+  \end{tikzpicture}
+  \caption{Inclusion schema between complexity classes.}
+  \label{fig:probcomp}
+\end{figure}
+
+\paragraph*{Considerations on Probabilistic Complexity Classes}
+
+In the previous part of this section, we have shown some relations among
+Probabilistic Complexity Classes. In particular we have shown how
+$\BPP$, $\RP$, co-$\RP$ and $\ZPP$ are one included in the
+other as described by Figure \ref{fig:probcomp}.
+%
+Moreover, Theorem \ref{thm:zpprpcorp1}, is a quite
+surprising result: the corresponding question for
+non determinism --- i.e. $\mathbf P = \NP\cap \text{co-}\NP$ --- is still open.
+
+Another relation between probabilistic complexity classes and the non-probabilistic ones
+is that $\BPP \subseteq \Sigma^p_2 \cap \Delta^p_2$, \cite{Goldreich}.
+Thus if $\mathbf P = \NP$, then we would get $\mathbf P = \BPP$.
+This motivates even more the interest in investigating these classes.
+
+Despite these interesting inter-relations between non-probabilistic and
+probabilistic complexity classes, we would like to point out that
+the latter are inherently different
+from the former:
+they are considered \emph{semantic complexity classes}, instead of
+\emph{syntactic complexity classes}.
+
+Intuitively, all of those classes having a
+procedure $c$ which decides whether the function computed by a given algorithm
+$a$ passed as argument belongs or not to that class are considered syntactic complexity classes.
+For example, $\mathbf P$ is a \emph{syntactic} complexity class,
+because it suffices to take $c$ defined as follows:
+$$
+c(a):=\begin{cases} \one & \text{if }a\text{ is the encoding of a Timed Turing Machine with polynomial
+time bound}\\ \zero &\text{otherwise.}\end{cases}
+$$
+Indeed, without lack of generality, one can consider every Timed Turing Machine as the
+implementations of a \emph{decision} algorithm. A similar argument establishes,
+for example, that $\mathbf {NP}$ is a \emph{syntactic} complexity class as well.
+%
+Conversely, classes which are not known to have this property are called
+\emph{semantic complexity classes}.
+For instance, take in exam $\BPP$:
+it is not sufficient to check whether the algorithm $a$
+is the encoding of a Timed Probabilistic Turing Machine with polynomial time bound.
+Indeed, one must also assess that the probabilistic error
+is bounder for every input. Unfortunately,
+testing whether a given PTM has this property is not believed decidable, \cite{AroraBarak}.
+Together with $\BPP$, even $\RP$, co-$\RP$ and $\ZPP$ are considered
+\emph{semantic complexity classes}.
+
+These considerations suggest that the analysis of probabilistic complexity classes
+is intrinsically harder than the analysis of syntactical complexity classes, but that
+due to the relations between probabilistic complexity classes and open problems
+of Computer Science, the research in this field is surely worth its effort.
+
+
+\section{Bounded Arithmetic}
+
+A Bounded Arithmetic is a logical theory on a first-order language with identity, a preorder predicate symbol --- within this section we employ the symbol $\le$ ---, bounded quantifiers (Definition \ref{def:bussboundedquantifiers}) and some arithmetical functions.
+
+\begin{defn}[Bounded Quantifier, \cite{Buss86}]
+  \label{def:bussboundedquantifiers}
+  A \emph{bounded quantifier} is a quantifier of the form $Qx \le t$ with
+  $t$ a term not involving $x$. A \emph{sharply bounded quantifier} is one of the form $Qx \le |t|$. $\forall x$ and $\exists x$ are unbounded quantifiers. A \emph{bounded formula} is
+  one with no unbounded quantifiers.
+\end{defn}
+
+Our interest towards bounded arithmetic is due to
+their capability to ground logical characterizations of well known complexity classes. This is usually done adopting appropriate interpretations
+for term functions and adopting a constructive proof system.
+%
+This allows to identify classes of formul\ae{} which correspond to
+well known complexity classes.
+
+Within this section we will introduce a standard bounded arithmetic due to S.
+Buss \cite{Buss86}, with the aim to pave the way for the development of a
+novel bounded arithmetic for randomized computation in Chapters \ref{chap:RBA} and
+\ref{chap:sfptopor}.
+
+\subsection{The Language of Buss' Arithmetic}
+
+The language $\Lbuss$ is the first-order language with identity whose terms are
+described by the grammar of Definition \ref{def:lbussterms}, and whose formul\ae{}
+are given in Definition \ref{def:lbussform}.
+
+%%% defn
+%%% Terms
+\begin{defn}[Terms]
+  \label{def:lbussterms}
+Let $x,y,\dots$ denote variables.
+Terms are defined by the following grammar:
+$$
+t,s ::= x \midd 0 \midd S(t)
+\midd t + s \midd t \cdot s \midd \lfloor \frac 1 2 t\rfloor \midd |x|\midd \#.
+$$
+\end{defn}
+
+
+%%% defn
+%%% Formul\ae{}
+\begin{defn}[Formul\ae{}]
+  \label{def:lbussform}
+Let $x,y,\dots$ denote variables and
+$t,s,\dots$ terms.
+Formul\ae{} are defined by the following
+grammar:
+$$
+F, G ::= t=s \midd t\le s
+\midd \neg F \midd F\wedge G \midd F\vee G
+\midd F\rightarrow G \midd \exists x.F \midd
+\forall x.F.
+$$
+\end{defn}
+
+\noindent
+The domain of $\Lbuss$ terms is $\Nat$, and term functions are interpreted as follows:
+
+\begin{itemize}
+  \item $S(x)$ is the successor function.
+  \item $+, \cdot$ are respectively sum and product.
+  \item $\lfloor\frac 1 2 x\rfloor$ computes the integer part of the number obtained dividing $x$ by $2$.
+  \item $x\#y:2^{|x|+|y|}$.
+  \item $|x|:=\lceil\log_2(x+1)\rceil$. Notice that $|x|$ computes the size of the encoding of $x$ in base $2$.
+\end{itemize}
+
+Together with this logic, Buss defines a syntactical hierarchy of bounded formul\ae{} which is aimed to characterize the whole Polynomial Hierarchy~\cite{STOCKMEYER19761} by means of \emph{provable, bounded} formul\ae{}. However, within this short introduction, we are not interested in studying relativized complexity classes so we will only define the set of $\Sigma^b_1$ formul\ae{}, which are meant to characterize $\mathbf P$ throughout the notion of $\Sigma^b_1$ representability. Indeed, the Randomized Bounded Arithmetic presented in Chapters \ref{chap:RBA} and \ref{chap:sfptopor} is aimed to capture the $\PPT$ functions or their sub-classes, without dealing
+with relativized complexity classes. Thus, it is defined on the same notions used by Buss to characterize the class $\FP$, extending them to probabilistic computation.
+
+%%% Sigma^b_1-Formula
+\begin{defn}[$\Sigma^b_1$-Formula]\label{df:Sigmab1}
+A $\Sigma^b_0$-formula  is a subword quantified formula,
+i.e. a formula belonging to the smallest
+class of $\Lbuss$ containing atomic
+formul\ae{} and closed under Boolean operations
+and subword quantifications.
+A \emph{$\Sigma^b_1$-formula}
+in $\Lbuss$ is a formula of the form
+$\exists x\le |t(\vec{z})|.
+F(\vec{z},x)$,
+where $F$ is a subword quantified formula. For simplicity, we will call $\Sigma^b_1$ the class
+containing all and only the $\Sigma^b_1$-formul\ae{}.
+\end{defn}
+
+\subsection{The $S^1_2$ Theory}
+
+An insightful result of Buss' work is the characterization
+of complexity classes by mans of the notion of \emph{provability} under a constructive
+deduction system. This is an insightful result: indeed, under a \emph{constructive} proof system
+any proof of an existential formula must contain, or
+imply the existence of, algorithms for finding the object which is proved to exist, \cite{Buss98}.
+%For this reason, if we are interested in studying a characterizing feasible complexity classes.
+For instance, if $\forall x. \exists y.A(x, y)$ is provable, then there must be an algorithm exhibiting
+$y$ given $x$. As we state above, we are mainly interested in the characterization of polynomial time complexity, for this reason, we will only show the arithmetical description
+given for the class $\mathbf P$. The theory introduced
+by Buss to this aim is called $S^1_2$ and is defined as follows:
+
+\begin{defn}[$S^1_2$ Theory]
+  $S^1_2$ is the first-order theory with language $\Lbuss$ containing:
+  \begin{itemize}
+    \item A set of basic equational axioms defining the function symbols of $\Lbuss$
+    with respect to $\le$ and to the identity predicate~\cite{Buss86}.
+    \item The polynomial induction schema PIND:
+    $$
+    A(0) \land \forall x.(A(\lfloor\frac 1 2 x\rfloor) \to A(x)) \to \forall x. A(x).
+    $$
+    for every $A \in \Sigma^b_1$.
+  \end{itemize}
+\end{defn}
+
+\noindent
+The notion of $\Sigma^b_1$-representability which captures $\FP$
+is given as follows:
+
+\begin{defn}[$\Sigma^b_1$ Representability]
+  Let $f: \Nat^k \longrightarrow \Nat$ be a function. It is $\Sigma^b_1$ definable if and only if:
+  \begin{itemize}
+    \item $\forall \vec n \in \Nat^k. A(\vec n, f(\vec n))$ holds.
+    \item $S^1_2 \vdash \forall \vec x. \exists !y. A(\vec x, y)$.
+  \end{itemize}
+\end{defn}
+
+\begin{theorem}
+  \label{thm:pchar}
+  A function $f$ is in $\mathbf P$ if and only if it is $\Sigma^b_1$ definable.
+\end{theorem}
+
+The proof of this result requires a significant amount of technical work, so we will not show it within this section, however it can be found in Buss' PhD thesis \cite{Buss86}. Moreover, that proof is structurally similar to one showing that our notion of $\Sigma^b_1$ representability captures exactly the class of $\PPT$ functions. Indeed, in Chapter \ref{chap:cobham}, we prove that part of the Buss' proof can be given as a corollary of some our results.
+
+Before getting into the discussion of our Randomized Bounded
+Arithmetic, we would like to point out some of the intuitions behind
+Theorem \ref{thm:pchar}. Because the careful reader will certainly observe that
+similar guidelines have been taken in account in Chapter \ref{chap:RBA} defining
+our Randomized Bounded Arithmetic.
+
+\begin{itemize}
+  \item The definition of $\Lbuss$'s terms is aimed to impose a polynomial grow rate to the size of quantified terms. As a consequence, referring to the definition of $\Sigma^b_1$ representability, we know that the size of all the terms within that formula are polynomially bound in the size of $\vec x$.
+  \item The PIND induction system differs form the standard induction system on natural numbers because of the stronger induction hypothesis. This is done with the aim to impose a polynomial bound to the number of induction steps within a proof.
+  Indeed, due to the \emph{constructiveness} of this axiom system,
+  any derivation of a $S^1_2$ formula corresponds to
+  the definition of a function. Thus, due to the Curry Howard isomorphism, bounding the number of inductive steps within a constructive proof, is equivalent to bounding the number of recursive calls in the represented function.
+\end{itemize}
+
+
+
+Finally, we would like to point out that Buss' $S^1_2$ Theory is not the only bounded arithmetic characterizing $\mathbf P$. Indeed, an interesting variation on Buss' work is Ferreira's PTCF~\cite{Ferreira88}. This theory is equivalent to Buss' $S^1_2$, but it is defined on a different set of axioms. Whilst Buss' Bounded arithmetics is modeled on natural numbers, Ferreira's PTCA is modeled directly on binary strings. This, in our opinion, has some benefits on the overall theory: it requires a smaller set of function, and thus less axioms, it has a more natural notion of term size and sharp bounds. Finally, it emphasizes the attention on the size of the terms rather than on the natural number they represent, making it easier to deal with time-complexities.
+%
+These are some of the reasons why we decided to ground our Randomized Bounded Arithmetic on strings rather than natural numbers.

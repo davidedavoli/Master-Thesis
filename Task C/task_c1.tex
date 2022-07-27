@@ -1,0 +1,2009 @@
+\documentclass[10pt]{amsart}
+\usepackage{geometry,xcolor,amsthm,amsmath,amssymb,stmaryrd, mathtools, hyperref, verbatim, bussproofs}
+\geometry{a4paper}
+
+
+
+%%% NEWCOMMAND
+\newcommand{\Wl}{\mathbb{PW}}
+\newcommand{\PA}{\mathsf{PA}}
+\newcommand{\BA}{\mathsf{BA}}
+\newcommand{\MQPA}{\mathsf{MQPA}}
+\newcommand{\BPP}{\mathbf{BPP}}
+\newcommand{\FBPP}{\mathbf{FBPP}}
+\newcommand{\POLY}{\mathsf{POLY}}
+\newcommand{\FP}{\mathbf{FP}}
+\newcommand{\SFP}{\mathbf{SFP}}
+\newcommand{\Q}{\mathsf{Q}}
+\newcommand{\POR}{\mathcal{POR}}
+\newcommand{\SIMP}{\mathcal{SIMP}}
+\newcommand{\SIFP}{\mathcal{SIFP}}
+\newcommand{\conc}{\frown}
+\newcommand{\Nat}{\mathbb{N}}
+\newcommand{\Bool}{\mathbb{B}}
+\newcommand{\midd}{\; \; \mbox{\Large{$\mid$}}\;\;}
+\newcommand{\zero}{\mathtt{0}}
+\newcommand{\one}{\mathtt{1}}
+
+%%% BITS %%%
+\newcommand{\bone}{b}
+
+%%% VARIABLES %%%
+\newcommand{\vone}{x}
+\newcommand{\vtwo}{y}
+
+%%% NUMBERS %%%
+\newcommand{\none}{n}
+\newcommand{\ntwo}{m}
+
+%%% TERMS %%%
+\newcommand{\tone}{t}
+\newcommand{\ttwo}{s}
+\newcommand{\tthree}{r}
+\newcommand{\Flip}[1]{\mathtt{Flip}(#1)}
+
+%%% FORMULAS %%%
+\newcommand{\fone}{F}
+\newcommand{\ftwo}{G}
+
+%%% FUNCTIONS %%%
+\newcommand{\funone}{f}
+
+%%% PRIMITIVE RECURSIVE DEFINITIONS %%%
+\newcommand{\prdone}{\mathsf{d}}
+
+%%% SETS %%%
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\QQ}{\mathbb{Q}}
+\renewcommand{\SS}{\mathbb{S}}
+\newcommand{\BB}{\mathbb{B}}
+\newcommand{\OO}{\mathbb{O}}
+\newcommand{\DD}{\mathbb{D}}
+\newcommand{\Tuples}{\mathbb{T
+}}
+
+%%% Stream machine %%%
+\newcommand{\ms}{q}
+\newcommand{\msf}{q'}
+\newcommand{\msi}[1]{q_{#1}}
+\newcommand{\mc}{c}
+\newcommand{\mcf}{c'}
+\newcommand{\mci}[1]{c_{#1}}
+\newcommand{\mt}{t}
+\newcommand{\mti}[1]{t{_#1}}
+\newcommand{\Sigmab}{\hat{\Sigma}}
+\newcommand{\mcan}{M_{S}}
+\newcommand{\msfp}{M_{\SFP}}
+\newcommand{\genm}{\mcan\coloneqq \langle \QQ, \Sigma, \TT, \msi0 \rangle}
+\newcommand{\gensfp}{\msfp\coloneqq \langle \QQ, \Sigma, \TT, \msi0 \rangle}
+\newcommand{\mone}{M}
+\newcommand{\mtwo}{N}
+\newcommand{\sone}{\sigma}
+\newcommand{\stwo}{\tau}
+\newcommand{\subo}{\eta}
+\newcommand{\sthree}{\gamma}
+\newcommand{\oone}{\omega}
+\newcommand{\otwo}{\psi}
+\newcommand{\mcnf}{\langle \sone, \ms, \stwo, \oone \rangle}
+\newcommand{\mcnfi}{\langle \epsilon, \msi0, \sone, \oone \rangle}
+\newcommand{\mcnfs}{\langle \sthree, \msf, \stwo, \otwo \rangle}
+\newcommand{\mcnff}{\langle \sone', \msf, \stwo', \oone' \rangle}
+\newcommand{\mcnfff}{\langle \sone'', \msf, \stwo'', \oone'' \rangle}
+\newcommand{\rcs}[1]{\vdash_{#1}}
+\newcommand{\Rcs}[2]{\vdash_{#1}^{#2}}
+\newcommand{\TT}{\delta_\SFP}
+
+\newcommand{\concat}{concat}
+\newcommand{\pred}{pd}
+\newcommand{\rv}{rv}
+\newcommand{\db}{\mathcal D}
+\newcommand{\hv}{\mathcal H}
+\newcommand{\If}{\mathtt{if}}
+\newcommand{\bgs}{\in_\oone}
+\newcommand{\cost}{\mathcal C}
+
+\newcommand{\lang}[1]{\mathcal L(#1)}
+\newcommand{\id}{\mathsf{Id}}
+\newcommand{\stm}{\mathsf{Stm}}
+\newcommand{\xp}{\mathsf{Exp}}
+\newcommand{\fl}{\mathsf{Flip}}
+\newcommand{\while}[2]{\mathbf{while}(#1)\{#2\}}
+\newcommand{\sk}{\mathbf{skip};}
+\newcommand{\takes}{\leftarrow}
+\newcommand{\store}{\Sigma}
+\newcommand{\as}[2]{[#1 \leftarrow #2]}
+\newcommand{\ssos}{\triangleright}
+\newcommand{\sred}{\rightharpoonup}
+
+\newcommand{\LL}{\mathfrak L}
+\newcommand{\MM}{\mathfrak M}
+
+%%% FUNCTION ALGEBRAS %%%
+\newcommand{\OR}{\mathcal{OR}}
+\newcommand{\BRS}{\mathcal{BRS}}
+
+%%% NEWTHEOREM
+\newtheorem{defn}{Definition}
+\newtheorem{corollary}{Corollary}
+\newtheorem{theorem}{Theorem}
+\newtheorem{prop}{Proposition}
+\newtheorem{lemma}{Lemma}
+\newtheorem{remark}{Remark}
+\newtheorem{notation}{Notation}
+\newtheorem{conj}{Conjecture}
+
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\section{Task C}
+
+In the current section we will prove that every function that can be computed in the $\SFP$ formalism can be expressed in the $\POR$ formalism, in the following section we will show that the converse holds too. In order to prove the former so we will proceed as follows:
+
+\begin{itemize}
+\item We will first give a formal definition of the $\SFP$ machines.
+\item Then we will define a set of the data structures and functions that can be used in order to encode a $\SFP$ and to simulate its execution.
+\item After that, we will prove that all the data structures and functions that we described can be defined in the $\POR$ formalism.
+\item Finally we will prove our result, namely that all the functions that are calculated by a $\SFP$ machine are $\POR$ functions, too.
+\end{itemize}
+
+\subsection{Definition of the $\SFP$ formalism}
+
+\begin{defn}[Stream machine]
+A Stream Machine is a quadruple $\genm$ where:
+\begin{itemize}
+\item $\QQ$ is a finite set of states ranged over by $\msi 0,  \msi 1, \ldots, \msi n$.
+\item $\Sigma$ is a finite set of characters ranged over by $\mci 0,  \mci 1, \ldots, \mci n$.
+\item $\TT : \QQ \times \Sigmab  \times \{\zero, \one\} \longrightarrow \QQ \times \Sigmab \times \{L, R\}$ is a transition function that describes the new configuration reached by a $\SFP$ machine. $L, R$ are two fixed constants, and $\Sigmab =\Sigma \cup \{*\} \land *\neq \zero \land * \neq \one$.
+\item $\ms \in \QQ$ is an initial state.
+\end{itemize}
+\end{defn}
+
+In the former definition, $*$ denotes a generic blank character that is not part of $\Sigma$; mind that assuming $\Sigma = \{\zero, \one\}$ would not be reductive. From now on we will denote the blank character $*$ as $\mci{|\Sigma|+1}$.
+
+
+\begin{defn}[Configuration of a Stream Machine]
+The configuration of a stream machine $\mone$ is a quadruple $\mcnf$ where:
+\begin{itemize}
+\item $\sone \in \Sigmab^*$ is the portion of the first tape on the left of the head.
+\item $\ms \in \QQ$ is the current state of $\mone$.
+\item $\stwo \in \Sigmab^*$ is the portion of the first tape on the right of the head.
+\item $\oone \in \{0,1\}^\NN$ is the portion of the second tape that hasn't been read yet.
+\end{itemize}
+\end{defn}
+
+\begin{comment}
+\begin{defn}[Stream Machine Reachability relation]
+Given a stream machine $\genm$, we define the transition relation $\rcs\TT$ between two configuration of $\mcan$ as the smallest relation closed by the following rules:
+\begin{align*}
+\langle \ms, \mc, \msf, \mcf, R, \epsilon \rangle \in \TT &\to \langle \sone, \ms, \mc \stwo, \oone\rangle \rcs\TT \langle \sone\mcf, \msf, \stwo, \oone\rangle\\
+\langle \ms, \mc, \msf, \mcf, L, \epsilon \rangle \in \TT &\to \langle \sone \mc, \ms, \stwo, \oone\rangle \rcs\TT \langle \sone, \msf,\mcf \stwo, \oone\rangle\\
+\langle \ms, \mc, \msf, \mcf, R, \zero \rangle \in \TT &\to \langle \sone, \ms, \mc \stwo, \zero\oone\rangle \rcs\TT \langle \sone\mcf, \msf, \stwo, \oone\rangle\\
+\langle \ms, \mc, \msf, \mcf, L, \zero \rangle \in \TT &\to \langle \sone \mc, \ms, \stwo, \zero\oone\rangle \rcs\TT \langle \sone, \msf,\mcf \stwo, \oone\rangle\\
+\langle \ms, \mc, \msf, \mcf, R, \one \rangle \in \TT &\to \langle \sone, \ms, \mc \stwo, \one\oone\rangle \rcs\TT \langle \sone\mcf, \msf, \stwo, \oone\rangle\\
+\langle \ms, \mc, \msf, \mcf, L, \one \rangle \in \TT &\to \langle \sone \mc, \ms, \stwo, \one\oone\rangle \rcs\TT \langle \sone, \msf,\mcf \stwo, \oone\rangle\\
+\end{align*}
+\end{defn}
+\end{comment}
+
+\begin{defn}[Stream Machine Reachability function]
+Given a stream machine $\genm$, we define the partial transition function $\rcs\TT: \Sigmab^* \times \QQ \times \Sigmab^* \times \{0,1\}^\NN\longrightarrow \Sigmab^* \times \QQ \times \Sigmab^* \times \{0,1\}^\NN$ between two configuration of $\mcan$ as:
+\begin{align*}
+\langle \sone, \ms, \mc \stwo, \zero\oone\rangle &\rcs\TT \langle \sone\mcf, \msf, \stwo, \oone\rangle && \text{if }\TT(\ms, \mc, \zero) =  \langle \msf, \mcf, R \rangle\\
+\langle \sone \mci 0, \ms,\mci 1 \stwo, \zero\oone\rangle &\rcs\TT \langle \sone, \msf,\mci0\mci1' \stwo, \oone\rangle && \text{if }\TT( \ms, \mci 1, \zero) =\langle \msf, \mci 1', L \rangle\\
+\langle \sone, \ms, \mc \stwo, \one\oone\rangle &\rcs\TT \langle \sone\mcf, \msf, \stwo, \oone\rangle&& \text{if }  \TT(\ms, \mc, \one) = \langle \msf, \mcf, R\rangle \\
+\langle \sone \mci 0, \ms,\mci 1 \stwo, \one\oone\rangle &\rcs\TT \langle \sone, \msf,\mci0\mci1' \stwo, \oone\rangle && \text{if }\TT(\ms, \mci 1, \one)=\langle \msf, \mci 1', L \rangle  \\
+\end{align*}
+\end{defn}
+
+
+\begin{defn}
+Given a stream machine $\genm$, we denote with $\{\Rcs\TT n\}_n$ the smallest family of relations relation for which:
+\begin{align*}
+\mcnf&\Rcs\TT 0 \mcnf\\
+\mcnf\Rcs\TT {n} \mcnff \land \mcnff &\rcs\TT \mcnfff \to \mcnf\Rcs\TT {n+1} \mcnfff
+\end{align*}
+\end{defn}
+
+\begin{lemma}
+$\forall n. \Rcs\TT n$ is a function.
+\end{lemma}
+
+\begin{proof}
+By induction on $n$
+\begin{itemize}
+\item[0] In this case the $\Rcs\TT n$ is the identity function.
+\item[$n+1$] As induction hypothesis we have that $\Rcs\TT n$ is a function, then, since $\rcs\TT$ is a function, and $\Rcs\TT {n+1} = \Rcs\TT n\circ \rcs \TT $, we have the thesis.
+\end{itemize}
+\end{proof}
+
+\begin{notation}
+Given a stream machine $\genm$ and a configuration $\mcnf$ we denote with $\mcnf\not\rcs\TT$ the following condition:
+\[
+\lnot \exists \sone', \msf, \stwo',\oone'. \mcnf \rcs\TT \mcnff
+\]
+\end{notation}
+
+\begin{defn}[Value computed by a Stream Machine]
+Given a machine $\genm$, we say that $\mcan$ computes $\sthree$ on input $\sone$ and oracle $\oone$ if and only if:
+\[
+\exists n. \mcnfi \Rcs\TT n \mcnfs \not\rcs\TT
+\]
+for some $\stwo, \msf, \otwo$. In that case, we write $\mcan(\sone, \oone)=\sthree$.
+\end{defn}
+
+\begin{defn}[$\SFP$ Stream Machine]
+We say that a stream machine $\gensfp$ is a $\SFP$ Stream Machine if and only if:
+\[
+\exists p \in \POLY.\forall \sone, \oone, n. \mcnfi \Rcs\TT n \mcnfs \not\rcs\TT \to n \le p(|\sone|)
+\]
+\end{defn}
+
+The result that we are addressing in the current section can be now restated as:
+
+\begin{lemma}[Representation of Stream Machines in $\POR$]
+\label{lemma:smtopor}
+For every deterministic $\SFP$ machine $\gensfp$, there exists a $\POR$ function $\funone$ such that $\funone(\sone, \oone)=\msfp(\sone, \oone)$.
+\end{lemma}
+
+\subsection{Encoding of a $\SFP$ Machine, Bottom-up.}
+\label{sec:encoding}
+\subsubsection{Basic data structures and functions}
+\label{sec:basicdataandfun}
+
+The previous subsection of this work outlines some data structures and functions that we respectively need to represent and compute in order to simulate the execution of a $\SFP$ machines; for example, since we represented $\SFP$ machines as tuples of elements, we will need to represent such structures. Furthermore, since we defined the transition function by cases, we need some control structures that will allow us to implement that specific behaviour.
+
+If we want to implement the $\SFP$ machine in a formalism that works on a domain $\DD$, we need to implement in $\DD$ the following data structures:
+
+\begin{itemize}
+\item \emph{Natural} numbers, that will allow us to define an encoding of characters, and states.
+\item \emph{Boolean} values.
+\item \emph{Strings} on a binary alphabet.
+\item \emph{tuples}, by means of which we will encode tapes and configurations.
+\end{itemize}
+
+\begin{notation}
+We will represent the data structures described above by means of the following notation:
+\begin{itemize}
+\item We will use the $\DD_S$ notation in order to denote the image of the set $S$ modulo its encoding over $\DD$.
+\item We will use the $\overline n \in \DD_\NN$ symbol in order to denote the encoding of the number $n\in \NN$ in the domain $\DD$.
+\item We will use the $\one\in \DD_{\{\zero, \one\}}$ symbol in order to denote the encoding of the true boolean value and the $\zero$ symbol for denoting the false boolean value as represented in $\DD$.
+\item We will use the symbols $\sone, \stwo \in \DD_\SS$ in order to denote the representation of a string over the alphabet $\{\zero, \one\}$ (a string in $\SS$) in the domain $\DD$.
+\item We will range the tuples on the following meta-variables: $\mti0, \mti1, \ldots ,\mti n$.
+\end{itemize}
+\end{notation}
+
+
+On top of the data structures that we have introduced, we need some basic functions. To perform computations on natural numbers, we need at least the following functions:
+
+\begin{itemize}
+\item Addition, denoted with the $+$ symbol.
+\item Subtraction, denoted with the $-$ symbol.
+\item Multiplication, denoted with the $\cdot$ symbol.
+\item Exponentiation, that we will represent with the common power notation.
+\end{itemize}
+
+The latter function will be useful for expressing the complexity bound of a $\SFP$ machine, that is a polynomial. All the functions above mentioned need to have the follwing signature:
+
+$$
+\DD_\NN \times \DD_\NN \longrightarrow \DD_\NN
+$$
+
+And, if $*$ is a function of the above mentioned, it must hold that:
+
+$$
+\forall \none, \ntwo, o \in \NN. \none *\ntwo = o \to \overline \none *\overline \ntwo = \overline o
+$$
+
+
+Boolean values can be defined as a subset of natural numbers. It means that if we are able to deifne the set $\DD_\NN$, we will be able to define the set $\DD_{\{\zero, \one\}}$ as a subset of the above mentioned set and to implement boolean values and boolean functions as a subset of the natural numbers and of the function defined on such values. For example assigning $\zero$ to the false boolean value and $\one$ to the true boolean value will do the job. By means of booleans we will be able to define:
+
+\begin{itemize}
+\item A conditional function over a generical set $S$, i.e. the $\If: \DD_{\{0, 1\}}\times \DD_S \times \DD_S \longrightarrow \DD_S$ function, which respects its commonly intended specification.
+\item Logical connectives.
+\end{itemize}
+
+The \texttt{if} function is an important control function that we will employ in order to determine the configuration that follows the current one. Together with the \texttt{if} structure, we will need another simple control structure: the bounded iteration, i.e. a \texttt{for} expression. It will allow us to simulate the execution of a $\SFP$ machine up to its polynomial bound. For all our data structures we need a binary function $eq$ that returns $\one$ if its parameters are equal with respect to the identity and $\zero$ otherwise.
+
+We need binary strings because we will need to access handle the $\oone$ tape, in particular we will use a simple function of random access, with the following signature:
+
+$$
+\cdot[\cdot]: \DD_{\{\zero, \one\}^\NN} \times \DD_\NN \longrightarrow \{\zero, \one\}
+$$
+
+such that:
+
+$$
+\forall \sigma \in \DD_{\{\zero, \one\}^\NN}.\forall n \in \DD_\NN. \sigma[\overline n] = \one \leftrightarrow \text{ the $n$-th bit of $\sigma$ is $\one$}
+$$
+
+\begin{defn}
+Let $\Tuples_S^n$  be the set of homogeneous tuples of elements in $S$ with cardinality $n$.
+\end{defn}
+
+Finally, we need the following functions for handling tuples:
+
+\begin{itemize}
+\item A family of constructors, which we will use in order to build tuples of finite dimension. We will represent this function putting its elements between angular brackets. These functions will have the following sigature: $\langle \cdot, \ldots, \cdot\rangle : \DD_{S}^n \longrightarrow  \DD_{\Tuples_S^n}$. For example $\langle \overline \zero, \overline \one\rangle$, will be the instantiation of the tuple's constructor on the encoding of $\one$ and $\zero$ as first and second argument.
+\item A function which computes the size of a tuple, that we denote with $|\cdot|: \DD_{\Tuples_S^n} \longrightarrow \DD_\NN$.
+\item A family of projectors, which we will use in order to extract values from a tuple. We will denote these unary functions with $\pi_i: \DD_\NN \times \DD_{\Tuples_S^n}\longrightarrow DD_S$ where $i$ is the position of the element returned by the projector. If the index of the element is greater than the tuple's size, we assume that the projection function will return a default value.
+%\item A belonging test which checks whether a value is an element of a tuple or not.
+\item Four manipulators:
+ \begin{itemize}
+ \item An unary function which deletes the rightmost element of a tuple, which we call $rmr: \DD_{\Tuples_S^n} \longrightarrow \DD_{\Tuples_S^{n-1}}$.
+ \item An unary function which deletes the leftmost element of a tuple, which we call $rml: \DD_{\Tuples_S^n} \longrightarrow \DD_{\Tuples_S^{n-1}}$.
+ \item A binary function which inserts an element in the rightmost position of a tuple, which we call $addr:\DD_S \times \DD_{\Tuples_S^n} \longrightarrow \DD_{\Tuples_S^{n+1}}$.
+ \item A function that inserts an element in the leftmost position of a tuple, which we call $addl:\DD_S \times \DD_{\Tuples_S^n} \longrightarrow \DD_{\Tuples_S^{n+1}}$.
+ \end{itemize}
+\end{itemize}
+
+The two last modifiers that we have presented will be useful when handling tapes and transition, since they will allow us to simulate the movement of the machine's head.
+
+\begin{defn}[Correctness of an encoding of tuples]
+We say that an implementation of tuples is correct if and only if:
+
+\begin{align*}
+\forall n.\forall 1\le i \le n. \pi_i(\langle x_1, \ldots, x_n\rangle)= x_i\\
+\exists x. \forall i \ge n. \pi_i(\langle x_1, \ldots, x_n\rangle)= x
+\end{align*}
+\end{defn}
+
+\begin{comment}
+\begin{defn}[Belonging test on tuples]
+We say that a belonging test on tuples $b$ is correct if and only if:
+
+\begin{align*}
+b(x, t)=1 \leftrightarrow t = \langle x_1, x_2, \ldots, x_n\rangle \land \exists i. x_i=x
+\end{align*}
+\end{defn}
+\end{comment}
+
+\subsubsection{Complex data structures and functions}
+\label{sec:complexdataandfun}
+
+On top of the data structures that we have recently defined, we can define the encoding of a $\SFP$ machine and an emulating interpreter as described below.
+
+\begin{defn}[Encoding of the transition function]
+\label{defn:smencoding}
+The encoding of a machine's transition function is defined as above:
+\begin{comment}
+The encoding of a stream machine is defined as the 4-uple build as follows:
+\begin{align*}
+\langle \QQ, \Sigma, \TT, \msi i\rangle \mapsto \langle \overline {|\QQ|}, \overline {|\Sigma|}, enct(\TT), \overline {i}\rangle
+\end{align*}
+\end{comment}
+\[
+enct(\{\mti 0, \ldots, \mti N\})=\langle g(\mti 0), \ldots, g(\mti {{|\TT|}})\rangle
+\]
+
+And $g$ as:
+
+\[
+g(\langle \langle \msi i, \mci j, b\rangle, \langle \msi k, \mci l, D\rangle \rangle)\coloneqq\begin{cases}
+\langle \overline i, \overline j, \overline k, \overline l, \zero, b\rangle & \text{ if } D=L\\
+\langle \overline i, \overline j, \overline k,  \overline l, \one, b\rangle & \text{ otherwise }
+\end{cases}
+\]
+\end{defn}
+
+The encoding of the transition function $\TT$ is finite, since the domain of $\TT$ is so. Let $\{\mti 0, \ldots, \mti N\}$ be the \emph{finite} subset of the set $(\QQ \times \Sigmab  \times \{\zero, \one\}) \times(\QQ \times \Sigmab \times \{L, R\})$ that describes the function. It is possible to observe that the definition above is only given by means of data structures that we have defined in the previous section, which are natural values and tuples. Furthermore, we represent the transition functions extensively, enumerating all its members.
+
+In the same way we define the representation of tapes ad configurations:
+
+\begin{defn}[Encoding of a portion of a tape]
+We encode all the finite portions of a tape $\sone \coloneqq \mci i, \ldots \mci k$ as:
+
+\[
+tenc(\mci i, \ldots \mci k)\coloneqq\langle \overline i, \ldots, \overline k\rangle
+\]
+
+\end{defn}
+
+\begin{defn}[Representation of the configuration of a stream machine]
+\label{defn:confencoding}
+The representation of the configuration of a stream machine is defined as the 4-uple $\langle \sone, \overline i, \stwo, \overline k\rangle$ where:
+\begin{itemize}
+\item $\sone=tenc(\sone')$, where $\sone'$ is the shortest portion of the tape that starts from the cell on the immediate \emph{left} of the head is followed (on its \emph{left}) by an infinite sequence of blank characters $*$.
+\item $\overline i$ is the \emph{encoding of} the index of the current state $\msi i$.
+\item $\stwo=tenc(\stwo')$, where $\stwo'$ is the shortest portion of the tape that starts from the cell under the head, continues on its \emph{right} and is followed (again on its \emph{right}) by an infinite sequence of blank characters $*$.
+\item $\overline k$ is the \emph{encoding of} the length of the prefix of the oracle tape that has already been consumed.
+\end{itemize}
+\end{defn}
+
+\begin{remark}
+The encoding of the initial state of a stream machine $\mcnfi$ is $\langle \langle\rangle, \overline \zero, tenc(\sone), \overline \zero\rangle$.
+\end{remark}
+
+Now that we have described all the static aspects of a stream machine, we can define some functions that allow us to emulate the dynamic behaviour of a machine.
+
+\subsubsection{A first result}
+
+We are going to prove a lemma that states that the previously defined functions can be used to emulate the execution of a Stream Machine. Once this result will be proved, in order to demonstrate the lemma that we are addressing, i.e. \ref{lemma:smtopor}, we will only need to represent in the $\POR$ formalism all the functions that we have described before.
+
+\begin{lemma}[Implementation of $\SFP$]
+\label{lemma:sfpimpl}
+Each formalism which works on a domain $\DD$ in which it's possible to express the data structures, functions and control primitives described in the subsections \ref{sec:basicdataandfun} and \ref{sec:complexdataandfun} and that is closed under composition is at least as expressive as the Stream Machines are.
+\end{lemma}
+
+\begin{proof}
+
+Let $\genm$ be a stream machine and $t\coloneqq enct(\TT)$ the encoding of its transitions as defined in \ref{defn:smencoding}, let $\langle \sone, \overline i', \stwo, \overline p\rangle$ be the current configuration encoded as defined in \ref{defn:confencoding}. We can define on $t$ the function which computes the matching transition as follows:
+
+\begin{align*}
+\begin{gathered}
+matcht(\langle \rangle, \langle \sone, \overline i', \stwo, \overline p\rangle, \omega)\coloneqq  \zero\\\\
+matcht(\langle \langle \overline i, \overline j, \overline k, \overline l, d, b\rangle, \mti 0, \ldots,\mti m \rangle, \langle \sone, \overline i', \stwo, \overline p\rangle, \omega)\coloneqq\\\coloneqq \begin{cases} \langle \overline i, \overline j, \overline k, \overline l, d, b\rangle & \text{if } \overline i = \overline i' \land \overline  j = \pi_1 (\stwo) \land \omega(\overline p)=b\\
+matcht(\langle \mti 0, \ldots,\mti m \rangle,  \langle \sone, \overline i', \stwo, \overline p\rangle, \omega)& \text{otherwise}
+\end{cases}
+\end{gathered}
+\end{align*}
+
+Now we need to define a function that applies a transition to a state:
+
+\begin{align*}
+apply(0, \langle \sone, \overline i', \stwo, \overline p\rangle)&\coloneqq \langle \sone, \overline i', \stwo, \overline p\rangle\\
+apply(\langle \overline i, \overline j, \overline k, \overline l, d, b\rangle, \langle \sone\mci 1, \overline i', \mci 2\stwo, \overline p\rangle)&\coloneqq\begin{cases} \langle addr(\sone\mci1, \overline l), \overline k, \stwo, \overline p+1\rangle & \text{if } d=R\\
+\langle \sone, \overline k, addl(c_1, addl(\overline l,\stwo)), \overline p+1\rangle & \text{otherwise}
+\end{cases}
+\end{align*}
+
+Finally we need a function that emulates the execution of the machine for a fixed number of steps, passed as a parameter. We define it by induction on the number of steps.
+
+\begin{align*}
+step(t, s, 0, \oone)&\coloneqq s\\
+step(t, s,n+1, \oone)&\coloneqq apply(matcht(t, step(t, s, n, \oone), \oone), step(t, s, n, \oone), n)\\
+\end{align*}
+
+Finally we define $eval_M(\sone, \oone)$ as follows
+
+\[
+eval_{\langle \QQ, \Sigma, \TT, \msi0 \rangle, n}(\sone, \oone)\coloneqq step(enct(\TT), \langle \langle\rangle, \overline \zero_\oone, tenc(\sone),\overline \zero \rangle, \overline n, \oone)
+\]
+
+If $n$ is sufficiently big, $eval_{\langle \QQ, \Sigma, \TT, \msi0 \rangle, n}(\sone, \oone)=M_S(\sone, \oone)$
+
+\end{proof}
+
+\subsection{Expressivity of the $\POR$ formalism}
+
+The aim of this section is to show that all the encodings and functions over the set $\DD$ that we introduced in Section \ref{sec:encoding} can be expressed in the $\POR$ formalism. To do so, we need to define some even simpler functions that we will use to build the others.
+
+Before doing so, we will give some intuitions about the actual implementation of the structures:
+
+\begin{itemize}
+\item The set $\DD$ consists in the set $\SS$, which is the set of the binary strings.
+\item The strings over the set $\{\zero, \one\}$ are native in $\POR$, so they won't need to be implemented, i.e. $\DD_\SS$ is $\SS$ itself; furthermore, the only random access to such strings will be the reading of some bits of the oracle $\oone$ for which $\POR$ has a primitive function $f_q$.
+\item Numbers will be represented in unary notation, starting from the $\one$ string. This means that $\DD_\NN = \one^+$.
+\end{itemize}
+
+\subsubsection{Preliminaries on Strings}
+\label{sec:strpre}
+
+Since the binary strings are the only datatype that is present in the $\POR$ formalism, we would like to express some basic operations on such data that will turn out to be useful in the following parts.
+
+Given a variable name $\vone$, and an oracle $\oone$, every constant can be represented in $\POR$ as follows:
+
+\begin{defn}[Constant Strings]
+A constant string $\mci 0\mci1\ldots\mci n$ can be computed in $\POR$ by means of the following function:
+\[
+\mci 0\mci1\ldots\mci n \coloneqq C_{\mci n}(\ldots(C_{\mci1}(C_{\mci0}(E(\vone, \oone), \oone), \oone), \ldots), \oone)
+\]
+\end{defn}
+
+Similarly, the concatenation between two generic strings can be defined as follows:
+
+\begin{defn}[Concatenation of Strings]
+\begin{align*}
+\concat(\vone, \epsilon, \oone) &\coloneqq \vone\\
+\concat(\vone, \vtwo \zero, \oone) &\coloneqq C_\zero (\concat(\vone,\vtwo, \oone), \oone)|_{\vone\vtwo}\\
+\concat(\vone, \vtwo \one, \oone) &\coloneqq C_\one (\concat(\vone,\vtwo, \oone), \oone)|_{\vone\vtwo}\\
+\end{align*}
+\end{defn}
+
+We also define the meta-language notation $|\cdot|: \SS \longrightarrow \NN $ that represents the size of a string, further we will introduce a $\POR$ function that computes the size of a tuple $|\cdot|_\oone: SS_{\Tuples_\SS^n}\longrightarrow \SS_\NN$. Those functions are not the same object.
+
+Since constants and concatenations of strings are representable in $\POR$, we will use respectively their explicit representation and juxtaposition for representing those operations.
+
+\begin{notation}[Constant Strings]
+When introducing constant string we will use their explicit notation instead of writing their definition in $\POR$, for example:
+
+\begin{align*}
+\concat(C_0(C_1(E(x, \oone))), C_1(C_0(E(x, \oone)), \oone)
+\end{align*}
+
+Will be written as $\one \zero\zero\one$ and $E(x, \oone)$ will be written as $\epsilon$.
+\end{notation}
+
+Before going further with the encoding of numerals and arithmetical operations, we would like to point out the fact that all the $\POR$ functions need to have an oracle as parameter: for example, we passed $\oone$ to the $\concat$ function. When dealing with data structures, and manipulating functions, it will often be useless but, at least inside the definitions, we will use it.
+
+The implementation of some functions will be easier if we can use a function that reverses the strings. Such a function can be defined in the $\POR$ formalism as follows:
+
+\begin{defn}[Reversing Function]
+\label{def:reversingfunction}
+\begin{align*}
+\rv(\epsilon, \omega) &\coloneqq \epsilon\\
+\rv(\vtwo \zero, \oone) &\coloneqq \zero\rv(\vtwo, \oone)|_{\vtwo\zero}\\
+\rv(\vtwo \one, \oone) &\coloneqq \one\rv(\vtwo, \oone)|_{\vtwo\zero}\\\\
+\end{align*}
+\end{defn}
+
+
+\subsubsection{Natural Numbers}
+
+All the finite natural numbers can be represented as follows:
+
+\begin{defn}[Encoding of $\NN$ over $\SS$]
+\begin{align*}
+\overline 0_\oone &\coloneqq C_1(\epsilon, \oone)\\
+\overline {n+1}_\oone &\coloneqq C_1(\overline n_\oone, \oone)
+\end{align*}
+\end{defn}
+
+\begin{remark}[Set $\SS_\NN$]
+\label{remark:ssnn}
+As we pointed out before, there's a bijection between $\one^+\subset \SS$ and $\NN$, so $\SS_\NN= \one^+$.
+\end{remark}
+
+
+\begin{remark}[Size of numbers]
+\label{remark:sizeofnumbers}
+
+\[
+\forall n \in \NN. |\overline n_\oone| = n+1
+\]
+\end{remark}
+
+\begin{remark}[Appropriateness of $\SS_\NN$]
+We say that $\SS_\NN$ is an appropriate representation of $\NN$, meaning that:
+\begin{itemize}
+\item $\forall e \in \SS_\NN. \exists! \none \in \NN. \overline \none_\oone = e$
+\item $\forall n \in \NN. \exists! e \in \SS_\NN. \overline \none_\oone = e$
+\end{itemize}
+\end{remark}
+
+\begin{proof}
+The results can be respectively obtained by induction on the size of the element and on the value of $n$.
+\end{proof}
+
+
+The successor of a number $n$, passed to the formal parameter $\vtwo$, can be calculated simply adding an $\one$ at the end of $n$, i.e. as follows:
+
+\begin{defn}[Successor function]
+We define a function $S: \SS_\NN \longrightarrow \SS_NN$ that computes the successor of a number:
+\begin{align*}
+S(\epsilon, \oone) &\coloneqq \epsilon\\
+S(\vtwo\zero, \oone)&\coloneqq  C_\zero(\epsilon, \oone)|_{\vtwo\one\one}\quad(*)\\
+S(\vtwo\one, \oone)&\coloneqq C_\one(C_\one(\vtwo), \oone)|_{\vtwo\one\one}\\
+\end{align*}
+\end{defn}
+
+Since the representation of a number is only composed by $\one$s, the row marked with $(*)$ is useless when dealing with natural numbers. All the other functions that we will implement for the manipulation of numbers will present a similar issue, but sometimes, those definition will turn out to be useful.
+
+
+\begin{defn}[Predecessor of a Natural Number]
+If $\vtwo\in \SS_\NN$ is the encoding of a number, the $pd$ function calculates its predecessor simply by removing its last digit.
+\begin{align*}
+\pred(\epsilon, \omega) &\coloneqq \epsilon\\
+\pred(\vtwo \zero, \oone) &\coloneqq \vtwo|_{\vtwo}\\
+\pred(\vtwo \one, \oone) &\coloneqq \vtwo|_{\vtwo}\\
+\end{align*}
+\end{defn}
+
+\begin{remark}
+\[
+\forall \sigma, \mci 1, \mci 2. \pred(\pred(\sigma\mci1\mci2))=\sigma
+\]
+\end{remark}
+
+\begin{proof}
+The claim is a trivial consequence of the definition of $\pred$.
+\end{proof}
+
+\begin{notation}[Oracle Included Function]
+From now on, we will use the notation $op_\oone$ to denote an operator $op$ that uses $\oone \in \BB$ as oracle, i.e. the expression $\vone op_\oone \vtwo$ will be a shorthand for $op(\vone, \vtwo, \oone)$.
+\end{notation}
+
+\begin{defn}[Sum of two Natural Numbers]
+The sum of two numbers $+_\oone$ can be easy implemented by using the operation of concatenation that we introduced in \ref{sec:strpre}.
+
+\[
+\overline \none +_\oone \overline \ntwo = \pred(\concat(\overline n, \overline m, \oone))
+\]
+\end{defn}
+
+
+The $\POR$ encoding of the difference between two numbers is quite cumbersome, because the only form of recursion that is allowed by such formalism is on the longest non trivial prefix of a single argument. Intuitively we can decrease the measure of both the numbers since the second is $\epsilon$; at that time, we have decreased the first argument one too many, so we need to return its successor.
+
+\begin{defn}[Difference of two Natural Numbers]
+We define the function $-_\oone$ which encodes the difference between two natural numbers as follows
+\begin{align*}
+\vone -_\oone \epsilon &\coloneqq S(\vone, \oone)\\
+\vone -_\oone \vtwo\zero &\coloneqq \pred(\vone, \oone) -_\oone \vtwo|_{\vone}\\
+\vone -_\oone \vtwo\one &\coloneqq \pred(\vone, \oone) -_\oone \vtwo|_{\vone}\\
+\end{align*}
+\end{defn}
+
+In order to multiply two values $\vone$ and $\vtwo$, we can remove their last digit, so that their size is equal to the number that they encode, then concatenate $\vone$ to itself $\vtwo$ time and return the successor of the number that we get; formally:
+\begin{defn}[Multiplication of two Natural Numbers]
+
+We define the multiplication between two natural numbers $\cdot_\oone$ as follows:
+\begin{align*}
+\vone \cdot_\oone^* \epsilon &\coloneqq \epsilon\\
+\vone \cdot_\oone^* \vtwo\zero &\coloneqq ((\vone \cdot_\oone^* \vtwo) +_\oone \vone)|_{\vone \times \vtwo\one}\\
+\vone \cdot_\oone^* \vtwo\one &\coloneqq ((\vone \cdot_\oone^* \vtwo) +_\oone \vone)|_{\vone \times \vtwo\one}\\\\
+\vone \cdot_\oone \vtwo &\coloneqq S(\pred(\vone, \oone) \cdot_\oone^* \pred(\vtwo, \oone))
+\end{align*}
+
+\end{defn}
+With this encoding we cannot go much further since the computation of an exponential would require an exponential size for the representation of the output, but our iteration is bounded by a term in $L_\mathbb{W}$, but the size of a number in our encoding is linear in its value. However, we can still represent monomials, and so polynomials, as follows:
+
+\begin{defn}[Monomials]
+Given a $k \in \NN$, we define the function that computes the value $\overline {n^k}_\oone$ as follows:
+\begin{align*}
+\forall k \in \NN. \overline \none_\oone^k \coloneqq (\prod_{i=0}^k)_\oone \overline \none
+\end{align*}
+
+where:
+
+\[
+(\prod_{i=0}^k)_\oone e_i \coloneqq 1 \cdot_\oone e_0 \cdot_\oone e_1 \cdot_\oone \ldots \cdot_\oone e_k
+\]
+
+\end{defn}
+\subsubsection{Boolean algebra}
+\label{sec:booleanalgebra}
+
+
+Before going further, it's time to define some predicates. As it happens in the definition of the $\POR$ function $Q$, we say that a predicate \(P (\vec \vone)\) is true if (and only if) it returns \(\one\), it's false if it returns $\zero$, otherwise it's undefined. Let's start with some zero-order logic and predicates.
+
+Given that $\vone_1$ and $\vone_2$ are values, we can define a function that returns $\vone_1$ if a condition $\vtwo$ is met, $\vone_2$ if such condition is false, and $\epsilon$ otherwise. Such function behaves as an \texttt{if} expression:
+\begin{defn} [\texttt{if} expression]
+
+\begin{align*}
+\If'(\vone_1, \vone_2, \epsilon, \oone)&\coloneqq \epsilon\\
+\If'(\vone_1, \vone_2, \vtwo\zero, \oone)&\coloneqq \vone_2|_{\vone_1\vone_2}\\
+\If'(\vone_1, \vone_2, \vtwo\one, \oone)&\coloneqq \vone_1|_{\vone_1\vone_2}\\
+\If(t, f, c, \oone) &\coloneqq \If'(t, f, c, \oone)
+\end{align*}
+
+\end{defn}
+%We use the $\If$ expression as a shorthand that denotes the invocation of the $\If'$ function defined as above.
+
+\begin{defn}[Logical connectives]
+Thanks to the $mathtt{if}$ function, we can define some basic (and complete) connectives for the propositional logic:
+
+\begin{align*}
+(P_1\land P_2)(\vec \vone, \oone) &\coloneqq \If(P_2(\vec \vone, \oone), \zero, P_1(\vec \vone, \oone), \oone)\\
+(P_1\lor P_2)(\vec \vone, \oone) &\coloneqq \If(\one, P_2(\vec \vone, \oone), P_1(\vec \vone, \oone), \oone)\\
+(\lnot P)(\vec \vone, \oone) &\coloneqq \If(\zero, \one, P(\vec \vone, \oone), \oone)
+\end{align*}
+\end{defn}
+
+Now we define some predicates that will help us to develop the tuple's encoding. In particular, we will represent such structures, representing their values with an encoding that prefixes a $\one$ to each bit of their binary representation. For this reason, when we will decode a tuple's value it will be useful to know whether the length of the remaining part of such value is even or odd in order to decide whether it's the case to keep or remove a certain bit.
+
+\begin{defn}[Basic Logical predicates]
+The basic logical predicates in $\POR$ arer the function defined below.
+\begin{align*}
+odd(\epsilon, \omega) &\coloneqq \zero\\
+odd(\vtwo \zero, \oone) &\coloneqq \lnot (odd(\vtwo))|_{\zero}\\
+odd(\vtwo \one, \oone) &\coloneqq \lnot (odd(\vtwo))|_{\zero}\\
+even(\vone, \oone)&\coloneqq \lnot odd(\vone, \oone)\\
+eq(\vone, \vtwo, \oone)&\coloneqq Q(\vone, \vtwo, \oone)\land Q(\vtwo, \vone, \oone)
+\end{align*}
+\end{defn}
+It's important to observe that the $odd$ and $even$ predicates work as their opposites for the encoding of natural numbers, i.e. the following remark holds:
+
+\begin{remark}[Even and odd's idiosincrasy]
+\[
+\begin{gathered}
+\forall \sigma \in \{\zero, \one\}^*.\forall b \in \{\zero,\one\}. odd(\sigma)\leftrightarrow even (\sigma b)\\
+\forall n \in \NN. odd(\overline n_\oone) \leftrightarrow n\text{ is even.}
+\end{gathered}
+\]
+\end{remark}
+
+Before defining tuples, let's proceed with the definition of two string-specific predicates:
+
+\begin{defn}[String specific Predicates]
+For working with strings we define the followinf predicates which respectively extract the rightmost and the leftmost bit of the string.
+\begin{align*}
+lst(\epsilon, \oone) &\coloneqq \epsilon\\
+lst(\vtwo \zero, \oone) &\coloneqq \zero|_{\one}\\
+lst(\vtwo \one, \oone) &\coloneqq \one|_{\one}\\\\
+fst(\epsilon, \oone) &\coloneqq \epsilon\\
+fst(\vtwo \zero, \oone) &\coloneqq If(\zero, fst(\vtwo, \oone), Q(\vtwo, \epsilon, \oone), \oone)|_{\one}\\
+fst(\vtwo \one, \oone) &\coloneqq If(\one, fst(\vtwo, \oone), Q(\vtwo, \epsilon, \oone), \oone)|_{\one}\\
+\end{align*}
+
+\end{defn}
+
+\begin{remark}
+\[
+\begin{gathered}
+\forall \sigma \in \{\zero, \one\}^*. lst(\sigma \one)=\one \land lst(\sigma \zero)=\zero\\
+\forall \sigma \in \{\zero, \one\}^*. fst(\one\sigma)=\one \land lst(\zero\sigma)=\zero\\
+\end{gathered}
+\]
+\end{remark}
+
+\subsubsection{tuples}
+
+In order to represent the tuples, we use Odifreddi's notation as described in (vol 2 p.183). The encoding, that we have briefly introduced in \ref{sec:booleanalgebra} makes use of a couple of functions $\db$ and its left inverse $\hv$.
+
+\begin{defn}[Encoding and Decoding Functions]
+
+\begin{align*}
+\db(\sigma\zero) &\coloneqq \db(\sigma)\one\zero\\
+\db(\sigma\one) &\coloneqq  \db(\sigma)\one\one
+\end{align*}
+
+
+\begin{align*}
+\hv (\sigma \one\zero)&=\hv(\sigma)\zero\\
+\hv (\sigma \one\one)&=\hv(\sigma)\one\\
+\end{align*}
+\end{defn}
+
+Thanks to this simple encoding we can represent tuples simply by juxtaposing their values separated by a special character, for example $\zero\zero$, because such seuqence can't be generated by $\db$ (the proof of such result can be shown by induction on its first argument).
+
+It is possible to show that the doubling function $\db$ is a $\POR$ function
+
+\begin{align*}
+\db(\epsilon, \oone)&\coloneqq \epsilon\\
+\db(\vtwo\one, \oone)&\coloneqq C_\one(C_\one(\db(\vtwo, \oone), \oone))|_{(\one\one)\times(\vtwo \one)}\\
+\db(\vtwo\zero, \oone)&\coloneqq C_\zero(C_\one(\db(\vtwo, \oone), \oone))|_{(\one\one)\times(\vtwo \one)}\\
+\end{align*}
+
+It is easy to see that, given any string $\mci 0\mci 1\ldots \mci n$, $\db(\mci 0\mci 1\ldots \mci n)=1\mci 0 1\mci 1\ldots 1 \mci n$. The function $\hv$ is in $\POR$ as well as the doubling function $\db$. We can define it as follows:
+
+\begin{align*}
+\hv (\epsilon, \oone)&\coloneqq \epsilon\\
+\hv (\vtwo \zero, \oone)&\coloneqq concat(\hv(\vtwo, \oone), If(\zero, \epsilon, odd(\vtwo, \oone), \oone))|\vtwo\zero \\
+\hv (\vtwo \one, \oone)&\coloneqq concat(\hv(\vtwo, \oone), If(\one, \epsilon,  odd(\vtwo, \oone), \oone))|\vtwo\zero\\
+\end{align*}
+
+\begin{lemma}[$\db$'s left-inverse]
+$\forall \sigma \in \{0,1\}^*, \oone, \hv(\db(\sigma,\oone),\oone)=\sigma$
+\end{lemma}
+
+\begin{proof}
+By (right) induction on $\sigma$:
+\begin{itemize}
+\item[$\epsilon$] The thesis comes from a trivial rewriting of the two functions' bodies.
+\item[$\tau c$] The thesis is
+\begin{align*}
+\hv(\db(\tau c,\oone),\oone) &= \tau c\\
+\hv(\db(\tau,\oone)\one c, \oone) &= \tau c\\
+\end{align*}
+
+By induction on $\sigma$ we can also prove that $\forall \sigma. odd(\db(\sigma))= 0$, so we can simplify our claim as follows:
+
+\begin{align*}
+\hv(\db(\tau,\oone)\one c, \oone) &= \tau c\\
+\hv(\db(\tau,\oone)\one, \oone) c &= \tau c\\
+\hv(\db(\tau,\oone)\one, \oone) &= \tau\\
+\end{align*}
+
+We have argued that $\forall \sigma. odd(\db(\sigma))= 0$, so we can state the claim as:
+
+\begin{align*}
+\hv(\db(\tau,\oone)\one, \oone) &= \tau\\
+\hv(\db(\tau,\oone), \oone) &= \tau
+\end{align*}
+
+Which is the induction hypothesis, so we proved our lemma.
+\end{itemize}
+\end{proof}
+
+We can finally define the encoding of tuples as follows:
+
+\begin{defn}[Tuple Contructors]
+We define the family of tuple constructors as the family of function defined as below and indexed by $n$:
+\[
+\langle \vone_0, \vone_1, \ldots, \vone_n\rangle_\oone \coloneqq 00 \db (\vone_n) 00 \ldots 00 \db (\vone_1) 00  \db(\vone_n) 00 \db(\overline n_\oone) 00
+\]
+\end{defn}
+
+We represent tuples of string by encoding all the possible values with sequences of two characters, and using $\mathtt{00}$ as separators. We now implement a function that allows us to remove the initial separators. The function(s) $\langle \cdot \rangle _\cdot$ is in $\POR$ because t-hey are defined by means of composition of concatenation and $\db$, that are both in $\POR$.
+
+The definition of the tuple's constructor introduces a contable set of function, rather than a single function. Further we will show how to parameterize in $\POR$ such functions.
+
+\begin{remark}[tuple's size]
+\label{remark:tsize}
+the size of a tuple $\langle \vone_0, \ldots,\vone_n\rangle_\oone$ is $O(n+ \text{max}(|\vone_0|, \ldots, |\vone_n|))$.
+\end{remark}
+\begin{proof}
+the size of a tuple can be expressed as $\sum_{i=0}^n 2 \cdot {|\vone_n}+ 3n$ that is in $O(n+ \text{max}(|\vone_0|, \ldots, |\vone_n|))$.
+\end{proof}
+
+Now, it's time to introduce the projectors, we will build them by many step. The first consists in the definition of a function that removes the separators (namely $\zero\zero$) from the encoding of a tuple.
+
+\begin{defn}[Remover of the separator]
+We define $rmsep$, i.e. the function which is intended to remove a separator in a tuple as the double nesting of the $pd$ function, namely:
+\begin{align*}
+rmsep(\vone) &\coloneqq \pred(\pred(\vone))
+\end{align*}
+\end{defn}
+
+We start describing how to extract the right-most component. To do so, we define the following functions:
+\begin{itemize}
+\item $sz$ which returns $\one$ if ad only if the rightmost element of its first argument is $\zero$, and otherwise it returns $\zero$.
+\item $rc'$ which extracts the rightmost element of a $t$uple, without decoding it.
+\item $rc$ which is basically the function obtained wrapping $rc'$ with $\hv$ in order to decode the tuple's encoding.
+\end{itemize}
+
+\begin{defn}[Functions for values' extraction]
+The three functions that we have described above are implementable in $\POR$ as follows:
+\begin{align*}
+sz(x, \oone)&\coloneqq eq(lst(x), \zero)\\
+rc'(\epsilon, \oone)&\coloneqq \epsilon\\
+rc'(\vtwo\zero, \oone)&\coloneqq \If(\epsilon, concat (rc'(\vtwo, \oone),\zero), sz(\vtwo), \oone)|_{\vtwo\zero}\\
+rc'(\vtwo\one, \oone)&\coloneqq  \concat (rc'(\vtwo, \oone), \one, \oone))|_{\vtwo\zero}\\
+rc (t, \oone)&\coloneqq \hv(rc'(rmsep(t), \oone), \oone)
+\end{align*}
+\end{defn}
+
+\begin{remark}[Correctness of $rc$] the following statements are valid:\\
+\begin{itemize}
+\item $\forall \vone_0, \vone_1, \ldots,\vone_n, \oone. rc' (00\db(\vone_0, \oone) 00 \db(\vone_1, \oone) 00 \ldots 00 \db(\vone_n, \oone)) = \db(\vone_n)$
+\item $\forall \vone_0, \vone_1, \ldots,\vone_n, \oone. rc (00\db(\vone_0, \oone) 00 \db(\vone_1, \oone) 00 \ldots 00 \db(\vone_n, \oone) 00) = \vone_n$
+\end{itemize}
+\end{remark}
+
+The only non-trivial statement is the first, that comes from the fact that $\zero\zero$ cannot appear inside $\db(\vtwo, \oone)$.
+
+We can define a function which extracts the left sub-tuple of a tuple in a similar fashion to how we defined the $rc$ function. This function is aimed to compute the part of a tuple that isn't returned by $rc$. Such value isn't actually a tuple, because, our definition records the cardinality of the tuple in its right-most element; so the values returned by $lc$ aren't tuples because their rightmost element doesn't necessairly encode the tuple's cardinality.
+
+The $lc$ function is in $\POR$, indeed:
+
+\begin{defn}[Left sub-tuple]
+
+The funtion $lc$ which computes the left sub-tuple of a tuple $t$ is defined as follows:
+\begin{align*}
+lc'(\epsilon, \oone)&\coloneqq \epsilon\\
+lc'(\vtwo\zero, \oone)&\coloneqq \If(\vtwo\zero, lc'(\vtwo, \oone), sz(\vtwo) \land_\oone odd(t), \oone)|_y\\
+lc'(\vtwo\one, \oone)&\coloneqq lc'(\vtwo)|_y\\
+lc (t, \oone)&\coloneqq lc'(rmsep(t, \oone))
+\end{align*}
+\end{defn}
+
+Please observe that if the function $lc$ is applied on tuples, the condition $odd(t)$ is not required because when reading the encoding of a tuple from right to left, if we find a sequence $\zero\zero$, it's due to the presence of a separator. Differently, if we apply $lc$ to that value obtained reversing a tuple, we can find the sequence $\zero\zero\zero$, in that case we need to stop after that we have read the first tho $\zero$. For doing that, we  leverage the $odd$ predicate which is true if the remaining part of the encoding has odd length. More formally we can state the correctness of our definition throughout the following remarks.
+
+\begin{remark}[Correctness of $lc$] The following statement holds:
+\[
+\forall \sigma,\tau,\vone, \oone. lc' (\sigma\zero\zero\db(\tau)) = \sigma\zero\zero
+\]
+\end{remark}
+
+\begin{remark}[Left component of the reverse of a tuple]
+\label{remark:rvlcrv}
+\[
+rv(lc(rv(\zero\zero\db(x_0)\zero\zero\db(x_1)\zero\zero\ldots \zero\zero \db(x_n)\zero \zero))) = \zero \zero \db(x_1)\zero\zero\ldots \zero\zero \db(x_n)\zero\zero
+\]
+\end{remark}
+
+For every $\none \in \NN$, we define the $\none$-th projector of a tuple by nesting $n$ calls to $lc$, the resulting value will have the $\none$-th element of the staring tuple as its rightmost element, we recall that the values inside a tuple are stored in decreasing left to right order.
+
+\begin{defn}[Family of projectors]
+we define the family of projectors $\pi_n$ as below. We also overload the symbol $\pi$ with the definition of a function which takes $\overline n_\oone$ and behaves the same as $\pi_n$.
+\begin{align*}
+\pi'(t, \epsilon, \oone)&\coloneqq t\\
+\pi'(t, \vtwo\zero, \oone) &\coloneqq lc(\pi'(t, \vtwo, \oone), \oone)|_t\\
+\pi'(t, \vtwo\one, \oone) &\coloneqq lc(\pi'(t, \vtwo, \oone), \oone)|_t\\\\
+\pi_n(t, \oone) &\coloneqq rc(\pi'(t, \pred(\overline n_\oone), \oone))\\
+\pi(t, \vone, \oone) &\coloneqq rc(\pi'(t, \pred(\vone), \oone))
+\end{align*}
+\end{defn}
+We intentionally overloaded the $\pi$ in order to increase the readability of future definitions.
+
+\begin{remark}[Correctness of the tuple's encoding]
+\label{rem:tupleencoding}
+\[
+\begin{gathered}
+\pi_n(t, \oone) = rc(lc^n(t, \oone))\\
+\forall n, \oone.\forall \vone_1, \ldots, \vone_{n-1}, \vone_n.\forall 1\le k \le n. \pi_k(\langle \vone_1, \ldots, \vone_{n-1}, \vone_{n}\rangle_\oone)= \vone_k\\
+\forall n, \oone.\forall \vone_1, \ldots, \vone_{n-1}, \vone_n.\forall k > n. \pi_k(\langle \vone_1, \ldots, \vone_{n-1}, \vone_{n}\rangle_\oone)= \epsilon\\
+\forall n, \oone.\forall \vone_1, \ldots, \vone_{n-1}, \vone_n. \pi_0(\langle \vone_1, \ldots, \vone_{n-1}, \vone_{n}\rangle_\oone)= \overline n_\oone\\
+\forall t, \none, \oone. \pi(t, \overline\none_\oone, \oone)= \pi_\none(t, \oone)\\
+\forall n\ge 1, m. \pi_n(\one^m)=\epsilon
+\end{gathered}
+\]
+\end{remark}
+
+As a corollary of the previous remark, we have can define the function which computes the size of a tuple as follows:
+
+\[
+|\langle \vone_0, \vone_1, \ldots, \vone_n\rangle_\oone|_\oone\coloneqq \pi_0(\langle \vone_0, \vone_1, \ldots, \vone_n\rangle_\oone, \oone)
+\]
+
+\begin{comment}
+Tuple's belonging:
+
+\begin{align*}
+\bgs'(\vone, \epsilon, \oone) &\coloneqq \zero\\
+\bgs'(\vone_1, \vone_2, \vtwo\one, \oone) &\coloneqq eq(rc(\vone_2, \oone), \vone_1, \oone)\lor_\oone \bgs'(\vone_1, lc(\vone_2, \vtwo, \oone), \vtwo, \oone)\\
+\bgs'(\vone_1, \vone_2, \vtwo\zero, \oone) &\coloneqq eq(rc(\vone_2, \oone), \vone_1, \oone)\lor_\oone \bgs'(\vone_1, lc(\vone_2, \vtwo, \oone), \vtwo, \oone)\\
+\bgs(el, t, \oone)&\coloneqq \bgs'(el, t, \pred(|t|_\oone), \oone)
+\end{align*}
+\end{comment}
+
+Now we need to define the modifiers that we introduced in \ref{sec:basicdataandfun}; Let us start with the modifiers which removes the right- or the left-most element of a tuple.
+
+\begin{defn}[Element Removers]
+
+We define the removers that we introduced in \ref{sec:basicdataandfun} as follows:
+
+\begin{align*}
+rmr(t, \oone) &\coloneqq lc(lc(t)) \db(\pred(|t|_\oone, \oone), \oone)\zero\zero\\
+rml(t, \oone) &\coloneqq lc(\rv(lc(\rv(t, \oone), \oone), \oone), \oone)\db(\pred(|t|_\oone, \oone), \oone)\zero\zero
+\end{align*}
+
+\end{defn}
+
+The $rmr$ function applies two times $lc$ in order to remove the length of the tuple and the last element, after that, it appends the decreased and re-encoded length of the tuple.
+
+The tuple obtained by removing the leftmost element can be obtained by reversing the tuple, using $lc$ and then reversing the tuple again, as a consequence of remark \ref{remark:rvlcrv}. This part of the task is accomplished thanks to the three inner nested function calls to $rc$ and $lv$, then the last value (the length) is removed and the length of the tuple is updated.
+
+Similarly we can add a new element to a tuple following the same pattern that we used above: we remove the old length, perform the modification that we need (i.e. we add the element) and then we append the updated length.Finally, we can add an element on the left of a tuple, reversing the tuple, computing the encoding of the value throughout $\db$, appending it to the tuple followed by a new separator and then reversing again the tuple. Then we only need to update the tuple's length.
+
+\begin{defn}[Element Appenders]
+
+We define the appenders that we introduced in \ref{sec:basicdataandfun} as follows:
+
+\begin{align*}
+addr(t, x, \oone)&\coloneqq lc(t, \oone)\db(x, \oone)\zero\zero\db(S(|t|_\oone, \oone), \oone)\zero\zero\\
+addl(t, x, \oone)&\coloneqq lc(\rv(\rv(t, \oone)\rv(\db(x, \oone), \oone)\zero\zero, \oone), \oone)S(|t|_\oone)\zero\zero
+\end{align*}
+\end{defn}
+
+Now we can also give an inductive definition of the tuple constructors:
+
+\begin{defn}[Inductive definiton of tuple's contructors]
+\begin{align*}
+\langle\rangle_\oone &\coloneqq \zero\zero \one\one\zero\zero\\
+\langle\vone_0, \ldots, \vone_{n-1}, \vone_n\rangle_\oone &\coloneqq addr(\langle\vone_0, \ldots, \vone_{n-1}\rangle \oone, \vone_n, \oone)
+\end{align*}
+\end{defn}
+\begin{comment}
+Successor:
+
+\begin{align*}
+S(\epsilon, \oone) &\coloneqq \one\\
+S(y\zero, \oone)&\coloneqq y\one|_{y\one}\\
+S(y\one, \oone)&\coloneqq S(y, \oone)\one|_{y\zero\zero}\\
+\end{align*}
+
+Chop:
+
+\begin{align*}
+cp(\epsilon, \omega) &\coloneqq \epsilon\\
+cp(\vtwo \zero, \oone) &\coloneqq cp(\vtwo, \oone)|_{\vtwo}\\
+cp(\vtwo \one, \oone) &\coloneqq \vtwo\one|_{\vtwo\one}\\\\
+\end{align*}
+
+Predecessor:
+
+\begin{align*}
+\pred'(\epsilon, \omega) &\coloneqq \epsilon\\
+\pred'(\vtwo \zero, \oone) &\coloneqq \pred(\vtwo, \oone)\one|_{\zero}\quad(*)\\
+\pred'(\vtwo \one, \oone) &\coloneqq \vtwo\zero|_{\vtwo}\\\\
+\pred(\vtwo, \oone) &\coloneqq \rv(cp(\rv(\pred'(\vtwo, \oone))))
+\end{align*}
+
+Length:
+
+\begin{align*}
+\ln(\epsilon, \omega) &\coloneqq \overline 0\\
+\ln(\vtwo \zero, \oone) &\coloneqq S(\ln(\vtwo, \oone))|_{\vtwo}\\
+\ln(\vtwo \one, \oone) &\coloneqq S(\ln(\vtwo, \oone))|_{\vtwo}\\\\
+\end{align*}
+
+Suffix:
+
+\begin{align*}
+sf(\vone, \epsilon, \omega) &\coloneqq \epsilon\\
+sf(\vone, \vtwo \zero, \oone) &\coloneqq sf(\vone, \vtwo )|_{\vtwo}\\
+\ln(\vtwo \one, \oone) &\coloneqq S(\ln(\vtwo, \oone))|_{\vtwo}\\\\
+\end{align*}
+
+
+Notice, that $S\in \POR$ because its definition is given by means of \emph{bounded iteration}.
+
+\begin{remark}[Successor independence]
+\label{rm:succind}
+$\forall x, \oone, \otwo. S(x, \oone)= S(x, \otwo)$
+\end{remark}
+
+As  consequence of the former lemma, for all $\oone$s, we can define numbers such as follows:
+
+\begin{align*}
+\overline O_\oone &\coloneqq C_0(\epsilon, \oone)\\
+\overline {S\ n}_\oone &\coloneqq S(\overline n_\oone, \oone)
+\end{align*}
+
+\begin{remark}
+$\forall x, \oone, \otwo. S(x, \oone)= S(x, \otwo)$
+\end{remark}
+\end{comment}
+
+\begin{comment}
+\begin{defn}[Encoding of a stream machine in $\POR$]
+The encoding of a stream machine in $\POR$ is defined as the 4-uple build as follows:
+\begin{align*}
+\langle \QQ, \Sigma, \TT, \msi i\rangle \mapsto \langle \overline {|\QQ|_\oone}_\oone, \overline {|\Sigma|_\oone}_\oone, enct(\TT), \overline {i}_\oone\rangle_\oone
+\end{align*}
+
+Where $enct$ is defined as follows:
+
+\[
+enct(\{\mti 0, \ldots, \mti N\})=\langle g(\mti 0), \ldots, g(\mti {|\TT|})\rangle_\oone
+\]
+
+And $g$ as:
+
+\[
+g(\langle \msi i, \mci j, \msi k, \mci l, D, b\rangle)\coloneqq\begin{cases}
+\langle \overline i_\oone, \overline j_\oone, \overline k_\oone, \overline l_\oone, \zero, b\rangle_\oone & \text{ if } D=L\\
+\langle \overline i_\oone, \overline j_\oone, \overline k_\oone,  \overline l_\oone, \one, b\rangle_\oone & \text{ otherwise }
+\end{cases}
+\]
+\end{defn}
+
+\begin{defn}[Encoding of a portion of a tape in $\POR$]
+We encode all the finite portions of a tape $\sone \coloneqq \mci i, \ldots \mci k$ in $\POR$ as:
+
+\[
+tenc(\mci i, \ldots \mci k)\coloneqq\langle \overline i_\oone, \ldots, \overline k_\oone\rangle_\oone
+\]
+
+\end{defn}
+
+\begin{defn}[Representation of the configuration of a stream machine in $\POR$]
+The representation of the configuration of a stream machine in $\POR$ is defined as the 4-uple $\langle \sone, \overline i_\oone, \stwo, \overline k_\oone\rangle_\oone$ where:
+\begin{itemize}
+\item $\sone=tenc(\sone')$, where $\sone'$ is the shortest portion of the tape that starts from the cell on the immediate \emph{left} of the head is followed (on its \emph{left}) by an infinite sequence of blank characters $*$.
+\item $\overline i_\oone$ is the \emph{encoding of} the index of the current state $\msi i$.
+\item $\stwo=tenc(\stwo')$, where $\stwo'$ is the shortest portion of the tape that starts from the cell under the head, continues on its \emph{right} and is followed (again on its \emph{right}) by an infinite sequence of blank characters $*$.
+\item $\overline k_\oone$ is the \emph{encoding of} the length of the prefix of the oracle tape that has already been consumed.
+\end{itemize}
+\end{defn}
+
+\begin{remark}
+The encoding of the initial state of a stream machine $\mcnfi$ is $\langle \langle\rangle_\oone, \overline \zero_\oone, tenc(\sone), \overline \zero_\oone\rangle_\oone$
+\end{remark}
+
+\begin{lemma}
+There exists a $\POR$ function that, given the encoding $\mu$ of a stream machine $M$ and a configuration of such machine $c$, returns the next configuration reached by the machine:
+\end{lemma}
+\end{comment}
+\subsection{The first inclusion}
+Now, all the basic functions introduced in Section \ref{sec:basicdataandfun} have been defined in $\POR$. Now we should proceed by showing the $\POR$ implementation of the functions in Section \ref{sec:complexdataandfun}.
+
+\begin{lemma}
+\label{lemma:part2}
+The functions $matcht$, $apply$, $step$ and $eval$ as defined in lemma \ref{lemma:sfpimpl} are in $\POR$.
+\end{lemma}
+\begin{proof}
+We can define the function $matcht$ by induction on the cardinality of the tuple. Given $t$ the encoding of the transition function $\delta$ by means of tuples, as defined in \ref{defn:smencoding}, and the current configuration $c$, as defined in \ref{defn:confencoding}. The function $matcht$ analyses all the elements of the encoding of $\delta$ and checks:
+\begin{itemize}
+\item Whether the current element of $\oone$ is corresponds to the value in the transition.
+\item Whether the current state matches with the one reported in the transition.
+\item Whether the value on the main tape corresponds to the value reported in $t$.
+\end{itemize}
+
+Its implementation under the $\POR$ formalism is the following.
+
+\begin{align*}
+matcht'(t, \epsilon, c, \oone) &\coloneqq \zero\\
+matcht'(t, \vtwo b, c, \oone) &\coloneqq \If (\pi(t, \vtwo b, \oone), matcht'(t, \vtwo, c, \oone), \\
+                               & eq(\pi_1(\pi(t, \vtwo b, \oone)), \pi_2(c, \oone), \oone) \land_\oone\\
+                               & eq(\pi_2(\pi(t, \vtwo b, \oone)), \pi_1(\pi_3(c, \oone),\oone), \oone) \land_\oone\\
+                               & eq(query(\pred(\pi_4(c, \oone)), \oone), \pi_6(\pi(t, \vtwo b, \oone), \oone), \oone), \oone)|_{t}\\
+matcht(t, c, \oone) &\coloneqq nextt'(t, |t|_\omega, c, \oone)
+\end{align*}
+
+The application of a transition to the current configuration acts as follows:
+
+\begin{enumerate}
+\item It checks if the transition is $\zero$, if it is true, the configuration is unchanged.
+\item It checks if the transition moves the head on the right or on the left by means of the condition $eq(\pi_5(t, \oone), \overline \zero_\oone)$.
+\item It computes builds a new tuple that encodes the resulting configuration
+\end{enumerate}
+
+\begin{align*}
+apply(t, s, \oone)\coloneqq \If(s, \If(&\langle rmr(\pi_1(s, \oone), \oone),\\
+                                &\quad \pi_3 (t, \oone),\\
+                                &\quad addl(addl(\pi_3(s, \oone), \pi_4(t), \oone), rc(lc(\pi_1(s, \oone), \oone), \oone), \oone),\\
+                                &\quad S(\pi_4(s, \oone), \oone)\rangle_\oone, \\
+                                &\langle addr(rmr(\pi_1(s, \oone), \oone), \pi_4(t), \oone), \pi_3 (t, \oone), rml(\pi_3(s, \oone)\oone), S(\pi_4(s, \oone), \oone)\rangle_\oone, \\
+                                &eq(\pi_5(t, \oone), \overline \zero_\oone), \oone), eq(t, \zero, \oone), \oone)
+\end{align*}
+
+Finally the function $step$ of lemma \ref{lemma:sfpimpl} can be easily translated in $\POR$.
+
+\begin{align*}
+step'(t, s, \epsilon, \oone)&\coloneqq s\\
+step'(t, s,\vtwo b, \oone)&\coloneqq apply(nextt(t, step'(s, \vtwo, \oone), \oone), step'(s, \vtwo, \oone), \oone)\\\\
+step(t, s,\vone, \oone)&\coloneqq step(t, s, \pred(\vone, \oone), \oone)
+\end{align*}
+
+Finally we define $eval_\mu(\sone, \oone)$ as follows
+
+\[
+eval_{\mu, n}(\sone, \oone)\coloneqq step(\pi_3(\mu, \oone), \langle \langle\rangle_\oone, \pi_4(\mu, \oone)_\oone, tenc(\sone),\overline \zero_\oone \rangle_\oone, \overline n_\oone, \oone)
+\]
+\end{proof}
+
+Finally we can prove that that every function that can be expressed by a $\SFP$ machine can be expressed in $\POR$, too.
+
+\begin{prop}
+For each $\SFP$ machine $\gensfp$, there exists a $\POR$ function $\funone$ such that $\funone(\sone, \oone)=\msfp(\sone, \oone)$.
+\label{prop:sfpsubseteqor}
+\end{prop}
+\begin{proof}
+Summing together lemma \ref{lemma:sfpimpl} and \ref{lemma:part2}, we get the result.
+\end{proof}
+
+\begin{lemma}
+The encoding of the initial state of a $\SFP$ machine $M (\sone, \oone)$ in $\POR$ is polynomial in the size $\sone$.
+\end{lemma}
+
+\begin{proof}
+The size of a tuple is given by the remark \ref{remark:tsize}, and thanks to it we can prove that the encoding of the initial state of the machine is $O(4+ max(6+|tenc(\sone)|))$. The size of the representation of $tenc(\sone)$ in $\POR$ is linear in the size of $\sone$: $\Sigma$ has a constant number of characters $k$, so the size of the encoding of a string $\sone$ is $O(|\sone|+ 2k)$, that is $O(|\sone|)$, for that reason the encoding of the initial state of the machine is polynomial in the size of the initial value $\sone$.
+\end{proof}
+
+\begin{lemma}
+The representation in $\POR$ of the complexity bound of a $\SFP$ machine $M (\sone, \oone)$ in $\POR$ is polynomial in the size $\sone$.
+\end{lemma}
+
+\begin{proof}
+By definition of $\SFP$ machine, there exists a polynomial $p$, that expresses the bound in the size of the encoding of $\sone$, i.e. $|\sone|$, the size of $\overline p(|\sone|)_\oone$ is still polynomial in $|\sone|$, because of remark \ref{remark:sizeofnumbers}.
+\end{proof}
+
+%By the fact that every $f (\sigma, \oone) \in \POR$ terminates in a polynomial number of step, we have that the simulation of any $\SFP$ in $\POR$ machines requires at most a polynomial number of steps. (Shoud I prove it?)
+
+\subsection{The other direction}
+
+It is interesting to observe that the previous encoding was loseless: we showed that a machine which uses random bits in a sequential way can naturally represented by a function which is allowed to access random pieces of information in a \emph{random} mode. The encoding was strong and preserved the identity of the $\omega$ function form the $\SFP$ machine to the $\POR$ function. Unfortunately (or not), the converse does not hold, too. The reason lies in the fact that a $\POR$ function can query the oracle $\omega$ on any value. This means that if $n$ is the length of an $s \in \SS$ computed by a $\POR$ function, which we will show being polynomial in its inputs, the position in the tape in which the value $\omega(s)$ is stored can grow exponentially in $n$.
+
+Even intuitively, this should not be too much of a problem: the \emph{amount} of randomicity which is used by a $\POR$ function will be shown to be polynomial in the size of its inputs, so a $\SFP$ machine can access the same amount of randomicity but in a different order and in a sequential way. So the $\omega$ function cannot be preserved during the encoding.
+
+This is similar to what happens when attempting to encode a RAM into an ordinary TM: the complexity is preserved, but modulo a poynomial oevrhead. Similar, or even worse, the ouput of the destination $\SFP$ won't be preserved strongly, instead \emph{the measure of the cylinders} leading the encoded and the encoding functions will be preserved.      
+
+
+This section will be organized as follows:
+
+\begin{itemize}
+\item We will first introduce the $\SIFP$ formalism with its syntax and operational semantics.
+\item We will encode each $\POR$ function in a correct $\SIFP$ program.
+\item We will implement an interpret for the $\SIFP$ on a $\SFP$ machine with a polynomial overhead and modulo the measure of the $\omega$s mapping the inputs to the outputs.
+\item Finally we will reduce the multi-tape $\SFP$ machines to canonical $\SFP$ machines, modulo a constant overhead in complexity, and a "streching" of the $\omega$ tape, i.e. the measure of the oracles diving an input to produce the same output in both the formalisms.  
+\end{itemize}
+
+\begin{comment}
+\subsubsection{The $\POR^-$ formalism}
+
+This class of functions is obtained by removing the query function $f_q$ from the $\POR$ formalism. The main reason that induced us to define such class is that we will prove that each oracle $\oone$ can be queried only on its initial prefix, whose size is polynomial in the size of the input. For this reason, the necessity of an infinitely long sequence of random bits vanishes.
+
+Moreover, proceeding in this way, we will deal with the oracle as with a normal argument of a $\POR^-$ function. So, we won't need to copy such tape in the corresponding $\SFP$: differently, we would have had to start copying a polynomially big prefix the oracle at the very beginning of the execution of the machine without even knowing the size of the input.
+
+\begin{defn}[The Class $\POR^-$]
+The class $\POR^-$,
+is the smallest class of functions in the form $\SS^{n+1}$
+to $\SS$ containing:
+\begin{itemize}
+\item The function $E^-$ such that $E^-(x,\subo)=\epsilon$
+\item For every $n\in\NN$ and for every $1\leq i\leq n$,
+the function ${P^-}^n_i$ such that ${P^-}^n_i(x_1,\dots, x_n,\subo) = x_i$ \ $(1\leq i\leq
+n)$
+\item For every $n\in\NN$, the function ${H^-}_n$ such that ${H^-}_n(x_1,\dots, x_n,\subo) = \subo$.
+\item For every $b\in\{0,1\}$ the function $C^-_b(x,\subo)=x\cdot b$
+\item The function $Q^-$ defined as
+$$
+Q^-(x,y, \subo)=\left\{\begin{array}{ll}
+	1 & \mbox{if }x\subseteq y \\
+	0 & \mbox{otherwise}
+\end{array}\right.
+$$
+\end{itemize}
+and closed under:
+\begin{itemize}
+\item Composition. $f^-$ is defined from $g,h_1,\dots, h_k\in \POR^-$ as:
+$$
+f(x_1,\dots, x_n,\subo)=g\big(h_1(x_1,\dots, x_n,\subo),\dots, h_k(x_1,\dots,
+x_n,\subo),\subo\big)
+$$
+\item Bounded iteration. $f^-$ is defined from $g,h_0,h_1 \in \POR^-$
+with bound $t$:
+\begin{align*}
+f(x_1,\dots, x_n,\epsilon, \subo) &= g(x_1,\dots, x_n,\subo) \\
+f(x_1,\dots, x_n,y\mathtt{0},\subo) &= h_0\big(x_1,\dots, x_n,y, f(x_1,\dots, x_n,y,\subo)\big) |_{t(x_1,\dots, x_n,y,\subo)} \\
+f(x_1,\dots, x_n,y\mathtt{1},\subo) &= h_1\big(x_1,\dots, x_n,y,f(x_1,\dots, x_n,y,\subo)\big)|_{t(x_1,\dots, x_n,y,\subo)}
+\end{align*}
+
+For simplicity, we will represent with $ite(g, h_1, h_2, t)$ the function obtained by applying the bounded iteration rule, at the $\POR^-$ functions $g$ ,$h_0$, $h_1$ and bound $t$.
+\end{itemize}
+\end{defn}
+
+
+\begin{lemma}[Size of $\mathcal L_\Wl$ terms]
+\label{lemma:sizeofterms}
+The size of a term in $\mathcal L_\Wl$ is polynomial in the size of its variables.
+\end{lemma}
+\begin{proof}
+By induction on the production of the term.
+\begin{itemize}
+\item[$\zero,\one$] If the term is a digit, it has no variables and its size is $\one$, that is a constant all constants are polynomials with no variables, so the claim is proved.
+\item[$\vone$] If the term is a variable, its size consists in the size of its variable, which is a polynomial in the size of the variables of the term.
+\item[$t \conc s$] If the term is the concatenation of two terms $t \conc s$, its size is the sum of the sizes of tits sub terms, which are polynomials by IH. The thesis can be derived by the fact that the sum of polynomials is still a polynomial in the union of the variables of the terms $t$ and $s$.
+\item[$t \times s$] If the term is the product of two terms $t \times s$, we know that the size of $s$ is a polynomial $p_s$ in the size of the variables in $s$, and the size of $t$ is still polynomial $p_t$ in the size of the variables in $t$, hence the size of the term $t\times s$ is given by $p_tp_s$ which is a polynomial in the size of the variables in $t\times s$.
+\end{itemize}
+\end{proof}
+
+\begin{lemma}
+\label{lemma:sizeofpor}
+$\forall f \in \POR.\forall \vone_1,\ldots, \vone_n.\forall\oone.\exists p \in POLY. |f(\vone_1, \ldots, \vone_n, \oone)| \le p(|\vone_1|, \ldots, |\vone_n|)$
+\end{lemma}
+\begin{proof}
+By induction on the proof of the fact that $f \in \POR$:
+\begin{itemize}
+\item If $f$ is $E$, the polynomial that we need to introduce can be the one of rank $\zero$ and $\one$ as coefficient, i.e. the constant $\one$.
+\item If $f$ is $Q$, the polynomial that we need to introduce is the constant $1$.
+\item If $f$ is $C_0$ or $C_1$, the polynomial that we need to introduce is $|\vone|+1$.
+\item If $f$ is $f_q$, the polynomial that we need to introduce is the constant $1$.
+\item In the case of projection, the polynomial that we need to introduce is $\sum_{i=0}^n|\vone_i|+1$, it is easy to see that such value is greater or equal to the size of each input\footnote{Actully, we are overkilling the bound: introducing the polynomial $|\vone_i|$ for each $P^n_i$ would have been sufficent.}.
+\item In the case of composition, by IH we know that $\forall 1 \le i\le k. \exists p_i \in \POLY. |h_i(\vone_1, \ldots, \vone_n, \oone)| \le p_i(|\vone_1|, \ldots, |\vone_n|)$ a similar bound $q$ exists for the external function $f$. The composition of $q$ with the sequence of polynomials $p_i$ is still a polynomial and bounds the size of the composition of the function by IH.
+\item In the case of iteration, by IH we know that the size of $g$ is bounded by a polynomial $p_g$ in its inputs. The we proceed on induction on the string $\stwo$ that is passed as recursion bound. If such string has length $\zero$, it is $\epsilon$, so the function $f$ coincides with $g$ and we have shown that has a polynomial bound. Otherwise, the size of the value computed by $f$ is polynomial in its input because it is truncated to the size of a term in $\mathcal L_{\mathbb P\mathbb W}$, whose size is polynomial in its variables (that are the inputs of $f$), by lemma \ref{lemma:sizeofterms}.
+\end{itemize}
+\end{proof}
+
+\begin{lemma}
+\label{lemma:sizeofpor-}
+$\forall f \in \POR^-.\forall \vone_1,\ldots, \vone_n.\forall\eta.\exists p \in POLY. |f(\vone_1, \ldots, \vone_n, \eta)| \le p(|\vone_1|, \ldots, |\vone_n|, |\eta|)$
+\end{lemma}
+\begin{proof}
+As above, by induction on the proof of the fact that $f \in \POR^-$, but we need to introduce the following case:
+\begin{itemize}
+\item In the case of projection of the oracle $H^-$, the polynomial that we need to introduce is $|\eta|$, it is easy to see that such value is greater or equal to the size of each input.
+\end{itemize}
+\end{proof}
+
+Now we need to define an order relation between polynomials, and to derive some results on it.
+
+\begin{defn}[Pointwise order on polynomials]
+Given two polynomials $p: \NN^m \to \NN$ and $q: \NN^m \to \NN$ we say that $q$ is \emph{universally greater} than $p$ if and only if $\forall n_1, \ldots, n_m \in \NN.p(n_1, \ldots, n_m) \le q(n_1, \ldots, n_m)$. In this case we write $p \lesssim q$.
+\end{defn}
+
+\begin{remark}[Partial order of $\lesssim$]
+$\lesssim$ is a partial order relation.
+\end{remark}
+
+\begin{lemma}[Construction of universally greater polynomials]
+\label{lemma:greaterpoly}
+Given two polynomials $p_1: \NN^m \to \NN$ and $p_2: \NN^m \to \NN$ there exists a polynomial $q$ so that $p_1 \le q\land p_2 \le q$
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on the maximum between the order of $p_1$ and $p_2$.
+\begin{itemize}
+\item If such value is $0$, both the polynomial are constants, so we can choose the greatest of such constants as $q$.
+\item If the maximum between the order of $p_1$ and $p_2$ is $n+1$ consider the polynomials obtained by $p_1$ and $p_2$ removing the all the terms with such order. The resulting polynomial has order lesser than $n+1$, call these polynomials $p_1'$ and $p_2'$. For IH, we can build a new polynomial $q'$ such that $p_1' \lesssim q \land p_2' \lesssim q$. Consider then the polynomials $p_1-p_1'$ and $p_2-p_2$. Such polynomials can be expressed respectively as sums of monomials with grade $n+1$, namely $p_1-p_1' = \sum_i=1^{m^{n+1}} a_i t_i$ and $p_2-p_2' = \sum_i=0^{m^{n+1}} b_i t_i$ some of them can have $0$ as coefficient. Now proceed as follows:
+\[
+\forall 0 \le m^{n+1}. c_i \coloneqq \begin{cases} a_i & \text{if } a_i \ge b_i  \\ b_i & \text{otherwise} \end{cases}
+\]
+
+The polynomial $q = q' + \sum_{i=0}^{m^{n+1}}c_it_i$ is such that $p_1 \lesssim q \land p_2 \lesssim q_2$.
+\end{itemize}
+\end{proof}
+
+We can conclude that every $\POR$ function queries its oracle function only with strings of polynomial length. Indeed, as we will prove, the length of the sequences described by the $\POR$ functions in polynomially long in their inputs. This allowed us to define the $\POR^-$ class which works with an additional and polynomially long sequence of $\zero$ and $\one$ bits instead of an oracle function. The definition above is the starting point for the formalization of what we have now stated.
+
+\begin{defn}[$n$-th prefix]
+We define with $\oone_n$ the $n$-th prefix of $\oone$. More formally its the sequence:
+
+\[
+\oone(\epsilon)\oone(\one)\oone(\one \one)\ldots \oone(\one^{n-1})
+\]
+\end{defn}
+
+\begin{lemma}
+\label{lemma:oracleprefix}
+$\forall \oone \in \OO.\forall p, q.\forall n_1, \ldots, n_m. p \lesssim q \to \oone_{p(n_1, \ldots, n_m)}\subseteq  \oone_{q(n_1, \ldots, n_m)}$.
+\end{lemma}
+
+\begin{proof}
+By $p \lesssim q$, we know that $p(n_1, \ldots, n_m)\le q(n_1, \ldots, n_m)$, so the second prefix is longer than the first, and so the first is a prefix of the second, too.
+\end{proof}
+
+The lemma \ref{lemma:sizeofpor} states an important result about the actual usage of the oracle by a $\POR$ function: the only part of an oracle that really affects the result of the computation is its prefix. Moreover, the size of such prefix is polynomially bounded, as stated below:
+
+\begin{lemma}[Prefix Lemma]
+\label{lemma:oraclebound}
+$\forall f \in \POR. \exists p \in \POLY. \forall \vone_1, \ldots, \vone_k.\forall \oone, \oone'. \oone_{p(|\vone_1|, \ldots, |\vone_k|)}=\oone'_{p(|\vone_1|, \ldots, |\vone_k|)} \to f(\vone_1, \ldots, \vone_k,\oone)=f(\vone_1, \ldots, \vone_k,\oone')$.
+\end{lemma}
+
+\begin{proof}
+\begin{itemize}
+\item If $f$ is $E$, $C_0$, $C_1$, $Q$, or a projection, the function doesn't use $\oone$ at all, so we can introduce $0$.
+\item If $f$ is $f_q$, the polynomial that we need to introduce is the linear function in the size of $\vone$.
+\item In the case of composition, by IH we know that $\forall 1 \le i\le k. \exists p_i \in \POLY. \oone_{p_i(|\vone_1|, \ldots, |\vone_n|)}= \oone'_{p_i(|\vone_1|, \ldots, |\vone_n|)} \to h_i(\vone_1, \ldots, \vone_n, \oone) = h_i(\vone_1, \ldots, \vone_n, \oone')$; a similar bound $q$ exists for the external function $f$, but needs to be composed with the sequence of polynomials obtained from \ref{lemma:sizeofpor}. Call such polynomial $q'$. Now we can apply lemma \ref{lemma:greaterpoly}, in order to obtain $p$. Since $\forall i. p_i \lesssim p \land q' \lesssim p$, we have that $\oone_{p(|\vone_1|, \ldots, |\vone_n|)} = \oone'_{p(|\vone_1|, \ldots, |\vone_n|)} \to \oone_{p_i(|\vone_1|, \ldots, |\vone_n|)} = \oone'_{p_i(|\vone_1|, \ldots, |\vone_n|)}$ by lemma \ref{lemma:oracleprefix}, which allows us to use the IH and to conclude the current inductive step.
+\item In the case of iteration, we can proceed similarly to the case above: by IH we know that the accesses made by $g$ to the oracle are bounded by a polynomial $p_g$ in its input variable. Then, we proceed by IH on $h_0$ an d $h_1$ obtaining $p_{h_0}$ and $p_{h_1}$, we also know that there exists a bound on the size of the function $f$ by lemma \ref{lemma:sizeofpor}, that is a polynomial $p_f$. Similarly to what we did above, we can partially compose the polynomials $p_{h_0}$ and $p_{h_1}$ with $p_f$ obtaining $p_0$ and $p_1$. We can build $p$ as described by lemma \ref{lemma:greaterpoly}. The polynomial $p$ is greater or equal to each one of the polynomials which bound the accesses to $\oone$, so we can apply lemma \ref{lemma:oracleprefix} and apply the IHs on $g$, $h_0$ and $h_1$.
+\end{itemize}
+\end{proof}
+
+The following step requires us to show that each function in $\POR$ can be implemented in $\POR^-$ by means of a function which interprets the queries to the oracle reading from a polynomially bounded prefix of such value. Lemma \ref{lemma:oraclebound} shows how long should  be at least the above mentioned prefix. In order to fully substitute the oracle, we need to perform some other encodings; in particular, we need a $\POR^-$ function that simulates the access to the oracle.
+
+\begin{align*}
+lft(\epsilon, \eta) & \coloneqq \epsilon\\
+lft(\vtwo b, \eta) & \coloneqq \vtwo|_\vtwo\\\\
+nlft(\vone, \epsilon, \eta) & \coloneqq \vone \\
+nlft(\vone, \vtwo b, \eta) & \coloneqq lft(nlft(\vone, \vtwo, \eta), \eta)|_\vtwo \\\\
+access(\vone, \eta) &\coloneqq lst(nlft(\rv(\eta, \eta), \vone, \eta), \eta)
+\end{align*}
+
+With a little abuse of notation, we reused the functions $lft$ and $\rv$ that we showed being in $\POR$; although we won't show it explicitly, the same construction can be used in order to prove that such functions are in $\POR^-$, too.
+
+\begin{remark}
+\begin{align*}
+\forall \sone, \eta. lft(\sone, \eta)&\subseteq \sone\\
+\forall \sone, \stwo, \eta. nlft(\sone, \stwo, \eta)&\subseteq \sone\\
+\forall \sone, \stwo, \eta. nlft(\sone, \stwo b, \eta)&\subseteq  nlft(\sone, \stwo, \eta)\\
+\end{align*}
+\end{remark}
+
+Now we can show the main result of this subsection.
+
+\begin{lemma}[Implementation of $\POR$ in $\POR^-$]
+\label{lemma:portopor-}
+\small
+\[
+\forall f \in \POR. \exists p \in \POLY.\exists g \in \POR^-. \forall q \in \POLY. p\lesssim q.\forall \vone_1, \ldots, \vone_n, \oone. f(\vone_1, \ldots, \vone_n, \oone)= g(\vone_1, \ldots, \vone_n, \oone_{q(\vone_1, \ldots, \vone_n)})
+\]
+\normalsize
+\end{lemma}
+\begin{proof}
+Lemma \ref{lemma:oraclebound} shows that there is a bound on the size of the portion of the oracle that is actually read by $f$. We use such bound for $p$. We proceed by induction on the definition of $f$.
+\begin{itemize}
+\item If $f$ is $E$, lemma \ref{lemma:oraclebound}, provides us the bound $0$. It is indeed true that $E(\vone, \oone)=E^-(\oone, \eta)$ where $\eta$ is any polynomially prefix of $\oone$. We act similarly if $f$ is $C_0$, $C_1$, $Q$, or a projection.
+\item If $f$ is $f_q$, its implementation in $\POR^-$ is $access(\vone, \eta)$. The claim is $f_q(\sone, \oone) = access(\sone, \eta)$, where $\eta$ is any prefix of $\oone$ longer than $|\sone|$.
+\item In the case of composition, by IH we know that $\forall 1 \le i\le k. \exists p_i \in \POLY.\forall q_i \in \POLY.p_i \lesssim q_i \to h_i(\vone_1, \ldots, \vone_n, \oone)= h_i'(\vone_1, \ldots, \vone_n, \oone_{q_i(|\vone_1|, \ldots, |\vone_n|)})$ with $h'_i \in \POR^-$ for each $i$. Similarly we know that $\exists p_f \in \POLY.\forall q_f \in \POLY. p \lesssim q. f(\vone_1, \ldots, \vone_k, \oone)= f'(\vone_1, \ldots, \vone_k, \oone_{q_f(|\vone_1|, \ldots, |\vone_k|)})$ with $f' \in \POR^-$. We can start introducing from the IHs the polynomials $p_i$ and $p_f$. Then we compose $p_f$ with the polynomials that express the size of the arguments of such functions which exist for lemma \ref{lemma:sizeofpor}, obtaining $p_f'$ that expresses the actual size of the prefix of $\oone$ read by $f$. Now we can apply lemma \ref{lemma:greaterpoly} in order to obtain a polynomial which is universally greater than the starting ones, call that polynomial $p$. Finally we have that any polynomial which is universally greater than $p$ is also universally greater than the  polynomial $p_i$s and the $p_f$, so we can apply the IH and obtain the result.
+\item In the case of iteration, by IH we know that $\exists p_g \in \POLY.\forall q_g \in \POLY. p_q \lesssim q_g \to g(\vone_1, \ldots, \vone_k, \oone)= g'(\vone_1, \ldots, \vone_k, \oone_{q_g(|\vone_1|, \ldots, |\vone_k|)})$ with $g' \in \POR^-$ is bounded by a polynomial $p_g$ in its inputs. Similarly, we know that $\exists p_0, p_1 \in \POLY.\forall q_0, q_1 \in \POLY. p_0 \lesssim q_0 \land p_1 \lesssim q_1 \to h_0(\vone_1, \ldots, \vone_k, \vone_{k+1}, \oone)= h_0'(\vone_1, \ldots, \vone_k, \vone_{k+1}, \oone_{q_0(|\vone_1|, \ldots, |\vone_k|, |\vone_{k+1}|)}) \land h_1(\vone_1, \ldots, \vone_k,  \vone_{k+1}, \oone)= h_1'(\vone_1, \ldots, \vone_k,\vone_{k+1},  \oone_{p_1(|\vone_1|, \ldots, |\vone_k|, |\vone_{k+1}|)})$. Similarly to what we did previously, we use lemma \ref{lemma:sizeofpor} in order to obtain an upper bound to the size of the recursive call that allows us to express $p_0$ and $p_1$ in function of $\vone_1, \ldots, \vone_k$. Call the polynomials that we obtain $p_0'$ and $p_1'$. now we can produce an polynomial universally greater that the one that we obtained simply applying \ref{lemma:greaterpoly}, obtaining $p$. This allows us to use all the IHs and to conclude the sub-derivation.
+\end{itemize}
+\end{proof}
+
+At this point, the proof of final result is intuitively concluded. The $\POR^-$ formalism coincides to the Ferreira's $\BRS$ (Ferreira90). The authors of the above mentioned paper claimed such formalism to be polynomially interpretable by a single tape Turing's Machine, which is a particular class of a $\SFP$ machine. Unfortunately, as far as the authors of this paper know, the proof of such result is unavailable.
+
+For this reason, and for the sake of producing a comprehensive and self-contained work, we decided to prove explicitly that the $\POR^-$ formalism can be interpreted by a single tape Turing's Machine with polynomial complexity.
+\end{comment}
+
+\subsubsection{The $\SIFP$ formalism}
+
+The $\SFP$ paradigm, which is a subclass of the Turing Machines' model, is far being a functional paradigm, while $\POR$ is fully functional. For this reason, a direct encoding of the $\POR$ (or even of the $\POR^-$) formalism in $\SFP$ would be too much complicated because of the radically different natures of the two formalisms.
+
+In order to simplify a little bit the whole encoding, we will pass through an intermediate imperative paradigm, the String's Imperative and Flipping Paradigm $\SIFP$.
+
+The $\SIFP$ paradigm is defined by an enumerable set of correct programs and an operational semantics.
+
+
+\begin{defn}[Correct programs of $\SIFP$]
+The language of the $\SIMP$ programs is $\lang{\stm}$, i.e. the set of strings produced by the non-terminal symbol $\stm$ defined by:
+
+\begin{align*}
+\id &\Coloneqq X_i\ |\ Y_i\ |\ S_i\ |\ R\ |\ Q\ |\ Z\ |\ T\qquad i \in \NN\\
+\xp &\Coloneqq \epsilon\ |\ \xp.\zero\ |\ \xp.\one\ |\ \id\ |\ \xp \sqsubseteq \xp\ |\ \xp \land \xp\ |\ \lnot \xp\\
+\stm & \Coloneqq \id \takes \xp\ |\ \stm;\stm\ |\ \while \xp \stm\ |\ \fl \xp\ |\ \sk
+\end{align*}
+\end{defn}
+
+\begin{defn}[Store]
+A store is a partial function $\store: \id \longrightarrow \{\zero, \one\}^*$.
+\end{defn}
+
+\begin{defn}[Empty store]
+An \emph{empty} store is a store that is undefined on all its domain. We represent such object with $[]$.
+\end{defn}
+
+\begin{defn}[Store updating]
+We define the updating of a store $\store$ with a mapping from $y \in \id$ to $\tau \in \{\zero, \one\}^*$ as the store $\store_1$ defined as:
+\[
+\store_1(x) \coloneqq \begin{cases} \tau & \text{if } x = y\\ \store(x) & \text{otherwise}\end{cases}
+\]
+\end{defn}
+
+\begin{defn}[semantics of $\SIFP$'s expressions]
+The semantics of an expression $E \in \lang{\xp}$ is the smallest function $\sred: \lang{\xp} \times (\id \longrightarrow \{\zero, \one\}^*)\times \OO \longrightarrow \{\zero, \one\}^*$ closed under the following rules:
+\begin{center}
+\vspace{12pt}
+\AxiomC{\phantom{$\langle \epsilon, \store, \omega\rangle \sred \epsilon$}}
+\UnaryInfC{$\langle \epsilon, \store, \omega\rangle \sred \epsilon$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \sigma$}
+\UnaryInfC{$\langle e.\zero, \store, \omega\rangle \sred \sigma \conc \zero$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \sigma$}
+\UnaryInfC{$\langle e.\one, \store, \omega\rangle \sred \sigma \conc \one$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \sigma$}
+\AxiomC{$\langle f, \store, \omega \rangle \sred \tau$}
+\AxiomC{$\sigma \subseteq \tau$}
+\TrinaryInfC{$\langle e \sqsubseteq f, \store, \omega\rangle \sred \one$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \sigma$}
+\AxiomC{$\langle f, \store, \omega \rangle \sred \tau$}
+\AxiomC{$\sigma \not\subseteq \tau$}
+\TrinaryInfC{$\langle e \sqsubseteq f, \store, \omega\rangle \sred \zero$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\store(Id)=\sigma$}
+\UnaryInfC{$\langle Id, \store, \omega\rangle \sred \sigma$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \zero$}
+\UnaryInfC{$\langle \lnot e, \store, \omega\rangle \sred \one$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \sigma$}
+\AxiomC{$\sigma \neq \zero$}
+\BinaryInfC{$\langle \lnot e, \store, \omega\rangle \sred \zero$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \one$}
+\AxiomC{$\langle f, \store, \omega \rangle \sred \one$}
+\BinaryInfC{$\langle e \land f, \store, \omega\rangle \sred \one$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \sigma$}
+\AxiomC{$\langle f, \store, \omega \rangle \sred \tau$}
+\AxiomC{$\sigma \neq \one \land \tau \neq \one$}
+\TrinaryInfC{$\langle e \land f, \store, \omega \rangle \sred \zero$}
+\DisplayProof
+\hspace{18pt}
+
+\end{center}
+\end{defn}
+
+\begin{defn}[Operational semantics of $\SIFP$]
+The semantics of a program $P \in \lang{\stm}$ is the smallest function $\ssos: \lang{\stm} \times (\id \longrightarrow \{\zero, \one\}^*)\longrightarrow (\id \longrightarrow \{\zero, \one\}^*)$ closed under the following rules:
+\begin{center}
+\vspace{12pt}
+\AxiomC{$\phantom{\langle \sk, \store\rangle \ssos \store}$}
+\UnaryInfC{${\langle \sk, \store\rangle \ssos \store}$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\UnaryInfC{$\langle Id\takes e, \store\rangle \ssos \store\as {Id}{\sigma}$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle s, \store\rangle\ssos \store'$}
+\AxiomC{$\langle t, \store'\rangle\ssos \store''$}
+\BinaryInfC{$\langle s;t, \store\rangle \ssos \store''$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle\sred \one$}
+\AxiomC{$\langle s, \store\rangle\ssos \store'$}
+\AxiomC{$\langle \while e s, \store'\rangle\ssos \store''$}
+\TrinaryInfC{$\langle \while e s, \store\rangle \ssos \store''$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\AxiomC{$\sigma \neq \one$}
+\BinaryInfC{$\langle \while e s, \store\rangle \ssos \store$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store, \omega \rangle \sred \sigma$}
+\AxiomC{$\omega(\sigma)=b$}
+\BinaryInfC{$\langle \fl(e), \store, \omega\rangle \ssos \store[R \leftarrow \omega(\sigma)]$}
+\DisplayProof
+
+\end{center}
+\end{defn}
+
+\begin{notation}
+We will use the notation $E \sqsubseteq F$ as a shorthand (syntactic sugar) for $\lnot (\lnot E.\zero \sqsubseteq F \land \lnot E.\one \sqsubseteq F)$.
+\end{notation}
+
+\begin{remark}
+\label{remark:if}
+We will use the pattern $B \takes \epsilon.\one; \while {c \land B} {\stm; B \takes \epsilon.\zero}$ as an implementation of the \textit{if} statement: it's indeed true that
+\begin{itemize}
+\item The statement $\stm$ is executed if and only if $c$ holds.
+\item The statement $\stm$ is executed only one time.
+\end{itemize}
+\end{remark}
+
+For increasing the readability of our proof, we will introduce the following notation:
+
+\begin{notation}[pseudo-procedeure]
+A pseudo-procedure is a syntactic sugar for the $\SIFP$'s language, which consists in a \emph{pseudo-procedure's name}, a \emph{body} a list of \emph{formal parameters}. A call to such expression must be interpreted as the inlining of the pseudo-procedure's body in the place of the call in which the names of the formal parameters by the actual parametersand all the \emph{free} names of the body are substituted by fresh names.
+\end{notation}
+
+
+\begin{lemma}[Term representation in $\SIFP$]
+All the terms of $L_\Wl$ can be represented in $\SIFP$. Formally: $\forall t \in L_\Wl. \exists \MM\in \lang{\stm}. Vars(t)=\{\vone_1, \ldots, \vone_n\} \to \MM(\vone_1, \ldots, \vone_n)= t(\vone_1, \ldots, \vone_n)$
+\end{lemma}
+\begin{proof}
+We proceed by induction on the syntax of $t$. The correctness of such implementation is given by the following invariant properties:
+\begin{itemize}
+\item The result of the computation is stored in $R$.
+\item The inputs are stored in the registers of the group $X$.
+\item The function $\MM$ doesn't write the values it accesses as input.
+\end{itemize}
+
+$\MM$ is defined as follows:
+\begin{itemize}
+\item $\MM(\epsilon)\coloneqq R \takes \epsilon ;$
+\item $\MM(\zero)\coloneqq R \takes \epsilon.\zero ;$
+\item $\MM(\one)\coloneqq R \takes \epsilon.\one ;$
+\item $\MM(Id)\coloneqq R \takes Id ;$
+\end{itemize}
+
+For sake of readability, we define the following program that copies the $|Z|$-th bit of $S$ at the end of $R$, given that $Z$ contains the $|Z|$-th prefix of $S$.
+
+\begin{align*}
+copyb (Z, S, R)&\coloneqq B \takes \epsilon.\one;\\
+& \while{Z.0 \sqsubseteq S\land B}{\\
+& \quad Z \takes Z.\zero;\\
+& \quad R \takes R.\zero;\\
+& \quad B \takes \epsilon.\zero;\\
+& }\\
+& \while{Z.1 \sqsubseteq S\land B}{\\
+& \quad Z \takes Z.\one;\\
+& \quad R \takes R.\one;\\
+& \quad B \takes \epsilon.\zero;\\
+& }\\
+\end{align*}
+
+\begin{lemma}[Complexity of $copyb$]
+\label{lemma:compcopyb}
+The pseudo-procedure $copyb$ requires a number of steps which is a polynomial in the sizes of its arguments.
+\end{lemma}
+
+\begin{proof}
+The two $\while \ \ $s are used for implementing an $\If$ construct as described in Remark \ref{remark:if}, so they cause no iteration. Moreover, the two statements are mutually exclusive, so this pseudo-procedure requires at most 5 steps.
+\end{proof}
+
+\begin{lemma}[Correctness of $copyb$]
+\label{lemma:corrcopyb}
+After an execution of $copyb$:
+\begin{itemize}
+\item If the first argument is a strong prefix of the second, the size of the first argument ($Z$) increases by one, and is still a prefix of the second argument ($S$).
+\item Otherwise, the values stored in the first two registers don't change.
+\item Each bit which is stored at the end of $Z$ is stored at the end of $R$.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+Suppose that the value stored in $Z$ is a strong prefix of the value which is stored in $S$. Clearly it's true that $Z.\zero \sqsubseteq S \lor Z.\one\sqsubseteq S$. In both case $copyb$ increases the length of the portion of $Z$ which is a prefix of $S$. If $Z$ is not a prefix of $S$ none of the two $\If$s is executed. The last conclusion comes from the observation that each assignment to $Z$ is followed by a similar assignment to $R$.
+\end{proof}
+
+This pseudo-procedure will turn out to be useful in both the encodings of $\conc$ and $\times$. For the $\conc$ operator, we proceed with the following encoding:
+
+\begin{align*}
+\MM(t \conc s)\coloneqq &\MM(s)\\
+& S \takes R;\\
+& \MM(t)\\
+& Z \takes \epsilon; \\
+& \while {Z \sqsubset S}{\\
+& \quad B \takes \epsilon.\one; \\
+& \quad copyb(Z, S, R)\\
+& \quad }\\
+\end{align*}
+
+The encoding of the $\times$ operator is the following:
+
+\begin{align*}
+\MM(t \times s)\coloneqq &
+\MM(t)\\
+& T \takes R;\\
+& \MM(s)\\
+& S \takes R;\\
+& Z \takes \epsilon;\\
+& R \takes \epsilon;\\
+& Q \takes \epsilon;\\
+& \while {Z \sqsubset S} { \\
+& \quad B \takes \epsilon.\one;\\
+& \quad \while{Z.\zero \sqsubseteq S \land B} {\\
+& \quad \quad Z \takes Z.\zero;\\
+& \quad \quad \while {Q \sqsubset T} {\\
+& \quad \quad \quad copyb(Q, T, R)\\
+%& \quad \quad \quad B \takes \epsilon.\zero;\\
+& \quad \quad \quad }\\
+& \quad \quad Q \takes \epsilon;\\
+& \quad \quad B \takes \epsilon.\zero;\\
+& \quad \quad }\\
+& \quad \while{Z.\one \sqsubseteq S \land B} {\\
+& \quad \quad Z \takes Z.\one;\\
+& \quad \quad \while {Q \sqsubset T} {\\
+& \quad \quad \quad copyb(Q, T, R)\\
+%& \quad \quad \quad B \takes \epsilon.\zero;\\
+& \quad \quad \quad }\\
+& \quad \quad Q \takes \epsilon;\\
+& \quad \quad B \takes \epsilon.\zero;\\
+& \quad \quad }\\
+%& \quad B \coloneqq 0\\
+& \quad }
+\end{align*}
+
+\end{proof}
+
+\begin{lemma}[Complexity of $\MM$]
+\label{lemma:compmm}
+$\forall t \in L_\Wl. \MM(t)$ can be computed in number of steps which is polynomial in the size of the variables in $t$.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on the syntax of $t$.
+\begin{itemize}
+\item[$\epsilon$] If the term is $\epsilon$, $\MM(t)$ consists in two steps.
+\item[$\zero,\one$] If the term is a digit,  $\MM(t)$ consists in two steps.
+\item[$\vone$] If the term is a variable, $\MM(t)$ consists in two steps.
+\item[$t \conc s$] From the Lemmas \ref{lemma:corrcopyb} and \ref{lemma:compcopyb} we know that $copyb$ requires a constant number of steps, and that each time $copyb$ is executed, $Z$ grows by one. Moreover, we know that the function respects the fact that $Z$ is a prefix of $S$. For this reason, the complexity of the $\while\ \ $ statement is linear in the size of $Z$. Finally, the complexity takes in account two polynomial due the recursive hypothesis on $\MM$ and two steps for the two assignments before the $\while\ \ $. The overall sum of these complexities is still a polynomial.
+\item[$t \times s$] We will distinguish the three levels of $\while\ \ $s by calling them \emph{outer}, \emph{middle} and \emph{inner}. For Lemmas \ref{lemma:compcopyb} and \ref{lemma:corrcopyb}, the inner $\while\ \ $s take at most $|T|$ steps, such value is a polynomial over the free variables of $t$ according to Lemma \ref{lemma:sizeofterms}. The value of $T$ is kept constant after its first assignment, for this reason all the inner cycles require a polynomial number of steps. The middle cycles, are an implementation of the $\If$ construct according to Remark \ref{remark:if}, so they are executed only once per each outer cycle. Moreover, they add a constant number of steps to the complexity of the inner cycles. This means that, modulo an outer cycle, the complexity is still polynomial. For the same argument of Lemma \ref{lemma:compcopyb}, the outer cycle takes at most $|S|$ steps which is a polynomial according to \ref{lemma:sizeofterms}.
+\end{itemize}
+\end{proof}
+
+\begin{defn}[Function described by a $\SIFP$ program]
+We say that the value described by a correct $\SIFP$ program $P$ is $\mathcal F(P): \lang{Stm} \longrightarrow (\SS^n \times \OO \longrightarrow \SS)$, where $F$ is defined as above\footnote{Instead of the infixed notation for $\ssos$, we will use its prefixed notation in order to express the store associated to the program and the starting store that are between the curly brackets.}:
+\[
+F\coloneqq \lambda \vone_1, \ldots, \vone_n, \omega.\ssos(\langle P, []\as {X_1} {\vone_1}, \ldots, \as {X_n} {\vone_n}, \omega\rangle)(R)
+\]
+\end{defn}
+
+In order to present in a more compact way the last translation, we need to introduce a pseudo-procedure which truncates a register to the length of another one.
+
+\begin{defn}[Truncating pseudo-procedure]
+The $trunc(T, R)$ pseudo-procedure is a $\SIFP$ program with free names $T$ and $R$, defined as follows:
+
+\begin{comment}
+\begin{align*}
+trunc(T, R) \coloneqq &Q \takes R;\\
+                      &R \takes \epsilon;\\
+                      &Z \takes \epsilon;\\
+                      &\while {Z \sqsubset T} {\\
+                      &\quad B \takes \one;\\
+                      &\quad \while {Z.\zero \sqsubseteq T \land B} {\\
+                      &\quad \quad B \takes \one;\\
+                      &\quad \quad \while {R.\zero \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\zero;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad \while {R.\one \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\one;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad Z \takes Z.0;\\
+                      &\quad \quad B \takes 0;\\
+                      &\quad \quad }\\
+                      &\quad \while {Z.\one \sqsubseteq T \land B} {\\
+                      &\quad \quad B \takes \one;\\
+                      &\quad \quad \while {R.\zero \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\zero;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad \while {R.\one \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\one;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad Z \takes Z.0;\\
+                      &\quad \quad B \takes 0;\\
+                      &\quad \quad }\\
+                      &}
+\end{align*}
+\end{comment}
+\begin{align*}
+trunc(T, R) \coloneqq &Q \takes R;\\
+                      &R \takes \epsilon;\\
+                      &Z \takes \epsilon;\\
+                      &Y \takes \epsilon;\\
+                      &\while {Z \sqsubset T} {\\
+                      &\quad B \takes \one;\\
+                      &\quad \while {Z.\zero \sqsubseteq T \land B} {\\
+                      &\quad \quad copyb(R, Q, Y)\\
+                      &\quad \quad Z \takes Z.\zero;\\
+                      &\quad \quad B \takes \zero;\\
+                      &\quad \quad }\\
+                      &\quad \while {Z.\one \sqsubseteq T \land B} {\\
+                      &\quad \quad B \takes \one;\\
+                      &\quad \quad copyb(R, Q, Y)\\
+                      &\quad \quad Z \takes Z.\one;\\
+                      &\quad \quad B \takes \zero;\\
+                      &\quad \quad }\\
+                      &}
+\end{align*}
+\end{defn}
+
+\begin{lemma}[Complexity of truncation]
+\label{lemma:comptrunc}
+The pseudo-procedure $trunc$ requires a number of steps which is at most polynomial in the sizes of its free names.
+\end{lemma}
+
+\begin{proof}
+By Lemma \ref{lemma:compcopyb} we know that the pseudo-procedure requires a constant number of steps, furthermore, the inner cycles are the implementation of an $\If$ according to Remark \ref{remark:if}, so they are executed only once per outer cycle. Finally the number of outer cycles is bounded by the $|T|$, so the whole complexity of the pseudo-procedure is polynomial (linear) in $|T|$.
+\end{proof}
+
+\begin{lemma}[Correctness of truncation]
+\label{lemma:corrtrunc}
+The pseudo-procedure $trunc$ truncates the register $R$ to its $|T|$-th prefix.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on $T$.
+\begin{itemize}
+\item[$\epsilon$] Trivially we have $R=\epsilon$ since the cycle isn't executed.
+\item[$\sone b$] In this case, only one of the sub-cycles is executed (they are mutually-exclusive), a single more of $Q$ is stored in $R$ according to Lemma \ref{lemma:corrcopyb}, and $Q$ is unchanged after the execution of $copyb$. Theses arguments prove the claim. The register $Y$ has no practical implications since it's only used in order to leverage the lemmas on $copyb$.
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[Implementation of $\POR$ in $\SIFP$]
+\label{lemma:portosifp}
+$\forall f \in \POR^-.\exists P\in \lang {Stm}.\\\forall \vone_1, \ldots \vone_n. F(P)(\vone_1, \ldots, \vone_n, \omega)=f(\vone_1, \ldots, \vone_n, \omega)$
+\end{lemma}
+\begin{proof}
+For each function $f \in \POR^-$ we define a program $\LL(f)$ such that $F(\LL(f))(x_1, \ldots, x_n)=f(x_1, \ldots, x_n)$ by induction on the syntax of $f$. The correctness of such implementation is given by the following invariant properties:
+\begin{itemize}
+\item The result of the computation is stored in $R$.
+\item The inputs and the sub-oracle are stored in the registers of the group $X$.
+\item The function $\LL$ doesn't change the values it accesses as input.
+\end{itemize}
+
+We define the function $\LL$ as follows.
+\begin{itemize}
+\item $\LL(E)\coloneqq R \takes \epsilon; \sk$.
+\item $\LL(S_0)\coloneqq R \takes X_0.0; \sk$.
+\item $\LL(S_1)\coloneqq R \takes X_0.1; \sk$.
+\item $\LL({P}^n_i)\coloneqq R \takes X_i; \sk$.
+\item $\LL(C)\coloneqq R \takes X_1 \sqsubseteq X_2; \sk$.
+\item $\LL(Q)\coloneqq \fl(X_1); \sk$.
+\end{itemize}
+
+Finally the encoding of the composition and of the bounded iteration:
+\begin{align*}
+\LL(f(h_1(\vone_1,\ldots, \vone_n, \eta), \ldots h_k(\vone_1,\ldots, \vone_n, \eta), \eta))\coloneqq& \LL(h_1)\\
+&S_1 \takes R;\\
+&\ldots\\
+&\LL(h_k)\\
+&S_k \takes R;\\
+&Y_1 \takes X_1;\\
+& \ldots\\
+& Y_{\max(n+1, k+1)} \takes X_{\max(n+1, k+1)};\\
+& X_1 \takes S_1;\\
+& \ldots\\
+& X_k \takes S_k;\\
+& X_{k+1} \takes Y_{n+1};\\
+&\LL(f)\\
+& X_1 \takes Y_1\\
+&\ldots\\
+&X_{\max(n+1, k+1)} \takes Y_{\max(n+1, k+1)};\\
+&\sk
+\end{align*}
+
+Supposing that $g$ takes $n$ parameters, the bounded iteration is computed as follows:
+
+\begin{align*}
+\LL(ite(g, h_1, h_2, t))\coloneqq
+&Z \takes X_{n+1};\\
+&X_{n+1} \takes \epsilon;\\
+& \LL(g(\vone_1, \ldots, \vone_n))\\
+& Y \takes X_{n+2};\\
+%& Y_{n+2} \takes R;\\
+& \while {X_{n+1} \sqsubset Z} {\\
+&\quad\quad B \takes \epsilon.1;\\
+&\quad \while{X_{n+1}.\zero\sqsubseteq Z \land B}{\\
+&\quad\quad X_{n+1}\takes X_{n+1}.\zero;\\
+&\quad\quad \MM(t)\\
+&\quad\quad T \takes R;\\
+&\quad \quad \LL(h_0);\\
+&\quad\quad X_{n+1}\takes R;\\
+&\quad\quad trunc(T, R);\\
+&\quad\quad X_{n+2} \takes R;\\
+&\quad\quad B \takes \epsilon.\zero;\\
+ }
+& \quad \while{X_{n+1}.\one\sqsubseteq Z \land B}{\\
+&\quad\quad X_{n+1}\takes X_{n+1}.\one;\\
+&\quad\quad \MM(t)\\
+&\quad\quad T \takes R;\\
+&\quad \quad \LL(h_0);\\
+&\quad\quad X_{n+1}\takes R;\\
+&\quad\quad trunc(T, R);\\
+&\quad\quad X_{n+2} \takes R;\\
+&\quad\quad B \takes \epsilon.\zero;\\
+ }
+}
+&X_{n+2}\takes Y;\\
+&\sk
+\end{align*}
+\end{proof}
+
+\begin{prop}[Complexity of $\SIFP$]
+$\forall f \in \POR^-. \LL(f)$ takes a number of steps which is polynomial in the size of the arguments of $f$.
+\end{prop}
+\begin{proof}
+We proceed by induction on the proof of the fact that $f$ is indeed in $\POR^-$. All the base cases ($E$, $S_0$,$S_1$, ${P}^n_i$, $C$,$Q$) are trivial. The inductive steps follow easily:
+\begin{itemize}
+\item In the case of composition, we know that the thesis holds for all the pseudo-procedures $\LL$. The program requires a finite number of assignments more, so its complexity is still polynomial.
+\item In the case of iteration we can move the same argument of Lemma \ref{lemma:compcopyb} for proving that the outer cycle is executed only $|Z|$ times, which is a polynomial in an argument of the encoded function. Moreover, the inner cycles are an implementation of the $\If$ construct according to Remark \ref{remark:if}, so they are executed only once per outer cycle. So the thesis comes from Lemma \ref{lemma:comptrunc}, from Lemma \ref{lemma:compmm}, from the fact that the composition of polynomials is still polynomial and from the IH.
+\end{itemize}
+\end{proof}
+
+\begin{remark}
+The number of registers used by $\LL(f)$ is finite.
+\end{remark}
+
+\begin{proof}
+Such value can be expressed by the function $\#_r^\LL$ described below:
+\begin{align*}
+\#_r^\MM(\epsilon)&\coloneqq 1\\
+\#_r^\MM(\zero)&\coloneqq 1\\
+\#_r^\MM(\one)&\coloneqq 1\\
+\#_r^\MM(\vone)&\coloneqq 2\\
+\#_r^\MM(t \conc s)&\coloneqq 4+\#_r^\MM(t)+\#_r^\MM(s)+1\\
+\#_r^\MM(t \times s)&\coloneqq 7+\#_r^\MM(t)+\#_r^\MM(s)+1\\\\
+\#_r^\LL(E)&\coloneqq 2\\
+\#_r^\LL(S_i)&\coloneqq 2\\
+\#_r^\LL({P}_i^n)&\coloneqq 2\\
+\#_r^\LL(C)&\coloneqq 3\\
+\#_r^\LL(Q)&\coloneqq 2\\
+\#_r^\LL(f(h_1(\vone_1,\ldots, \vone_n, \eta), \ldots h_k(\vone_1,\ldots, \vone_n, \eta), \eta))&\coloneqq 2k+\max(k+1, h+1)+\#_r^\LL(f)\\
+\#_r^\LL(ite)&\coloneqq (n+2)+4+ \#_r^\MM(t)+6+\#_r^\LL(g)\\
+\end{align*}
+
+The inductive cases are correct because as:
+
+\begin{itemize}
+\item[$t\conc s$] The value takes account of the inductive calls, the four names used by the function and the register used by $copyb$.
+\item[$t\times s$] The value takes account of the inductive calls, the seven names used by the function and the register used by $copyb$.
+\item The value for the concatenation takes account of the $X_i$ registers, the $Y_i$s, the $S_i$s and of the recursive calls.
+\item The value for the bounded iteration takes account of the $X_i$ registers, the $Y$, $Z$, $B$, and $R$ register, the registers used by the function $\MM$, the six registers used by the $trunc$ pseudo-procedure the $S_i$s and of the recursive calls.
+\end{itemize}
+
+The correctness of the definition can be obtained by induction on the syntax of the function $f\in\POR$ that is being translated. The fact that $\#_r^\LL$ is finite is trivial by induction on the definition of such function.
+\end{proof}
+
+\begin{comment}
+Now we should show that the oracles used by $\POR$ functions can be limited to a finite and polinomially sized domain. This result will be inherited by $\SIFP$ programs, too. This result will allow us to formalize the fact that when tanslating $\SIFP$ on multitape $\SFP$ machines we will end up with a machine which is not pointwise identical to the starting $P \in \SIFP$, but which will preserve the measure of any output given the input.
+
+\begin{lemma}
+\label{lemma:pormap}
+$\forall f \in \POR. \forall \vec x \in \SS. \forall \omega \in \OO. \exists g\in \SS^\NN. \exists k \in \NN. \forall j \in \NN. j < k \to \forall \omega' \omega'(g(j))\neq\omega(g(j))\to f(\vec x, \omega)\neq f(\vec x, \omega')$. Moreover the size of the function's graph is polynomial.
+\end{lemma}
+\begin{proof}
+By induction on the syntax of $f$.
+\begin{itemize}
+\item If $f$ is $E, S_0, S_1, C$, or projection, the function which we need is $\emptyset$, the value of $k$ is $0$ both the conclusions hold.
+\item If $f$ is $Q(x, \omega)$, the function which we need is the function $0\mapsto x$, $k$ is $1$. Both the conclusions hold.
+\item In the case of composition, we have induction hypotheses on all the composed function. The $k$ which we need to introduce is the summation of all $k$ introduced by the inner hypotheses plus the one obtained instantiating the IH to its inputs. The function which we need to introduce is the one obteined shifting the $g_{i+1}$-th function's domain of $k_i$. The outer function is obtained by the corresponednt induction hypotesis instantiated on the inputs described by the inner functions. The domain of the function obtained by the induction hypothesis needs to be shifted by the sum of all the other $k$s. The union of all the shifted $g$ functions describes the function which we need. The size of the obtained function is polynomial because the sum of polynomials and their compositions are polynomials.
+\item In the case of iteration, we proede by induction on the $y$ parameter.
+\begin{itemize}
+\item If the parameter is $\epsilon$ the function and $k$ are provided by the induction hypothesis on the base-case function.
+\item If teh parameter is $\sigma b$, we have one more induction hypothesis which builds appropriate $g_\sigma$ and $k_\sigma$ for the $\sigma$ prefix. In this case we just need to instantiate that hypothesis on its proper inputs, then use the IH on $h_b$ instantiatinf it on its input, shift the function obtained by $k_\sigma$ and then $k_\sigma+k_{h_b}$ is the $k$ which we need to introduce and the function is the union of the $g_\sigma$ and the shifted function.
+\end{itemize}
+It is simple to verify that both the two conclusions hold. 
+\end{itemize}
+\end{proof}
+
+Since the implementation of $\POR$ is $\SIFP$ is $\omega$-conservative, we should state a similar result for the program $P$ obtained with the procedure described in Lemma \ref{lemma:portosifp}. Formally:
+
+\begin{lemma}
+\label{lemma:sifpmap}
+$\forall f \in \POR. \forall \vec x \in \SS. \forall \omega \in \OO. \exists g\in \SS^\NN. \exists k \in \NN. \forall j \in \NN. j < k \to \forall \omega' \omega'(g(j))\neq\omega(g(j))\to \LL(f)(\vec x, \omega)\neq \LL(f)(\vec x, \omega')$. Moreover the size of the function's graph is polynomial.
+\end{lemma}
+\begin{proof}
+In Lemma \ref{lemma:portosifp}, we have proved that the translation $\LL(\cdot)$ preserves the behaviour of the program, fixed $\omega$, so the result is a consequence of Lemma \ref{lemma:pormap}. 
+\end{proof}
+\end{comment}
+
+
+Finally we need to state one of our last results, which now should be intuitive. Indeed, we can implement a $\SIFP$ program by means of a multi-tape $\SFP$ machine which uses a tape for storing the values of each register, plus two additional tapes for keeping the partial results during the evaluation of the expressions and another tape for simulating the access to the oracle.
+
+The machine works thanks to some invariant properties:
+
+\begin{itemize}
+\item On each tape the menaingful values are stored on the immediate right of the head.
+\item The result of the last expression evaluated is stored on the $e_0$ tape on the immediate right of the head.
+\item After any assignment operation, the values on the $e_0$ and $e_1$ tape are not meaningful anymore.
+\item The $o$ tape contains a sequence of string shaped like $\zero \zero \db (b)\zero \zero \sigma \zero\zero$, i.e. a pseudo-encoding of a tuple in $\POR$ which contains the coordinate of the access to the simulated oracle, $\sigma$, and the value.
+\end{itemize}    
+
+When simulating a query, the machine can look up for the queried value on the $o$ tape and, if it's not present, associate a new value to such coordinate according to the character that is read on the tape, and write that value on the tape associated to the $R$ register. If the queeried value is on the tape, the machine returns the value it has associated to that coordinate, namely $b$.
+
+The encoding of a $\SIFP$ expression can be easily computed on the $e_0$ tape: accesses to the identifiers basically consist in copy of tapes, which is a simple operation, due to the invariants properties mentioned above. Moreover, when we defined the $\SIFP$ we have used a restricted set of expressions: concatenations are easily implemented by the addition of a character at the end of the $e_0$ tape which contains the value of the last expression computed, as stated by the induction hypotheis on the invariant properties. The only non-trivial operations are the binary ones: they require to implement a stack on $e_0$. This can be done by adding a blanc character after the end of the last expression evaluated, folowed by the next value on the stack. Then when the machine needs to combine the two values, the top of the stack is erased and copied on $e_1$, compared with the top of $e_0$ and the result copied in place of $e_0$.  
+
+\begin{prop}
+\label{prop:sifptostream}
+Each $P \in\SIFP$ program which is polynomial and uses $k$ registers:
+\begin{enumerate} 
+\item Can be simulated on a $k+3$-tape Turing Machine $M$ which uses an $\Sigma=\{\zero, \one\}$ and $*$ as blank character. 
+\item The simulation requires a polynomial complexity.
+\item $\forall x, y.\forall \store.\store$ is defined on $x \to \mu(\{\omega \in \OO | \langle P, \sigma, \omega\rangle \ssos y\})=\mu(\{\omega \in \OO | M(x, \omega)=y\})$.
+\end{enumerate}
+\end{prop}
+
+\begin{proof}
+We won't give a formal proof of such proposition because it would require an extremely complex and almost uninformative construction of the machine, but we will describe its functioning by cases, showing that the overhead is polynomial by induction.
+
+Our machine stores the values of each register in a specific tape, plus two additional tapes for keeping the values of the expressions, $e_0$ nd $e_1$, and an additional tape $o$ for keeping track of the simulated random accesses. This is why our machine is $k+3$-taped.
+\\\\
+\emph{Expressions}
+\begin{itemize}
+\item[$\epsilon$] This expression can be computed overwriting each $\zero$ or $\one$ symbol on the $e_0$ tape with $*$, and finally making the head go back to its starting position. This takes a polynomial number of steps because we know that $p$ is polynomial in the size of its inputs, so the size of each tape is polynomial in those values, too.
+\item[$\id$] This expression can be computed by deleting the whole $e_0$ tape, copying each $\zero$ or $\one$ of the tape associated to the register $Id$ in the $e_0$ tape, and finally making the two heads go back to their initial position. This takes a polynomial number of steps because we know that $p$ is polynomial in the size of its inputs, so the size of each tape is polynomial in those values, too. 
+\item[$\xp.\zero$] By induction hypothesis we know that the machine can compute $\xp$ in a polynomial number of steps, and store its value in the $e_0$ tape, then we need to advance the head to the last bit of such tape, add $\zero$, and make the head go back to its initial position. The cost of this operation is polynomial because the size of any register is, and thanks to the IH. 
+\item[$\xp.\one$] As above.
+\item[$\sqsubseteq$] By induction hypothesis we know that the machine can compute the left and the right $\xp$ in a polynomial number of steps. In this case the machine computes the left $\xp$, then it moves the head on the right of the value computed, leaving a blanc character in the middle, it computes the second expression and copies the rightmost value from $e_0$ to $e_1$ following the same procedure that we described for $Id$, but erasing it form $e_0$ once finished. According to the IH it requires a polynomial number of steps, too. Now the machine has both the heads at the beginning of $e_0$ and $e_1$. Now it proceeds left-to right on $e_1$ and from the rightmost element of $e_0$, until one of the following conditions is met:
+% This requires a polynomial number of steps. Then the machine computes the right expression; according to the IH it requires a polynomial number of steps, too. Now the machine has both the heads at the beginning of $e_0$ and $e_1$. Now it proceeds left-to right on both the tapes, until one of the following conditions is met:
+\begin{enumerate}
+\item A $*$ character is met in $e_0$.
+\item The value read in $e_0$ is different from $*$ and is different from the value read on $e_1$.
+\item A $*$ character is met in $e_1$ but not in $e_0$.
+\end{enumerate}
+For each case it behaves as follows:
+\begin{enumerate}
+\item It overwrites the rightmost element of the $e_0$ tape with $*$, and writes $\one$.
+\item It overwrites the rightmost element of the the $e_0$ tape with $*$, and writes $\zero$.
+\item It overwrites the rightmost element of the the $e_0$ tape with $*$, and writes $\zero$.
+\end{enumerate}
+The overall complexity is polynomial because the overhead is linear in the size of the two starting expression, which are polynomial for induction hypothesis. After that the machine erases the whole content of $e_0$, which requires a polunomial number of steps, because of the induction hypoothesis on the second epression.
+\item[$\lnot$] By induction hypothesis, we know that the machine can compute the value of $\xp$ in a polynomial number of steps. In this case the machine computes the $\xp$, then the machine checks whether it is a correct Boolean value (checking its size) and then it negates such value. Now the machine steps back the heads in two a single step. In this case, the complexity is trivially polynomial. If the value isn't a the machine overwrites the tape and writes $\zero$. Also in this case, the overall complexity is polynomial. 
+\item[$\land$] By induction hypothesis we know that the machine can compute the left and the right $\xp$ in a polynomial number of steps. In this case the machine computes the left $\xp$, and copies the value from $e_0$, then it checks whether the value on $e_1$ is a Boolean vale; if it is not, the machine deletes the rightmost expression on the $e_0$ tape, it writes $\zero$, and passes to the next step. This requires a polynomial number of steps. Otherwise, it moves on the right of it leaving a blanc character in the middle, it computes the second expression and copies the rightmost value from $e_0$ to $e_1$ following the same procedure that we described for $Id$, but erasing it form $e_0$ once finished. According to the IH it requires a polynomial number of steps, too. Now the machine checks whether the expression on $e_1$ is a Boolean value or not and it behaves as above if the condition is not met. Finally the machine can compute the logical conjunction between the two values, store it in $e_0$ and step back the heads in two steps. In this case the complexity is trivially polynomial. After that the machine erases the whole content of $e_0$, which requires a polunomial number of steps, because of the induction hypoothesis on the second epression.
+\end{itemize}
+
+Finally we can describe how our machines implements the statements of $\SIMP$.
+\\\\
+\emph{Statements}
+\begin{itemize}
+\item[$\sk$] The machine executes the next instruction, if it exists, otherwise it terminates. Point (3) holds becasue the two sets are $\OO$.
+\item[$;$] The machine executes the statements in their order. This requires a polynomial complexity for IH and because the sum of polynomials is a polynomial. Point (3) holds becasue of the two induction hypotheses.
+\item[$\takes $] The machines computes the values of the expression, than copies in the tape corresponding to the identifier in the same fashion as it copies the value of an identifier in the expression tape. For the same argument that we showed above, these operations require a polynomial number of steps. After that the machines erases both the $e_0$ and the $e_1$ tapes. Point (3) holds necause both the sets are $\OO$.
+\item[$\mathbf{while}$] The machine behaves in the following way:
+\begin{enumerate}
+\item It computes the values of the expression.
+\item If such value (the rightmost expression stored in $e_0$) is $\zero$, the continues to the next instruction.
+\item If the expression (as above) is $\one$, the machine evaluates the statement, it goes back to step (1).
+\end{enumerate}
+These steps have the following complexities:
+\begin{enumerate}
+\item Polynomial, for induction hypothesis.
+\item Polynomial because $p$ is polynomial and so the size of the register is polynomial, too.
+\item Polynomial, for induction hypothesis.
+\end{enumerate}
+All the previous steps can be executed at most a polynomial number of times because $P$'s complexity is itself polynomial, so the execution of the while statement requires a polynomial number of steps. It's possible to see that point (3) holds in this case too by induction on the proof of the reduction. It the condition is false , i.e. reduces to \(\zero\), both the sets are $\OO$, otherwise, the thesis can be obtained by applying the inductive argument for the while's body to the one obtained by the induction on the proof. This leads to our conclusion.  
+
+\item[$\fl(\xp)$] By induction hypothesis, we know that the machine can compute the value of $\xp$ in a polynomial number of steps and store it in $e_0$. After that, the machine computes the stores the value obtained encoding $e_0$ through $\db$ in the tape $e_1$, later it copes this value in $e_0$ an steps back both the heads on the expression tapes. Then it checks whether the $o$ tape contains a substring shaped shaped like $\zero \zero \db (b)\zero \zero \sigma \zero \zero $, if it happens the machine erases the $e_0$ tape and writes $b$ on the tape corresponding to $R$, erasing its previous value, otherwise it appends the string $\zero \zero \db (b)\zero \zero \sigma \zero \zero$ at the end of the $o$ tape, where $b$ is obtained reading by reading on the oracle tape and copes $b$ on the tape corresponding to $R$, after having eraed its previous content. This suffices to show points (1) and (2). For point (3), it's enough to see that in both cases we are interested checking the same number (either $0$ or $1$) of additional bits from the oracle. 
+\end{itemize}
+
+This machine is correct by construction.
+\end{proof}
+
+\begin{corollary}
+Each function in $\POR$ can be executed on a multi-tape Stream Machine which uses an $\Sigma=\{\zero, \one\}$ and $*$ as blank character with a polynomial complexity. It also holds that $\forall \vec x, y. \mu(\{\omega \in \OO | f(\vec x, \omega) = y\})=\mu(\{\omega \in \OO| M(\vec x, \omega) = y\})$ 
+\end{corollary}
+
+\begin{proof}
+From Lemma \ref{lemma:portosifp} we showed that each $\POR$ function can be implemented in a $\SIFP$ program which reduces in a polynomial number of steps. In Proposition \ref{prop:sifptosstream} we showed that this program can be executed on a Stream Machine with a polynomial overhead. The result concerning the measure of the cyliners comes from the fact that the traduction of $\POR$ is $\SIFP$ preserves the identity of the output of a function given its inputs and an oracle, since the translation of $\SIFP$ on multitape Stream Machine is such that $\forall x, y.\forall \store.\store$ is defined on $x \to \mu(\{\omega \in \OO | \langle P, \sigma, \omega\rangle \ssos y\})=\mu(\{\omega \in \OO | M(x, \omega)=y\})$, we can instantiate this proposition on the input configuartion and on the translation of a $f \in \POR$ in $\SIFP$, obtaining that $\forall x, y. x \to \mu(\{\omega \in \OO | f(x, \omega) y\})=\mu(\{\omega \in \OO | M(x, \omega)=y\})$. We can also deduce that it won't be problematic to generalize the $x$ to $\vec x$.
+\end{proof}
+
+\begin{corollary}
+\label{prop:porsubseteqsfp}
+Each polynomial $\POR$ function can be executed on a single-tape Stream Machine which uses an $\Sigma=\{\zero, \one\}$ and $*$ as blank character with a polynomial overhead, preserving that$\forall \vec x, y. \mu(\{\omega \in \OO | f(\vec x, \omega) = y\})=\mu(\{\omega \in \OO| M(\vec x, \omega) = y\})$. 
+\end{corollary}
+\begin{proof}
+First observe that it's well knonwn that we can aggregate $k$ tapes enalrging the alphabet from $2$ characters to $2^k$ characters, which is constant in the size of the input, moreover we can reduce the alphabet of any Turing Machine representing $2^k$ characters on $k$ cells of a $2$ tape over two characters with a polynomial overhead, because $k$ (linear in the number of registers) is polynomial in the size of the input. If we apply this reasonemnt to a $\SFP$, which is an ordinary TM plus one tape oracle tape, it's easy to see that we can apply the reduction to the working tapes only. This procedure will shift the position of the characters of $\omega$ which are used as source of randomness, but won't change the number of checked bits and the identity relations between them, which is enough for presetving the measure property.  
+\end{proof}
+
+\begin{theorem}
+\label{thm:por=sfp}
+$\SFP\subseteq\POR\land \forall f \in \POR. \exists M \in \SFP.\forall \vec x. \mu(\{\omega \in \OO | f(\vec x, \omega) = y\})=\mu(\{\omega \in \OO| M(\vec x, \omega) = y\})$
+\end{theorem}
+\begin{proof}
+The thesis is a conjunction of Proposition \ref{prop:sfpsubseteqor} and corllary \ref{prop:porsubseteqsfp}.
+\end{proof}
+\end{document}

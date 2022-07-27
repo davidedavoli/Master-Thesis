@@ -1,0 +1,129 @@
+%!TeX spellcheck = en-US
+In the Chapter \ref{chap:RBA}, we have shown that
+there is a strong correspondence between the
+class of functions $\POR$ and the $\Sigma^b_1$
+formul\ae{} of $\Lpw$, precisely that the
+set of the $\Sigma^b_1$ representable formul\ae{} of $\Lpw$
+are exactly the $\POR$ functions, (Theorem \ref{thm:TaskAB}).
+% For this reason,
+% if we prove that there is a similar correspondence between $\POR$
+% and some standard class of functions we could be able to arithmetize
+% probabilistic complexity classes such as $\BPP$.
+
+For this reason, we are now interested in how $\POR$ relates to some other probabilistic classes of functions. Indeed,
+if we prove that there is correspondence between $\POR$
+and some standard class of functions, such as $\PPT$ (Definition \ref{def:pptinformal}),
+we could be able to define
+an arithmetical characterization of
+probabilistic complexity classes such as $\BPP$ in the style of
+Theorem \ref{thm:TaskAB}.
+%
+To this aim, we show that as it happens for Cobham's algebra \cite{Cobham1965} and $\FP$ functions,
+the $\POR$ function algebra corresponds to the $\PPT$ class.
+%
+Moreover, since $\BPP$ is defined on top of $\PPT$,
+this paves the way for determining a logical characterization of this specific complexity class,
+as done in Chapter \ref{chap:characterization}.
+
+Informal definitions of PTMs and $\PPT$ functions have already been given in Chapter
+\ref{chap:preliminaries}, but to healp the reader in
+walking through this section,
+we will briefly recall those concepts.
+
+%%% CLASS PPT
+\defptm*
+\defppt*
+%
+%
+\noindent
+However, formal definitions of PTMs and $\PPT$ will
+be given in Section \ref{sub:SFPtoPPT}, respectively in
+Definitions
+\ref{def:ptm}
+and
+\ref{def:ppt}.
+\noindent
+Referring to Definitions \ref{def:ptminformal} and \ref{def:pptinformal},
+we can state more precisely the goal of this chapter:
+we show that for each $f\in \PPT$, there is
+a corresponding function $g \in\POR$, such that
+the probability that $f(x)=y$ is equal to the measure
+of the set of $\omega \in \Os$
+with $g(x, \omega)= y$.
+We show that also the converse claim holds,
+formally:
+%
+% Conjecture
+\begin{conj}\label{conj1}~
+\begin{enumerate}
+\itemsep0em
+\item[i)] For each $f\in \PPT$, there is $g \in \POR$
+such that:
+$$
+\forall x, y. \emph{Pr}\big[f(x)=y\big] = \mu\big(\{
+\omega \in \Os \ | \ g(x,\omega)=y\}\big).
+$$
+
+\item[ii)] For each $g\in \POR$, there is $f\in \PPT$
+such that:
+$$
+\mu\big(\omega \in \Os \ | \ g(x,\omega) = y\}\big)
+= \emph{Pr}\big[ f(x) =y \big].
+$$
+\end{enumerate}
+\end{conj}
+\noindent
+In order to prove Conjecture \ref{conj1}, we proceed as follows:
+
+\begin{enumerate}
+ \item We define an intermediate formalism between $\POR$ and $\PPT$
+ whose random choices are made \emph{explicit} by means of a stream $\eta: \Nat \longrightarrow \{\zero,\one\}$ containing an infinite sequence of bit determining the outcome of all the possible random choices. Such formalism is $\SFP$.
+ It will be introduced in Section \ref{sec:SFP}, but we  prove the
+ correspondence between $\PPT$ and $\SFP$ only at the end, namely
+ in Section \ref{sub:SFPtoPPT}. This delay should not be too much of a problem
+ because the definition of $\SFP$ is almost the same of $\PPT$ so,
+ in our opinion, their equivalence is almost trivial.
+ \item On top of the definition of $\SFP$, we define its encoding in $\POR$
+ and prove it correct. This is carried out in Section~\ref{sec:SFPtoPOR}.
+ \item Finally, we prove that each function in $\POR$ can be encoded in $\SFP$,
+ too. This reduction is presented in Section~\ref{sec:PORtoSFP} and
+ steps through three intermediate formalisms aimed to separate the different technical
+ concerns of this proof.
+\end{enumerate}
+
+\noindent
+The overall picture of the reduction is described by Figure \ref{fig:redschema}.
+
+\begin{figure}
+  \begin{resizebox}{\textwidth}{!}{%
+    \begin{tikzpicture}
+      \def \radius{7cm}
+    %  \node (POR) {$\POR$};
+    %  \node[right = 10cm of POR] (SFP) {$\SFP$};
+    %  \node[below right = 2cm and 1cm of POR] (SIFPRA) {$\SIFPRA$};
+    %  \node[below right = 1cm and 1cm of SIFPRA] (SIFPLA) {$\SIFPLA$};
+    %  \node[above right = 1cm and 2cm  of SIFPLA] (SFPOD) {$\SFPOD$};
+      \node at ({-30}:\radius) (SFP) {$\SFP$};
+      \node at ({-50}:\radius) (SFPOD) {$\SFPOD$};
+      \node at ({-90}:\radius) (SIFPLA) {$\SIFPLA$};
+      \node at ({-130}:\radius) (SIFPRA) {$\SIFPRA$};
+      \node at ({-150}:\radius) (POR) {$\POR$};
+
+      \draw[->] (SFP) edge node[fill=white] {Section \ref{sec:SFPtoPOR}}(POR);
+
+      \draw[->] (POR) edge[bend right=15] node[fill=white] {\ref{sub:portosifpra}}(SIFPRA);
+      \draw[->] (SIFPRA) edge[bend right=15] node[fill=white] {\ref{sub:sifpratosifpla}}(SIFPLA);
+      \draw[->] (SIFPLA) edge[bend right=15]node[fill=white] {\ref{sub:sifplatosfpod}} (SFPOD);
+      \draw[->] (SFPOD) edge[bend right=15] node[fill=white] {\ref{sub:sfpodtosfp}}(SFP);
+
+      \node[right = 5cm of SFP] (PPT) {$\PPT$};
+
+      \draw[<->] (PPT) edge node[fill=white] {Section \ref{sub:SFPtoPPT}}(SFP);
+      %\draw[->] (SFP) edge (PPT);
+    \end{tikzpicture}
+    }%
+  \end{resizebox}
+  \caption{Schema of the Reductions from $\POR$ from $\PPT$ and vice-versa}
+  \label{fig:redschema}
+
+\end{figure}

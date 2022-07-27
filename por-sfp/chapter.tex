@@ -1,0 +1,3619 @@
+%!TeX spellcheck = en-US
+%% From POR-functions to SFP-machines
+\section{From $\POR$-functions
+to $\SFP$}
+\label{sec:PORtoSFP}
+
+In this section, we show the proof of the second part of Theorem
+\ref{thmTaskC}, namely that:
+
+\begin{restatable}{lemma}{lemmataskCtwo}
+  \label{lemma:taskC2}
+  For each $g\in \POR$, there is an  $f \in \SFP$ such that for every $x,y\in \Ss:$
+  $$
+  \mu\big(\{\omega \in \Os \ | \ g(x,\omega) = y\}\big) = \mu\big(\{\eta \in \Bool^\Nat \ | \  f(x, \eta) = y\}\big).
+  $$
+\end{restatable}
+
+The main obstacle towards a proof of this result has to do with the different ways adopted by
+$\POR$ and $\SFP$ to access randomness.
+In particular, the $\POR$ formalism includes the function
+$Q(x, \omega) := \omega(x)$.
+Due to compositionality, the
+coordinate $x$ used to access the oracle
+can be any output of any $\POR$ function.
+For this reason, this function can access
+exactly $2^{|x|}$ values of $\omega$. From now on,
+we will call this modality \emph{``random access to the oracle''}.
+Conversely, the Stream Machine's formalism accesses randomness in a linear way:
+at each transition, a new cell of the oracle $\eta$ is consumed and the value
+at that coordinate is used to determine the next configuration reached by the
+machine.
+This means that an $\SFP$ machine can explore at most a polynomial number
+of coordinates of its oracle $\eta$; this is what we call
+\emph{``linear access to the oracle''}.
+
+This difference makes the encoding from $\POR$ to $\SFP$
+non-trivial. For instance, take $Q(x, \omega)$:
+there is not a natural counterpart of $Q$ in $\SFP$,
+simply because the poly-time STMs
+can access only a polynomial number of cells of a tape,
+regardless from their input.
+As a consequence any
+encoding from $\POR$ to the STMs'
+formalism cannot preserve the random access to
+the oracle within a polynomial number of steps. For this reason, our reduction employs a mechanism which allows
+to simulate \emph{random access to the oracle} in a formalism which does not.
+We achieved this result implementing a sort of \emph{associative table}, which
+records each queried coordinate and the random answer given
+the first time this particular coordinate was queried. To do so, and to show it
+formally, we introduce an intermediate imperative and probabilistic formalism, the \emph{String's Imperative Flipping Paradigm} $\SIFP$, and we
+spell it out into two variants: $\SIFPRA$ and $\SIFPLA$. The first is complete with
+respect to
+$\POR$ and is characterized by a fully random access to the oracle $\omega$,
+whilst the latter supports a linear and \emph{on-demand} access to randomness,
+which means that the programmer has a partial control on the queried coordinate.
+In particular, $\SIFPLA$ programs use oracle
+functions $\eta: \Nat \longrightarrow \Bool$ which are explored consecutively,
+starting from the coordinate $0$.
+%
+Once reduced $\POR$ to $\SIFPLA$, we will introduce an \emph{on-demand} variant
+of $\SFP$, namely $\SFPOD$. This variation on $\SFP$ is based on a version
+of the STM paradigm whose machines
+do not necessarily
+shift on the right the head on the oracle tape at each step of the computation.
+This is done employing a transition function supporting two different kinds of
+step: shifting steps and non-shifting steps. Thus,
+$\SFPOD$ is used as a sort of bridge between $\SIFPLA$
+and $\SFP$ because it supports \emph{on-demand} access to randomness, as for
+$\SIFPLA$, but is defined over a computational model very similar to STMs.
+This allows us to decouple the aspects related to the
+access to the source of randomness from the paradigm-related concerns:
+indeed, we will shift from the imperative paradigm $\SIFPLA$ to the On Demand STMs
+grounding $\SFPOD$
+without changing the modality of access to the oracle; then, we will change the
+modality of access to the oracle in two homogeneous computational models, i.e. the
+On Demand STMs and standard STMs.
+
+As sated above, the introduction of these intermediate formalisms is aimed
+at solving all the different issues of the complete reduction in distinct
+steps. As an alternative, it would have been possible to encode directly
+$\POR$ in the STM formalism,
+but this would have caused the proof to become unnecessarily complex.
+Conversely, our approach allows to address one specific problem for each formalism, namely:
+
+\begin{itemize}
+  \item We address the problem of introducing a
+  cost model for $\POR$ when we reduce it to $\SIFPRA$.
+  \item We show the equivalence between random access to
+  the oracle and linear access when we encode $\SIFPRA$ into $\SIFPLA$.
+\end{itemize}
+
+\noindent
+The other steps of our reduction are not too complex because:
+
+\begin{itemize}
+  \item We can employ a canonical reduction from an imperative formalism to
+  a Turing machine when we reduce $\SIFPLA$ to multi-tape STMs
+  \item We can adapt some well-known equivalence to reduce the number of tapes
+  of a STM with a polynomial overhead.
+\end{itemize}
+
+This section is organized as follows:
+
+\begin{itemize}
+  \item In Section \ref{sub:sifplan}, we define the imperative programming
+  languages of the $\SIFP$ family, together with their small step and big step
+  semantics.
+  \item In Section \ref{sub:portosifpra}, we prove that the functions computed by
+  polynomial $\SIFPRA$ programs are exactly the $\POR$ functions.
+  \item In Section \ref{sub:sifpratosifpla}, we show that the classes $\SIFPRA$
+  and $\SIFPLA$ are equi-expressive.
+  \item In Section \ref{sub:sifplatosfpod}, we address the reduction from $\SIFPLA$
+  to $\SFPOD$, which is a variation on $\SFP$ supporting
+  \emph{on-demand} access to the oracle.
+  \item In Section \ref{sub:sfpodtosfp}, we show that $\SFPOD$ can be reduced to $\SFP$.
+  \item Finally, in Section \ref{sub:finalizing}, we put together all these partial
+  results for showing that the second part of Conjecture \ref{conj1} holds.
+
+
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{The $\SIFP$ language}
+\label{sub:sifplan}
+
+In this section we define the family of imperative programming languages that we call $\SIFP$,
+\footnote{Acronym of \emph{String's Imperative Flipping Paradigm}}
+together with their syntaxes and operational semantics. We do so to
+employ these languages in the reduction from $\POR$ to $\SFP$.
+%
+Indeed, this would allow us to give a school-book style reduction from
+an almost standard imperative paradigm --- i.e. $\SIFPLA$ ---
+to a TM-like paradigm --- i.e. $\SFPOD$ --- and then to show that
+$\POR$ can be reduced to $\SIFPLA$ and $\SFPOD$ can be reduced to $\SFP$.
+This is, at least in our opinion, much easier than reducing directly $\POR$ into $\SFP$.
+
+The $\SIFP$ formalism is defined following the approach
+adopted by Winskel in \cite{winskel1993formal} for the definition of IMP.
+Indeed, $\SIFP$ is an imperative programming language with assignments
+and a while construct; however, for coherence with respect to $\POR$,
+its expression are strings instead of
+natural numbers, as for IMP. Finally, we add a construct --- either $\fl e$ or
+$\rb$ --- to model random choices.
+%
+%
+Formally, The $\SIFP$ programming language can be instantiated in two different ways:
+\begin{itemize}
+  \item $\SIFPRA$, which uses a primitive $\fl e$ to store in a specific register called $R$, a random bit whose value is equal to $\omega(\sigma)$, where $\sigma$ is the result of the evaluation of $e$ in the current environment.
+  \item $\SIFPLA$, which instead of $\fl{}$ uses the primitive $\rb$ generating
+  a random bit ---  and storing it in a specific register ---
+  without requiring any input value.
+\end{itemize}
+These two sub-languages are defined with two operational semantics each-one:
+the standard \emph{big-step} semantic and the \emph{small-step} operational semantic.
+%
+In particular, the \emph{big-step} semantic is the standard semantic model of
+$\SIFP$, while the \emph{small-step} semantic is introduced for two main reasons:
+\begin{itemize}
+  \item It defines a cost model for the program: basically the time
+  consumption of a program is the number of transition it requires
+  to reach the ending state;
+  \item It is a technical tool for the reduction from $\SIFPRA$ to $\SIFPLA$,
+  which allows us to prove a simulation result between the two classes by induction on the number of steps required by the
+  computation.
+\end{itemize}
+%
+%
+The common features of all the $\SIFPRA$ and $\SIFPLA$ are:
+\begin{itemize}
+  \item The use of different families of registers (mainly for mnemonic purposes):
+  \begin{itemize}
+    \item The family of registers $\{X_i\}_{i \in \Nat}$, which contain the program's input at the
+    beginning of the computation.
+    \item A register $R$ which contains the value of the computation
+    and which determines, at the end of the computation,
+    the value computed by the program.
+    \item The family of registers $\{S_i\}_{i \in \Nat}$, which are used
+    for supporting programs' renaming $\SIFPRA$ to $\SIFPLA$.
+    \item The family of registers $\{Y_i\}_{i \in \Nat}$. These
+    registers employed, for instance,
+    as backup registers during the reduction form $\POR$ to $\SFP$.
+    \item The general purpose registers $Q, Z, T, B$.
+  \end{itemize}
+  \noindent
+  In what follows we will denote with $\Id$ a generic register.
+  \item String expressions, which correspond to $\Lpw$ term's interpretation,
+  with the difference that here we do not allow binary operators to have
+  two fully binary sub-expressions.
+  \item An assignment statement.
+  \item A looping statement.
+\end{itemize}
+%
+%
+Finally, for facilitating the reduction from $\SIFPRA$ to $\SIFPLA$,
+we introduce a final statement, called $\mathbf{halt}$ to be placed at the end of a program.
+This, once again, is done with the aim of simplifying
+the reduction from $\SIFPRA$ to $\SIFPLA$.
+%
+%
+We start by defining the syntax of $\SIFP$'s' correct programs.
+Later we introduce
+the definition of four different semantics for four different languages.
+
+\begin{defn}[Correct programs of $\SIFP$]
+  \label{def:sifp}
+The language of $\SIFP$ programs is $\lang{\stm}$, i.e.
+the set of strings produced by the non-terminal symbol $\stm$ defined by:
+%
+\begin{align*}
+\id &\Coloneqq X_i\ |\ Y_i\ |\ S_i\ |\ R\ |\ Q\ |\ Z\ |\ T\qquad i \in \Nat\\
+\xp &\Coloneqq \epsilon\ |\ \xp.\zero\ |\ \xp.\one\ |\ \id\ |\ \xp \sqsubseteq \id\ |\ \xp \land \id\ |\ \lnot \xp\\
+\stm_\RA & \Coloneqq \id \takes \xp\ |\ \stm_\RA;\stm_\RA\ |\ \while \xp \stm_\RA\ |\ \fl \xp\\\
+\stm_\LA & \Coloneqq \id \takes \xp\ |\ \stm_\LA;\stm_\LA\ |\ \while \xp \stm_\LA\ |\ \rb\\
+\stm_\RA' & \Coloneqq \id \takes \xp\ |\ \stm_\RA;\stm_\RA'\ |\ \while \xp \stm_\RA\ |\ \fl \xp\ |\ \halt\\
+\stm_\LA' & \Coloneqq \id \takes \xp\ |\ \stm_\LA;\stm_\LA'\ |\ \while \xp \stm_\LA\ |\ \rb\ |\ \halt\\
+\stm & \Coloneqq \id \takes \xp\ |\ \stm;\stm\ |\ \while \xp \stm\ |\ \fl \xp\ |\ \rb\ |\ \fl\xp\\
+\stm' & \Coloneqq \id \takes \xp\ |\ \stm;\stm\ |\ \while \xp \stm\ |\ \fl \xp\ |\ \rb\ |\ \fl\xp\ |\ \halt
+\end{align*}
+\end{defn}
+
+\begin{notation}
+  We suppose $\cdot;\cdot$ to be \emph{right associative}.
+\end{notation}
+
+On top of this grammar, we define the notion of $\SIFPRA$ program, too.
+
+\begin{defn}[$\SIFPRA$]
+  The language of the $\SIFPRA$ programs is $\lang{\stm_\RA}$, i.e. the set of strings produced by the non-terminal symbol $\stm_\RA$ described in Definition \ref{def:sifp}.
+\end{defn}
+
+\begin{defn}[$\SIFPLA$]
+  The language of the $\SIFPLA$ programs is $\lang{\stm_\LA}$,
+  i.e. the set of strings produced by the non-terminal symbol $\stm_\LA$
+  described in Definition \ref{def:sifp}.
+\end{defn}
+
+\begin{defn}[Store]
+A store is a function $\store: \id \rightharpoonup \{\zero, \one\}^*$.
+\end{defn}
+
+\begin{defn}[Empty store]
+An \emph{empty} store is a store which is total and constant on $\epsilon$. We represent such object as $[]$.
+\end{defn}
+
+The reason why we want a store to be total rather than undefined on some registers
+is because it allows us to access the content of all registers even if
+those have not been assigned to any expression, without defining error management
+functionalities for these languages. This, for instance, is useful when dealing
+with back-ups of register values.
+
+As for \cite{winskel1993formal}, the semantics of programs can be
+given as a \emph{function}
+between a a pair in the form $\langle$Program, Store$\rangle$ to another store.
+Where the store on the left of the tuple records the values of the registers at
+the beginning of the computation and the one on the right of the tuple contains the values of the registers
+at the end. The modifications on the store are done
+updating the values within its registers.
+
+\begin{defn}[Store updating]
+We define the updating of a store $\store$ with a mapping from $y \in \id$ to $\tau \in \{\zero, \one\}^*$ as:
+\[
+\store[y\leftarrow \tau](x) \coloneqq \begin{cases} \tau & \text{if } x = y\\ \store(x) & \text{otherwise.}\end{cases}
+\]
+
+\end{defn}
+
+The notion of \emph{Store} allows us to define the semantics of
+a $\SIFPRA$ program as a function which maps a pair $\langle \store,\omega\rangle$
+to another store.
+%
+%
+The semantics of the expression is the same for all the languages of the
+$\SIFP$ family;
+while, as we stated above,
+the semantics of the programs changes from $\SIFPRA$ to $\SIFPLA$.
+This is why we are defining a \emph{Semantics of $\SIFP$ expressions} and an
+\emph{Operational semantics of $\SIFPRA$} instead of an
+\emph{Operational semantics of $\SIFP$}.
+
+\begin{defn}[Semantics of $\SIFP$ expressions]
+  \label{def:expsemantics}
+The semantics of an expression $E \in \lang{\xp}$ is the smallest relation
+$\sred: \lang{\xp} \times (\id \longrightarrow \{\zero, \one\}^*)\times \Os \times \{\zero, \one\}^*$ closed under the following rules:
+\begin{center}
+\vspace{12pt}
+\AxiomC{\phantom{$\langle \epsilon, \store\rangle \sred \epsilon$}}
+\UnaryInfC{$\langle \epsilon, \store\rangle \sred \epsilon$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store \rangle \sred \sigma$}
+\UnaryInfC{$\langle e.\zero, \store\rangle \sred \sigma \conc \zero$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store \rangle \sred \sigma$}
+\UnaryInfC{$\langle e.\one, \store\rangle \sred \sigma \conc \one$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store \rangle \sred \sigma$}
+\AxiomC{$\store(\Id) = \tau$}
+\AxiomC{$\sigma \subseteq \tau$}
+\TrinaryInfC{$\langle e \sqsubseteq \Id, \store\rangle \sred \one$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store \rangle \sred \sigma$}
+\AxiomC{$\store(\Id) = \tau$}
+\AxiomC{$\sigma \not\subseteq \tau$}
+\TrinaryInfC{$\langle e \sqsubseteq \Id, \store\rangle \sred \zero$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\store(\Id)=\sigma$}
+\UnaryInfC{$\langle \Id, \store\rangle \sred \sigma$}
+\DisplayProof
+\hspace{18pt}
+\vspace{12pt}
+\AxiomC{$\Id \not \in \mathit{dom}(\store)$}
+\UnaryInfC{$\langle \Id, \store\rangle \sred \epsilon$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store \rangle \sred \zero$}
+\UnaryInfC{$\langle \lnot e, \store\rangle \sred \one$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store \rangle \sred \sigma$}
+\AxiomC{$\sigma \neq \zero$}
+\BinaryInfC{$\langle \lnot e, \store\rangle \sred \zero$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store \rangle \sred \one$}
+\AxiomC{$\store(\Id) = \one$}
+\BinaryInfC{$\langle e \land \Id, \store\rangle \sred \one$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store \rangle \sred \sigma$}
+\AxiomC{$\store(\Id) = \tau$}
+\AxiomC{$\sigma \neq \one \land \tau \neq \one$}
+\TrinaryInfC{$\langle e \land \Id, \store \rangle \sred \zero$}
+\DisplayProof
+\hspace{18pt}
+
+\end{center}
+\end{defn}
+
+Before introducing the semantics of programs, it is important to show
+that the relation introduced in Definition \ref{def:expsemantics} is a function; this result is crucial
+for proving that the semantics of $\SIFP$ programs defined in the following
+sections are not just simple relations, but even functions.
+%
+The proof of this statement is in Chapter \ref{app}, namely Lemma \ref{lemma:expfun}
+
+
+\subsubsection{Big step semantics}
+\label{subsub:bigstep}
+
+The \emph{big-step} operational semantics of $\SIFPRA$ is defined following
+\cite{winskel1993formal}.
+
+\begin{defn}[Big Step Operational Semantics of $\SIFPRA$]
+  \label{def:sifpraos}
+The semantics of a program $P \in \lang{\stm_\RA}$ is the smallest relation
+$\ssos\subseteq \lang{\stm_\RA} \times (\id \longrightarrow \{\zero, \one\}^*)\times \Os\times (\id \longrightarrow \{\zero, \one\}^*)$ closed under the following rules:
+\begin{center}
+% \vspace{12pt}
+% \AxiomC{$\phantom{\langle \sk, \store\rangle \ssos \store}$}
+% \UnaryInfC{${\langle \sk, \store, \omega\rangle \ssos \store}$}
+% \DisplayProof
+% \hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\UnaryInfC{$\langle \Id\takes e, \store, \omega\rangle \ssos \store\as {\Id}{\sigma}$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle s, \store, \omega\rangle\ssos \store'$}
+\AxiomC{$\langle t, \store', \omega\rangle\ssos \store''$}
+\BinaryInfC{$\langle s;t, \store, \omega\rangle \ssos \store''$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle\sred \one$}
+\AxiomC{$\langle s, \store, \omega\rangle\ssos \store'$}
+\AxiomC{$\langle \while e s, \store', \omega\rangle\ssos \store''$}
+\TrinaryInfC{$\langle \while e s, \store, \omega\rangle \ssos \store''$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\AxiomC{$\sigma \neq \one$}
+\BinaryInfC{$\langle \while e s, \store, \omega\rangle \ssos \store$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle \sred \sigma$}
+\AxiomC{$\omega(\sigma)=b$}
+\BinaryInfC{$\langle \fl e, \store, \omega\rangle \ssos \store[R \leftarrow b]$}
+\DisplayProof
+
+\end{center}
+\end{defn}
+
+The operational semantic of $\SIFPLA$ is almost identical to the
+operational semantic of $\SIFPRA$, apart from the fact that it is
+defined using oracle functions $\eta: \Nat \longrightarrow \Bool$ instead of
+functions $\omega: \Ss \longrightarrow \Bool$.
+
+
+\begin{defn}[Big Step Operational Semantics of $\SIFPLA$]
+  \label{def:sifplaos}
+The semantics of a program $P \in \lang{\stm_\LA}$ is the smallest relation $
+\ssos\subseteq \left(\lang{\stm_\LA} \times (\id \longrightarrow \{\zero, \one\}^*)\times \Bool^\Nat\right)
+\times
+\left((\id \longrightarrow \{\zero, \one\}^*)\times \Bool^\Nat\right)$
+closed under the following rules:
+\begin{center}
+\vspace{12pt}
+% \AxiomC{$\phantom{\langle \sk, \store\rangle \ssos \store}$}
+% \UnaryInfC{${\langle \sk, \store, \eta\rangle \ssos \langle \store, \eta\rangle}$}
+% \DisplayProof
+% \hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\UnaryInfC{$\langle \Id\takes e, \store, \eta\rangle \ssos \langle \store\as {\Id}{\sigma}, \eta\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+\hspace{18pt}
+\AxiomC{$\langle s, \store, \eta\rangle\ssos \langle \store', \eta'\rangle$}
+\AxiomC{$\langle t, \store', \eta\rangle\ssos \langle\store'', \eta''\rangle$}
+\BinaryInfC{$\langle s;t, \store, \eta\rangle \ssos \langle\store'', \eta''\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle\sred \one$}
+\AxiomC{$\langle s, \store, \eta\rangle\ssos \langle\store', \eta'\rangle$}
+\AxiomC{$\langle \while e s, \store', \eta\rangle\ssos \langle\store'', \eta''\rangle$}
+\TrinaryInfC{$\langle \while e s, \store, \eta\rangle \ssos \langle\store'', \eta''\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+\hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\AxiomC{$\sigma \neq \one$}
+\BinaryInfC{$\langle \while e s, \store, \eta\rangle \ssos \langle\store, \eta\rangle$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{\phantom{$\langle \rb \store, \bool\eta\rangle \ssos \langle\store[R \leftarrow \bool], \eta\rangle$}}
+\UnaryInfC{$\langle \rb, \store, \bool\eta\rangle \ssos \langle\store \as R \bool, \eta\rangle$}
+\DisplayProof
+
+\end{center}
+\end{defn}
+
+Relying on the definition of the operational semantics for $\SIFPLA$ and $\SIFPRA$,
+it is possible to associate to each program the function it
+computes, simply placing the inputs in the registers of the family ${X_{i \in \Nat}}$ at the
+beginning of the computation and taking the output from the register $R$ at
+the end of the computation.
+%
+For sake of completeness, before employing the function $\ssos$ to that aim,
+we must show that the operational semantics of both $\SIFPRA$ and $\SIFPLA$
+are not just simple relations, but even functions. The proof of this result is in
+Section \ref{sub:techsifplan} of Chapter \ref{app}, namely Lemmas
+\ref{lemma:sifprasemfun} and \ref{lemma:sifplasemfun}.
+
+\begin{defn}[Function evaluated by a $\SIFP_{\RA, \LA}$ program]
+  \label{def:simprafuneval}
+  \label{def:simplafuneval}
+We say that the function evaluated by a correct $\SIFPRA$ or $\SIFPLA$ program $P$ is $\mathcal \llbracket \cdot\rrbracket: \lang{Stm_{\RA, \LA}} \longrightarrow (\Ss^n \times \Os \longrightarrow \Ss)$, defined as below\footnote{Instead of the infixed notation for $\ssos$, we will use its prefixed notation. So, the notation express the store associated to the $P$, $\Sigma$ and $\omega$ by $\ssos$. Moreover, notice that we employed the same function symbol $\ssos$ to denote two distinct functions: the \emph{big-step} operational semantics of $\SIFPRA$ programs and the \emph{big-step} operational semantics of $\SIFPLA$ programs}:
+\[
+\llbracket P\rrbracket\coloneqq \lambda x_1, \ldots, x_n, \omega.\ssos(\langle P, []\as {X_1} {x_1}, \ldots, \as {X_n} {x_n}, \omega\rangle)(R).
+\]
+\end{defn}
+
+%Upon this semantics we can define the function computed by a $\SIFPLA$ program:
+
+
+
+% \begin{defn}[Big Step Operational Semantics of $\SIFP$]
+%   \lable{def:sifpos}
+%   The semantics of a program $P \in \lang{\stm}$ is the smallest
+%   function $\ssos: \lang{\stm} \times (\id \longrightarrow
+%   \{\zero, \one\}^*)\times \Os\longrightarrow (\id \longrightarrow \{\zero, \one\}^*)$
+%   which contains therules for the
+%   Big Step Operational Semantics of $\SIFPRA$ and $\SIFPLA$
+%   --- resp. Definitions \ref{def:sifpraos} and \ref{def:sifplaos}
+%   and is closed under composition.
+% \end{defn}
+%
+% A consequence of Definition \ref{def:sifpos}, is that
+% if we show that a certain result holds for $\SIFP$, it
+% holds for both $\SIFPRA$ and $\SIFPLA$. It is not true that \emph{any}
+% results which holds for $\SIFPRA$ holds for $\SIFPLA$, too. But, for instance,
+% when dealing with some combinatorial results concerning $\lang\xp$,
+% proving results for both the languages turns out to be useful.
+
+\subsubsection{Small Step Semantics}
+\label{subsub:smallstep}
+
+
+The reduction of $\SIFPRA$ to $\SIFPLA$ can be given in different ways.
+We found useful to formulate the result as a
+weak simulation result between a $\SIFPRA$ program and its $\SIFPLA$
+implementation.
+%
+To do so, we define two single \emph{small-step} semantics for $\SIFPRA$ and $\SIFPLA$
+and show that they are equivalent to the \emph{big-step} semantics
+in Definitions \ref{def:sifpraos} and \ref{def:sifplaos}.
+%
+In order to define these \emph{small-step} semantics,
+we employ the $\mathbf{halt}$-extended versions of the $\SIFPRA$ and $\SIFPLA$ languages.
+This construct --- which, semantically, causes the program to stop ---
+simplifies some definitions and proofs if placed at the end of a program.
+%
+Moreover, the \emph{small-step} semantics are enriched by additional
+data structures:
+
+\begin{itemize}
+  \item an ordinary binary string values in the case of $\SIFPLA$'s \emph{small-step} semantics;
+  \item a map from strings to Boolean values for $\SIFPLA$'s \emph{small-step} semantics.
+\end{itemize}
+
+These structures are used to keep track of the accesses made to the oracle function ---
+$\omega \in \Bool^\Ss$ for $\SIFPRA$ and $\eta \in \Bool^\Nat$ for $\SIFPLA$ ---
+by the program.
+
+% \begin{defn}[List of Boolean Values]
+%   A List of Boolean Values is the smallest set containing the strings described by the following grammar:
+%   $$
+%     L ::= n :: L\ |\ \varepsilon
+%   $$
+%   with $n\in \Nat$. We call $\mathit{adt}(L)$ the set of all the possible List of boolean values.
+% \end{defn}
+
+\begin{defn}[$\Ss\Bool$-Map]
+  A $\Ss\Bool$-Map is the is the smallest set containing the strings described by the following grammar:
+  $$
+    M ::= (\sigma, \bool) :: M\ |\ \varepsilon
+  $$
+  with $\sigma\in \Ss$, $\bool \in \Bool$ and $\varepsilon$ being a generic symbol.
+  We call $\mathit{adt}(M)$ the set of all the possible $\Ss\Bool$-maps.
+\end{defn}
+
+For sake of readability, we will represent both these binary strings and $\Ss\Bool$-Maps
+uniformly, i.e. by means of the meta-variable $\Psi$.
+This is also aimed to highlight that these structures play the same role
+in both the relations.
+%
+We can formally define the \emph{small-step} operational semantics of $\SIFPLA$ as follows:
+
+\begin{defn}[Small Step semantics of $\SIFPLA$]
+  \label{def:sifplass}
+The step semantics of a program $P \in \lang{\stm_\LA'}$ is the smallest relation
+$$
+\leadstola \in \mathcal P \left(\left(\lang{\stm_\LA'} \times (\id \longrightarrow \{\zero, \one\}^*)\times \{\zero, \one\}^*\right)
+\times
+\left(\lang{\stm_\LA'} \times (\id \longrightarrow \{\zero, \one\}^*)\times \{\zero, \one\}^*\right)\right)
+$$
+closed under the following rules:
+\begin{center}
+% \AxiomC{\phantom{$\langle e, \store\rangle\sred \sigma$}}
+% \UnaryInfC{$\langle \sk P, \store, \Psi\rangle \leadstola \langle P, \store, \Psi\rangle$}
+% \DisplayProof
+% \hspace{18pt}
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\UnaryInfC{$\langle \Id\takes e;P, \store, \Psi\rangle \leadstola \langle P, \store\as {\Id}{\sigma}, \Psi\rangle$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\AxiomC{$\sigma \neq \one$}
+\BinaryInfC{$\langle \while e s; P, \store, \Psi\rangle \leadstola \langle P,\store, \Psi\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle\sred \one$}
+\UnaryInfC{$\langle \while e s; P, \store, \Psi\rangle \leadstola \langle s; \while e s;P, \store, \Psi\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+%\AxiomC{$\Psi = \bigcap_{i=0}^{n-1} C(i)$}
+\AxiomC{\phantom{dd}}
+\UnaryInfC{$\langle \rb;Q, \store, \Psi\rangle \leadstola \langle Q,\store \as R \one, \Psi\zero\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+%\AxiomC{$\Psi = \bigcap_{i=0}^{n-1} C(i)$}
+\AxiomC{\phantom{dd}}
+\UnaryInfC{$\langle \rb;Q, \store , \Psi\rangle \leadstola \langle Q,\store \as R \zero, \Psi\one\rangle$}
+\DisplayProof
+\end{center}
+\end{defn}
+
+% Notice tht with a little abuse of notation,
+% in the two rules for the $\rb$ construct,
+% we used the consing operator improperly to denote
+% the tail appending of a $\bool \in\Bool$ to the list.
+% This is done to preserve the order of the elements in the list.
+%
+Before defining the \emph{small-step} semantics for $\SIFPRA$,
+we would like to briefly discuss the
+\emph{small-step} semantics of $\SIFPLA$ defined above.
+The semantics of the deterministic statements
+is canonical, indeed:
+\begin{itemize}
+  \item We treat the $\cdot;\cdot$ as the action prefixing operator.
+  \item We manage assignments basically recording on the store the effects of the statement.
+  \item We have two rules for the $\while{}{}$ statement:
+  \begin{itemize}
+    \item If the guard is true, the $\while{e}{s}$ statement
+    is interpreted executing its body $s$ and then the
+    whole statement again.
+    \item If the guard $e$ is not true,
+    its semantics skips to the next statement.
+  \end{itemize}
+\end{itemize}
+%
+All these rules, are non-random so they do not modify the list $\Psi$. Differently, the
+two rules for the $\rb$ statement can generate two different configurations depending
+on the value that all the oracles of the set on the right have on their $n$-th
+coordinate: if such value is $\one$ we record it in $R$,
+similarly if such value is $\zero$.
+%
+% This new semantics is esily targetable by
+% a measure analysis: indeed, we show that the transitive closure of
+% $\leadstola (\langle P, []\as X x, \Bool^\Nat\rangle)$
+% describes exactly all the possible reductions of the function
+% $\lambda \eta. \llbracket P\rrbracket(x, \eta)$. This allows us to prove the equivalence between
+% $\SIFPRA$ and $\SIFPLA$ in a quite natural way.
+\noindent
+In a similar fashion, we define the step semantics for $\SIFPRA$:
+
+\begin{defn}[Small Step semantics of $\SIFPRA$]
+  \label{def:sifprass}
+The step semantics of a program $P \in \lang{\stm_\RA'}$ is the smallest relation
+$$
+\leadstora \in \mathcal P \left(\left(\lang{\stm_\RA'} \times (\id \longrightarrow \{\zero, \one\}^*)\times \mathit{adt}(M)\right)
+\times
+\left(\lang{\stm_\RA'} \times (\id \longrightarrow \{\zero, \one\}^*)\times \mathit{adt}(M)\right)\right)
+$$
+closed under the following rules:
+\begin{center}
+% \AxiomC{\phantom{$\langle e, \store\rangle\sred \sigma$}}
+% \UnaryInfC{$\langle \sk P, \store, \Psi\rangle \leadstora \langle P, \store, \Psi\rangle$}
+% \DisplayProof
+% \hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\UnaryInfC{$\langle \Id\takes e;P, \store, \Psi\rangle \leadstora \langle P, \store\as {\Id}{\sigma}, \Psi\rangle$}
+\DisplayProof
+\hspace{18pt}
+\AxiomC{$\langle e, \store\rangle\sred \sigma$}
+\AxiomC{$\sigma \neq \one$}
+\BinaryInfC{$\langle \while e s; P, \store, \Psi\rangle \leadstora \langle P,\store, \Psi\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle\sred \one$}
+\UnaryInfC{$\langle \while e s;P, \store, \Psi\rangle \leadstora \langle s; \while e s;P, \store, \Psi\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle \sred \sigma$}
+\AxiomC{$\forall b \in \{\zero, \one\}. (\sigma, b) \notin \Psi$}
+\AxiomC{$\bool\in \{\zero, \one\}$}
+\TrinaryInfC{$\langle \fl e ;Q, \store, \Psi\rangle \leadstora \langle Q,\store \as R \bool, (\sigma, \bool)::\Psi\rangle$}
+\DisplayProof
+
+\vspace{12pt}
+\AxiomC{$\langle e, \store\rangle \sred \sigma$}
+\AxiomC{$\exists b \in \{\zero, \one\}.(\sigma, b) \in \Psi$}
+\AxiomC{$\bool\in \{\zero, \one\}$}
+\TrinaryInfC{$\langle \fl e ;Q, \store, \Psi\rangle \leadstora \langle Q,\store \as R \bool, \Psi\rangle$}
+\DisplayProof
+\end{center}
+\end{defn}
+
+% In the rules for $\fl e$, we ask $\Psi \cap N(\sigma)\neq \emptyset$, because we
+% don't want the relation $\leadstora$ to relate configurations which are not
+% related by $\ssos$: indeed, if $\Psi$ does not contain any oracle in $C(\sigma)$
+% dor a given $sigma$, it means that there is no oracle $\omega$ which would drive
+% that reduction.
+%
+\noindent
+The closure of the relation $\leadsto_\cdot$ for $\cdot \in \{\LA, \RA\}$
+under the transitive property
+produces respectively the families of relations $\leadstolan n$ and $\leadstoran n$.
+These new relations
+allow us to extend the single step transition to the number of steps
+necessary for the reductions.
+
+\begin{defn}[Indexed Transitive Closure of $\leadstola$ and $\leadstora$]
+  For $\cdot \in \{\mathbf{LA}, \mathbf{RA}\}$,
+  we define the family of relations  $\{\leadsto_\cdot^n\}_{n\in \Nat}$
+  as the set of functions closed and minimal with respect to the following rules:
+  $$
+  \begin{aligned}
+    \langle P, \store, \Psi\rangle &\leadsto_\cdot^0\langle P, \store, \Psi\rangle\\
+    \big( \langle P, \store, \Psi\rangle \leadsto_\cdot^n\langle P', \store', \Psi'\rangle \land \langle P', \store', \Psi'\rangle &\leadsto_\cdot\langle P'', \store'', \Psi''\rangle\big) \to\big(
+    \langle P, \store, \Psi\rangle \leadsto_\cdot^{n+1}\langle P'', \store'', \Psi''\rangle\big).
+  \end{aligned}
+  $$
+\end{defn}
+
+\noindent
+This single-step semantics can be used to define the cost model we will see in Section
+\ref{sub:portosifpra} to prove the polynomial time complexity
+of the translation of $\POR$ in $\SIFPRA$.
+
+\begin{defn}[Cost Model For $\SIFPRA$ and $\SIFPLA$]
+  \label{def:sifpcost}
+  We say that a program $P \in \lang{\stm_\LA}\cup \lang{\stm_\RA}$
+  has time complexity $f: \Nat \longrightarrow \Nat$ if and only if for every
+  $x\in \Ss$, there is a $k \in \Nat$, a store $\store': \Id \rightharpoonup \Ss$,
+  and a $\Psi$ either in $\mathit{adt}(L)$ or $\mathit{adt}(M)$ such that if
+  $$
+  \langle P; \halt, []\as X x, \Os\rangle \leadstoran k
+  \langle\halt, \store', \Psi\rangle,
+  $$
+  then $k \le f(|x|)$.
+\end{defn}
+
+\noindent
+Finally, we define the transitive closure of $\leadsto_\cdot$ for $\cdot \in
+\{\mathbf{LA}, \mathbf{RA}\}$.
+
+\begin{defn}[Step Semantics Transitive Closure]
+  \begin{align*}
+    \leadstolan * &:= \bigcup_{n \in \Nat} \leadstolan n;\\
+    \leadstoran * &:= \bigcup_{n \in \Nat} \leadstoran n.
+  \end{align*}
+\end{defn}
+\noindent
+The oracle-related informationstored in the data structure $\Phi$ is aimed at associating to each possible reduction
+the set of oracle functions which lead the corresponding \emph{big-step} reduction to produce the same result.
+%
+These two relations are defined as follows.
+
+\begin{defn}[Oracle-Map Coherency Relation for $\SIFPRA$]
+  \label{def:sifpracoherency}
+  For every $\omega \in \Os$ and $\Psi \in \mathit{adt}(M)$, we write
+    $\omega \Yright \Psi$ if and only if
+  $$
+    \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool.
+  $$
+\end{defn}
+\noindent
+Similarly, for $\SIFPLA$:
+
+\begin{defn}[Oracle-String Coherency Relation for $\SIFPLA$]
+  \label{def:sifplacoherency}
+  For every $\eta \in\Bool^\Nat$ and $\Psi \in \{\zero, \one\}^*$, we write
+    $\eta \Yright \Psi$ if and only if $\Psi$ is a prefix of $\eta$.
+\end{defn}
+\noindent
+This relation, in addition to expressing the coherency between an oracle function
+and a collection of constraints, allows us to associate naturally a measure to
+strings and to $\Ss\Bool$-maps. This measure corresponds to the measure of
+the functions which are coherent with it.
+
+\begin{defn}[String Measure]
+  \label{def:strmeasure}
+  For each $\Psi \in Ss$, we define $\mu(\Psi)$ as follows:
+  $$
+  \mu(\Psi)=\mu(\{\eta \in \Bool^\Nat| \eta\Yright\Psi\}).
+  $$
+\end{defn}
+
+\begin{defn}[$\Ss\Bool$-map Measure]
+  \label{def:mapmeasure}
+  For each $\Psi \in Ss$, we define $\mu(\Psi)$ as follows:
+  $$
+  \mu(\Psi)=\mu(\{\omega \in \Bool^\Ss| \omega \Yright \Psi\}).
+  $$
+\end{defn}
+
+Notice that, as for program semantics, we are using the same symbol $\Yright$ to denote
+two different relations, this emphasizes the strong link between the two relations.
+
+
+\subsubsection{Lexical facilitations}
+
+
+Before getting into the reduction involving $\SIFPRA$ and $\SIFPLA$,
+we introduce some notational facilitations in order to increase
+the proof's readability.
+
+\begin{notation}
+Writing a $\SIFP$ program, we use the notation $E \sqsubset F$
+as a shorthand (syntactic sugar) for $\lnot (F \sqsubseteq E)$.
+\end{notation}
+
+The notation above may be handled with care: it is a simplification. Indeed it
+does not hold that if a string $\sigma$ is not a weak prefix of another string $\tau$
+it is a strong prefix of $\tau$, but when we employ the shorthand $E \sqsubset F$
+writing our reduction, we always work under the invariant that $E$ is a prefix of $F$.
+%
+We can show that, in those cases, the semantics of the expression behaves as expected.
+
+\begin{remark}
+  $E \subseteq F \to (E \subset F) \leftrightarrow \lnot (F \subseteq E)$.
+\end{remark}
+\begin{proof}
+  Suppose $E\subseteq F$. Suppose that $\lnot (F \subseteq E)$, this entails $\lnot (F=E)$ which is equivalent to $\lnot (E=F)$, together with $E\subseteq F$, we get $E \subset F$.
+  Suppose $E \subset F$ and $F \subseteq E$, it hoslds that $F \subseteq E\leftrightarrow F\subset E \lor F = E$; in the first case we have an absurd because $\subset$ is not reflexive, while in the second case we obtain $E\subset E$ which is absurd and we conclude the proof.
+\end{proof}
+
+\begin{notation}
+\label{remark:if}
+Writing a $\SIFP$ program, we the notation
+\begin{align*}
+&\quad\If {c} {\\
+&\quad\stm;\\
+&\quad}
+\end{align*}
+for representing:
+\begin{align*}
+&B \takes \epsilon.\one; \\
+&\quad\while {c \land B} {\\
+&\quad\stm;\\
+&\quad B \takes \epsilon.\zero\\
+&\quad}
+\end{align*}
+It is indeed true that:
+\begin{itemize}
+\item The statement $\stm$ is executed if and only if $c$ holds.
+\item The statement $\stm$ is executed only once.
+\end{itemize}
+\end{notation}
+
+\begin{notation}[pseudo-procedure]
+A pseudo-procedure is a syntactic sugar for the $\SIFP$'s language, which consists in a \emph{pseudo-procedure's name}, a \emph{body} a list of \emph{formal parameters}. A call to such expression must be interpreted as the inlining of the pseudo-procedure's body in the place of the call in which the names of the formal parameters by the actual parameters and all the \emph{free} names of the body are substituted by fresh names of the family $\{S_k\}_{k \in \Nat}$.
+\end{notation}
+
+Pseudo-procedures allow us to factorize pieces of code and represent
+programs in a concise way, but they have nothing to do with actual
+procedures and calls.
+Indeed, as we have shown, the $\SIFP$ formalism does not contain
+any notion of function and callable object.
+
+Before getting into the actual reduction, we need to face some preliminar
+work.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{From $\POR$ to the $\SIFPRA$ Language}
+\label{sub:portosifpra}
+In this section we show that
+the $\POR$ functions can be encoded by means of \emph{poly-time} $\SIFPRA$ programs.
+%In particular, we will show that $\POR \subseteq \text{poly-time }\SIFPRA$.
+%
+%
+%
+% The first reduction we will be involved with will be the one from $\POR$ to $\SIFPRA$. For this reason, we focus on that specific formalism defining its operational semantics and the notion of function computed by a $\SIFPRA$ program. Only later, we will introduce the operational semantics of the $\SIFPRA$ variant of $\SIFP$ together with the notion of function fomputed by a program of such foralism.
+%
+%
+% We can associate a value to each $\SIFPRA$ program simply by looking at
+% the value which is stored in a specific register at the end of the computation.
+% That specific register is $R$.
+%
+%
+%
+In particular, the encoding $\POR$'s
+bounded recursion in $\SIFP$ is not completely straightforward:
+these are defined upon three functions $h_0, h_1, g \in \POR$ and
+a term $t \in \Lpw$, which is used as a size bound to the terms obtained
+from $h_0$ and $h_1$.
+Basically, this bound guarantees that all the $\POR$
+functions are polynomially bounded (in time and size,
+according to Lemma \ref{lemma:size}).
+For this reason,
+we need to show that we can express the size bound $t \in \Lpw$
+by means of an expression
+of $\SIFP$, i.e. a production of $\lang{\xp}$.
+%
+The polynomial complexity of the $\POR$'s encoding in
+$\SIFPRA$ relies on two other results:
+
+\begin{itemize}
+  \item $\POR$ terms have polynomial size in the size of their variables,
+  as proved in Lemma \ref{lemma:size}.
+  \item $\Lpw$ terms have polynomial size in the size of their variables,
+  as proved in Lemma \ref{lemma:sizeofterms}.
+\end{itemize}
+
+For this reason, to show that all the $\POR$
+functions can be represented by means of \emph{poly-time} $\SIFPRA$ programs,
+we must preliminarily show the aforementioned results. For sake of readability,
+in the current section, some of the proof of these resulsts are moved to
+Chapter \ref{app}, Section \ref{sub:techsifplan}.
+
+%%% Lemma
+%%% lemma:size
+\begin{restatable}{lemma}{lpwterm}\label{lemma:size}
+The size of a term in $\Lpw$ is poynomial in the size
+of its variables.
+\end{restatable}
+\noindent
+This result can be leveraged to prove the inductive case of the analogous
+result for $\POR$ terms.
+
+%%% Lemma
+\begin{restatable}{lemma}{portermsize}\label{lemma:sizeofterms}
+For each $f\in \POR$, the following holds:
+$$
+\forall x_1,\dots,x_n.\forall \omega.\exists p\in \POLY.
+|f(x_1,\dots, x_n,\omega)| \leq p(|x_1|,\dots, |x_n|).
+$$
+\end{restatable}
+
+Thanks to these results,
+we can step to showing that each $\Lpw$ term can be represented in $\SIFPRA$
+(Lemma \ref{lemma:lpwtermsifp}).
+As we mentioned before, this result is necessary to show that
+the bounded recursion schema can be encoded in $\SIFPRA$. However,
+before showing the proof of Lemma \ref{lemma:lpwtermsifp}, we need to prove some
+intermediate results, which will simplify the proof. In particular,
+for sake of readability, we define the pseudo-procedures $\copyb$, which copies
+the $|Z|$-th bit of $S$ at the end of $R$,
+given that $Z$ contains the $|Z|$-th prefix of $S$, and prove its correctness
+and complexity.
+%
+Moreover, the definition of this simple program will help us in showing
+to the reader the schema we employ to prove that a certain program is
+--- or is part of --- the encoding of some $\POR$ functions in
+$\SIFPRA$ or $\SIFPLA$:
+
+\begin{itemize}
+  \item We define the encoding.
+  \item We prove the correctness of such encoding with respect to some invariant
+  properties.
+  \item We show that the complexity of such program is polynomial in time.
+  \end{itemize}
+\noindent
+Complexity results are proved referring to the cost model described
+in Definition \ref{def:sifpcost}.
+
+\begin{defn}[$\copyb$ pseudo-procedure]
+  \label{def:copyb}
+  The $\copyb$ pseudo-procedure is defined as:
+  \begin{align*}
+  \copyb (Z, S, R)&\coloneqq  \If{Z.\zero \sqsubseteq S}{\\
+  & \quad Z \takes Z.\zero;\\
+  & \quad R \takes R.\zero;\\
+  & }\\
+  & \If{Z.1 \sqsubseteq S}{\\
+  & \quad Z \takes Z.\one;\\
+  & \quad R \takes R.\one;\\
+  & }
+  \end{align*}
+\end{defn}
+
+\begin{lemma}[Complexity of $\copyb$]
+\label{lemma:compcopyb}
+The pseudo-procedure $\copyb$ requires a number of steps which is a
+polynomial in the sizes of its arguments with respect to Definition \ref{def:sifpcost}.
+\end{lemma}
+
+\begin{proof}
+The two $\If \ \ $s are described in Remark \ref{remark:if},
+ and they cause no iteration. Moreover,
+ the two statements are mutually exclusive,
+ so this pseudo-procedure requires at most 5 steps.
+\end{proof}
+
+\begin{lemma}[Correctness of $\copyb$]
+\label{lemma:corrcopyb}
+After an execution of $\copyb$:
+\begin{itemize}
+\item If the first argument is a strong prefix of the second,
+the size of the first argument ($Z$) increases by one,
+and is still a prefix of the second argument ($S$).
+\item Otherwise, the values stored in the first two registers don't change.
+\item Each bit which is stored at the end of $Z$ is stored at the end of $R$.
+\end{itemize}
+\end{lemma}
+
+\begin{proof}
+Suppose that the value stored in $Z$ is a strong prefix of the value which is stored in $S$. Clearly it is true that $Z.\zero \sqsubseteq S \lor Z.\one\sqsubseteq S$. In both cases, $\copyb$ increases the length of the portion of $Z$ which is a prefix of $S$. If $Z$ is not a prefix of $S$ none of the two $\mathtt{if}$s is executed. The last conclusion comes from the observation that each assignment to $Z$ is followed by a similar assignment to $R$.
+\end{proof}
+
+
+
+
+\begin{lemma}[Term Representation in $\SIFPRA$]
+  \label{lemma:lpwtermsifp}
+All the terms of $\Lpw$ can be represented in $\SIFPRA$. Formally: $\forall t \in \Lpw. \exists \MM\in \lang{\stm} \llbracket\MM_t\rrbracket(\sigma_1, \ldots, \sigma_n)= t(\sigma_1, \ldots, \sigma_n)$.
+\end{lemma}
+
+
+\begin{proof}
+We proceed by induction on the syntax of $t$. The correctness of such implementation is given by the following invariant properties:
+\begin{itemize}
+\item The result of the computation is stored in $R$.
+\item The inputs are stored in the registers of the group $X$.
+\item The function $\MM$ does not write the values it accesses as input.
+\end{itemize}
+\noindent
+$\MM$ is defined as follows:
+\begin{itemize}
+\item $\MM_{\eepsilon}\coloneqq R \takes \epsilon $
+\item $\MM_\zzero\coloneqq R \takes \eepsilon.\zero $
+\item $\MM_\one\coloneqq R \takes \eepsilon.\one $
+\item $\MM_{\Id}\coloneqq R \takes \Id$.
+\end{itemize}
+
+This pseudo-procedure $\copyb$ turns out to be useful in both the encodings of $\conc$ and $\times$. For the $\conc$ operator, we proceed with the following encoding:
+%
+\begin{align*}
+\MM_{t \conc s}\coloneqq &\MM_s\\
+& S \takes R;\\
+& \MM_t\\
+& Z \takes \epsilon; \\
+& \while {Z \sqsubset S}{\\
+& \quad \copyb(Z, S, R)\\
+& \quad }
+\end{align*}
+%
+\noindent
+The correctness of $\MM_{t \conc s}$ is a consequence of the correctness of $\copyb$.
+%
+We encode the $\times$ function as follows:
+\begin{align*}
+\MM_{t \times s}\coloneqq &
+\MM_{t}\\
+& T \takes R;\\
+& \MM_{s}\\
+& S \takes R;\\
+& Z \takes \epsilon;\\
+& R \takes \epsilon;\\
+& Q \takes \epsilon;\\
+& \while {Z \sqsubset S} { \\
+& \quad \If{Z.\zero \sqsubseteq S} {\\
+& \quad \quad Z \takes Z.\zero;\\
+& \quad \quad \while {Q \sqsubset T} {\\
+& \quad \quad \quad \copyb(Q, T, R)\\
+%& \quad \quad \quad B \takes \epsilon.\zero;\\
+& \quad \quad \quad }\\
+& \quad \quad Q \takes \epsilon;\\
+& \quad \quad }\\
+& \quad \If{Z.\one \sqsubseteq S} {\\
+& \quad \quad Z \takes Z.\one;\\
+& \quad \quad \while {Q \sqsubset T} {\\
+& \quad \quad \quad \copyb(Q, T, R)\\
+%& \quad \quad \quad B \takes \epsilon.\zero;\\
+& \quad \quad \quad }\\
+& \quad \quad Q \takes \epsilon;\\
+& \quad \quad }\\
+%& \quad B \coloneqq 0\\
+& \quad }
+\end{align*}
+\noindent
+This program is correct because of the IH
+and the correctness of $\copyb$, which has been
+proved in Lemma \ref{lemma:corrcopyb}: the procedure, basically, matches $s$,
+by writing in the $Z$ register its prefixes. At each cycle
+a new character is added to the $Z$ register and
+the content of $T$ ($t$ according to the IH) is added in $R$;
+this process is repeated until it is equal to $S$.
+\end{proof}
+
+For each term of $\Lpw$ $t$, it holds that $\MM_t$ is
+poly-time.\footnote{This is shown in Chapter \ref{app}, Lemma \ref{lemma:compmm}.}
+%
+%
+Up to now we have shown that the terms of $\Lpw$ can be represented
+by means of polynomial $\SIFP$ expressions: as we mentioned above, this is
+fundamental for showing that the bounded recursion schema can be implemented in
+$\SIFPRA$. All the preliminar work for the main result of this section
+has been accomplished, so we can state it formally.
+
+
+\begin{lemma}[Implementation of $\POR$ in $\SIFPRA$]
+\label{lemma:portosifp}
+For every function $f \in \POR$, there is a $\SIFPRA$ program $P$
+such that:
+$forall x_1, \ldots x_n.
+\llbracket P\rrbracket(x_1, \ldots, x_n, \omega)=f(x_1, \ldots, x_n, \omega)$.
+Moreover, if $f \in \POR^-$, then $\LL{f}$ does not contain any $\fl e$ statement.
+\end{lemma}
+
+The reader may observe that the statement contains two claims: one concerning the
+correctness of the translation itself and another concerning \emph{its shape}.
+The second result may appear superfluous. Indeed,
+it is unnecessary with respect to the reduction from $\POR$ to $\SIFPRA$, but
+it will be used later --- precisely in Corollary \ref{cor:trivportosifpla},
+where we show that the functions $\POR$ described in Section \ref{sub:encoding}
+are in $\SIFPLA$, too.
+%
+Lemma \ref{lemma:portosifp}, employs the
+pseudo-procedure $\mathit{trunc}$
+to represent the $\cdot|_\cdot$ operator of $\Lpw$ in $\SIFPRA$.
+This function symbol is employed in the inductive case of the bounded
+recursion: it is placed
+after each recursive call in the induction schema, and truncates the
+output of the function to a polynomially long term.\footnote{%
+%
+Again, for sake of readability, we place the definition of the  $\mathit{trunc}$
+pseudo-procedure in Chapter \ref{app} together with
+some results showing formally that the pseudo-procedure is polynomial in time
+and respects the behavior described above.
+%
+Precisely, the $\mathit{trunc}$ pseudo-procedure is introduced in Definition
+\ref{def:trunc},
+its polynomial complexity is shown in Lemma \ref{lemma:comptrunc}
+and its correctness with respect to the behavior described above is shown in Lemma \ref{lemma:corrtrunc}.
+}
+
+
+
+We have shown that all the ingredients bounded recursion schema
+can be encoded in $\SIFPRA$ by means of poly-time programs.
+We can now address the claim of Lemma \ref{lemma:portosifp}.
+
+\begin{proof}[Proof of Lemma \ref{lemma:portosifp}]
+For each function $f \in \POR$ we define a program $\LL{f}$ such that:
+$\llbracket \LL{f}\rrbracket(x_1, \ldots, x_n)=f(x_1, \ldots, x_n)$
+by induction on the structure of $f$.
+The correctness of $\LL{f}$
+is given by the following invariant properties:
+\begin{itemize}
+\item The result of the computation is stored in $R$.
+\item The inputs are stored in the registers of the group $X$.
+\item The function $\LL\cdot$ does not change the values it accesses as input.
+\end{itemize}
+\noindent
+We define the function $\LL f$ as follows.
+\begin{itemize}
+\item $\LL{E}\coloneqq R \takes \epsilon$.
+\item $\LL{S_0}\coloneqq R \takes X_0.\zero$.
+\item $\LL{S_1}\coloneqq R \takes X_0.\one$.
+\item $\LL{{P}^n_i}\coloneqq R \takes X_i$.
+\item $\LL{C}\coloneqq R \takes X_1 \sqsubseteq X_2$.
+\item $\LL{Q}\coloneqq \fl {X_1}$.
+\end{itemize}
+
+The basic functions' correctness is trivial. Moreover, it is simple to see that
+the only translation containing $\fl e$ for some $e \in \lang\xp$ is
+the translation of $Q$.
+
+The encoding of the composition and of the bounded recursion are defined as follows:
+
+\begin{align*}
+\LL{g(h_1(x_1,\ldots, x_n, \omega), \ldots h_k(x_1,\ldots, x_n, \omega), \omega)}\coloneqq\ &
+\LL{h_1}(X_1, \ldots, X_n)\\
+&S_1 \takes R;\\
+&\ldots\\
+&\LL{h_k}(X_1, \ldots, X_n)\\
+&S_k \takes R;\\
+&Y_1 \takes X_1;\\
+& \ldots\\
+& Y_{\max(n, k)} \takes X_{\max(n, k)};\\
+& X_1 \takes S_1;\\
+& \ldots\\
+& X_k \takes S_k;\\
+%& X_{k} \takes Y_{n};\\
+&\LL{g}(X_1, \ldots, X_k)\\
+& X_1 \takes Y_1\\
+&\ldots\\
+&X_{\max(n+1, k+1)} \takes Y_{\max(n+1, k+1)};\\
+%&\sk
+\end{align*}
+\normalsize
+%
+The correctness of this encoding with respect to the
+invariants is a consequence of the IHs. Furthermore, suppose that
+$f$ does not contain $Q$ in its definition, then none of $g$ and $h_i$
+for $1 \le i \le k$ does. So, by IH and for the construction we did,
+we know that $\LL{f}$ does not contain any $\fl e$ statement.
+%
+Supposing that $g$ takes $n$ parameters,
+ bounded recursion is encoded as follows:
+%
+
+\begin{align*}
+\LL{\mathit{ite}(g, h_1, h_2, t)}\coloneqq
+&Y_0 \takes X_{n+1};\\
+&X_{n+1} \takes \epsilon;\\
+& \LL{g}(X_1, \ldots, X_n)\\
+%& Y \takes X_{n+2};\\
+& X_{n+2} \takes R;\\
+& \while {X_{n+1} \sqsubset Y_0} {\\
+&\quad \If{X_{n+1}.\zero\sqsubseteq Y_0 }{\\
+&\quad\quad \MM_t(X_1, \ldots, X_n, X_{n+1})\\
+&\quad\quad T \takes R;\\
+&\quad \quad \LL{h_0}(X_1, \ldots, X_n, X_{n+1}, X_{n+2})\\
+%&\quad\quad X_{n+1}\takes R;\\
+&\quad\quad \trunc(T, R);\\
+&\quad\quad X_{n+2} \takes R;\\
+&\quad\quad X_{n+1}\takes X_{n+1}.\zero;\\
+ }
+& \quad \If{X_{n+1}.\one\sqsubseteq Y_0}{\\
+&\quad\quad \MM_t(X_1, \ldots, X_n, X_{n+1})\\
+&\quad\quad T \takes R;\\
+&\quad \quad \LL{h_1}(X_1, \ldots, X_n, X_{n+1}, X_{n+2})\\
+&\quad\quad \trunc(T, R);\\
+&\quad\quad X_{n+2} \takes R;\\
+&\quad\quad X_{n+1}\takes X_{n+1}.\one;\\
+ }
+}\\
+%&X_{n+2}\takes Y;\\
+&R \takes X_{n+2};\\
+%&\sk
+\end{align*}
+\normalsize
+
+This encoding is quite cumbersome: we suppose that the bounded
+recursive function takes $n+1$ parameters as input and that one of those,
+the $n+1$-th is the recursion bound.
+%
+The correctness of this piece of code with respect to the
+invariant properties mentioned above can be shown by induction on the value of
+the induction parameter $\sigma$ together with another invariant property:
+at the end of the evaluation $X_{n+1}$ contains $\sigma$.
+
+\begin{itemize}
+  \item [$\eepsilon$] In this case, the evaluation skips the outermost while, so the
+  correctness of the overall code is a consequence of the induction hypothesis on
+  $g$. At the end of the evaluation, $\store(X_{n+1})=\eepsilon$.
+  \item [$\tau\bool$] In this case we know that the code behaves correctly for input
+  $\tau$. Suppose that the input is now $\tau\bool$; according to the semantics of
+  the $\while{}{}$ statement, the execution of the code on $\tau\bool$ is identical
+  to the execution of the code on $\tau$ (which respects the invariant properties
+  by induction hypothesis), but with another cycle at the end. This last cycle matches the
+  value of $\bool$. Suppose it to be $\zzero$. The code computes the size bound $\MM_t$,
+  without changing the values in the other registers, then it computes $h_0$ and
+  truncates it, then prepares the inputs for the next cycle (simulated call).
+  The correctness of the overall procedure is a consequence
+  of the IHs and the correctness of the $\trunc$ pseudo-procedure
+  (Lemma \ref{lemma:corrtrunc}).
+\end{itemize}
+The proof that $f$ does not contain $\fl e$ statements for any $e$ is identical
+to the case of composition.
+\end{proof}
+
+Even intuitively, it is easy to see that the schema $\LL P$ we have introduced
+in Lemma \ref{lemma:portosifp} is poly-time with respect to the cost model described
+in Definition \ref{def:sifpcost}.\footnote{A formal proof of this result is given in
+Chapter \ref{app}, Lemma \ref{lemma:compsifpra}.} This result is a consequence of
+all the other complexity results mentioned in this section. On top of it,
+we will show that the implementation of a $\POR$ function on an STM
+is poly-time, i.e. that it is equivalent to a function in $\SFP$.
+%
+% \begin{cor}
+%   \label{cor:PORtoSIFPRA}
+%   $\POR\subseteq$ poly-time $\SIFPRA$
+% \end{cor}
+
+Thus, we can state the first step of the second part of Lemma \ref{lemma:taskC2}.
+
+\begin{cor}
+ \label{cor:PORtoSIFPRA}
+ For each $f \in \POR$ there is a poly-time program  $P \in \SIFPRA$ such that for each $x, y \in \Ss$:
+ $$
+ \mu\left(\{\omega \in \{\zero, \one \}^\Ss | f(x, \omega)=y\}\right)=\mu\left(\{\omega \in \{\zero, \one \}^\Ss | \llbracket P\rrbracket(x, \omega)=y\}\right).
+ $$
+\end{cor}
+\begin{proof}
+  Consequence of Lemmas \ref{lemma:portosifp} and \ref{lemma:compsifpra}
+\end{proof}
+
+As a consequence of Corollary \ref{cor:PORtoSIFPRA}, we know that for showing
+%
+%
+$$
+\forall f \in \POR.\exists g \in \SFP.
+\mu\left(\{\omega \in \{\zero, \one \}^\Ss | f(x, \omega)=y\}\right)=\mu\left(\{\omega \in \{\zero, \one \}^\Ss | g(x, \omega)=y\}\right),
+$$
+%
+it suffices to show that:
+%
+$$
+\forall P \in \SIFPRA.\exists g \in \SFP.
+\mu\left(\{\omega \in \{\zero, \one \}^\Ss | \llbracket P\rrbracket(x, \omega)=y\}\right)=\mu\left(\{\omega \in \{\zero, \one \}^\Ss | \llbracket P\rrbracket(x, \omega)=y\}\right).
+$$
+%
+To prove this second claim, we define a $k$-taped \emph{on-demand} STM, where
+$k$ is linear in the amount of registers used by $P$.
+Thus, it is important to show that, fixed $f \in \POR$, the corresponding program
+$\LL f$ uses a constant amount of registers, which is uniquely determined by $f$.
+% we will show an encoding from $\SIFPRA$ to $\SIFPLA$ and then
+% an encoding from $\SIFPLA$ to $\SFPOD$, which is a variant
+% of $\SFP$ which reads from the $\eta$ tape (the random stream) \emph{on-demand}.
+%
+% That reduction will use $r$ tapes wher $r$ is equal to the number of registers
+% used by the $\SIFPLA$. Since $\SFP$ is defined on two-taped Stream Machines, we
+% will show that a $r+1$-taped Steam machine can be reduced to a $2$-taped
+% machine with at most a polynomial overhead. For this reason, to get a poly-time
+% encoding of a $\POR$ function $f$ in $\SFP$ we need to show
+% that the number of registers used by encoding of $f$ in $\SIFPLA$ ($r$) is
+% constant and depends on $f$ only. To do so, we start showing that
+% for any $f \in \POR$, $\LL{f}$ requires a constant number of registers.
+% Moreover, contextually to the reduction from $\SIFPRA$ to $\SIFPLA$,
+% we will show that a similar (by way simpler) result holds, too.
+% Composing those claims gives the result we are aiming to.
+
+\begin{remark}
+The number of registers used by $\LL{f}$ is finite.
+\end{remark}
+
+\begin{defn}
+Programs are finite production, for this reason we can define a function
+$\#_r^\stm:\lang{\stm_\RA}\longrightarrow \mathcal P(\Id)$ which records
+the identificators of the registers used by a $\lang{\stm_\RA}$ program.
+Since $\forall f \in \POR.\LL{f} \in \lang{\stm_\RA}$, the claim holds.
+Such function can defined as follows:
+\begin{align*}
+\#_r^\stm(\fl e)&\coloneqq \#_r^\xp(e)\\
+\#_r^\stm(\Id\takes e)&\coloneqq \{\Id\}\cup \#_r^\xp(e)\\
+\#_r^\stm(\while{e}{s}&\coloneqq \#_r^\xp(e)\cup \#_r^\stm(s)\\
+\#_r^\stm(p;s)&\coloneqq \#_r^\stm(p)\cup \#_r^\stm(s)\\[2ex]
+\#_r^\xp(\epsilon)&\coloneqq \emptyset\\
+\#_r^\xp(e.\zero)&\coloneqq \emptyset\\
+\#_r^\xp(e.\one)&\coloneqq \emptyset\\
+\#_r^\xp(\Id)&\coloneqq \{\Id\}\\
+\#_r^\xp(e \sqsubseteq \Id)&\coloneqq \{\Id\}\cup \#_r^\xp(e)\\
+\#_r^\xp(e \land \Id)&\coloneqq \{\Id\}\cup \#_r^\xp(e)\\
+\#_r^\xp(\lnot e )&\coloneqq \#_r^\xp(e).
+\end{align*}
+\end{defn}
+\noindent
+\begin{proof}
+We can show by induction that:
+\begin{enumerate}
+\item Each register which appears in a program $P \in \lang{\stm_\RA}$ is in
+$\#_r\stm(P)$.
+\item $\forall P \in \lang{\stm_\RA}. \#_r^\stm(P)$ is finite.
+\end{enumerate}
+\noindent
+As a consequence $|\#_r^\stm(P)|$ is exactly an upper bound to
+number of registers used by a $P \in \lang{\stm_\RA}$
+\end{proof}
+
+
+
+\begin{comment}
+Now we should show that the oracles used by $\POR$ functions can be limited to a finite and polinomially sized domain. This result will be inherited by $\SIFP$ programs, too. This result will allow us to formalize the fact that when tanslating $\SIFP$ on multitape $\SFP$ machines we will end up with a machine which is not pointwise identical to the starting $P \in \SIFP$, but which will preserve the measure of any output given the input.
+
+\begin{lemma}
+\label{lemma:pormap}
+$\forall f \in \POR. \forall \vec x \in \SS. \forall \omega \in \Os. \exists g\in \SS^\Nat. \exists k \in \Nat. \forall j \in \Nat. j < k \to \forall \omega' \omega'(g(j))\neq\omega(g(j))\to f(\vec x, \omega)\neq f(\vec x, \omega')$. Moreover the size of the function's graph is polynomial.
+\end{lemma}
+\begin{proof}
+By induction on the syntax of $f$.
+\begin{itemize}
+\item If $f$ is $E, S_0, S_1, C$, or projection, the function which we need is $\emptyset$, the value of $k$ is $0$ both the conclusions hold.
+\item If $f$ is $Q(x, \omega)$, the function which we need is the function $0\mapsto x$, $k$ is $1$. Both the conclusions hold.
+\item In the case of composition, we have induction hypotheses on all the composed function. The $k$ which we need to introduce is the summation of all $k$ introduced by the inner hypotheses plus the one obtained instantiating the IH to its inputs. The function which we need to introduce is the one obteined shifting the $g_{i+1}$-th function's domain of $k_i$. The outer function is obtained by the corresponednt induction hypotesis instantiated on the inputs described by the inner functions. The domain of the function obtained by the induction hypothesis needs to be shifted by the sum of all the other $k$s. The union of all the shifted $g$ functions describes the function which we need. The size of the obtained function is polynomial because the sum of polynomials and their compositions are polynomials.
+\item In the case of iteration, we proede by induction on the $y$ parameter.
+\begin{itemize}
+\item If the parameter is $\epsilon$ the function and $k$ are provided by the induction hypothesis on the base-case function.
+\item If teh parameter is $\sigma b$, we have one more induction hypothesis which builds appropriate $g_\sigma$ and $k_\sigma$ for the $\sigma$ prefix. In this case we just need to instantiate that hypothesis on its proper inputs, then use the IH on $h_b$ instantiatinf it on its input, shift the function obtained by $k_\sigma$ and then $k_\sigma+k_{h_b}$ is the $k$ which we need to introduce and the function is the union of the $g_\sigma$ and the shifted function.
+\end{itemize}
+It is simple to verify that both the two conclusions hold.
+\end{itemize}
+\end{proof}
+
+Since the implementation of $\POR$ is $\SIFP$ is $\omega$-conservative, we should state a similar result for the program $P$ obtained with the procedure described in Lemma \ref{lemma:portosifp}. Formally:
+
+\begin{lemma}
+\label{lemma:sifpmap}
+$\forall f \in \POR. \forall \vec x \in \SS. \forall \omega \in \Os. \exists g\in \SS^\Nat. \exists k \in \Nat. \forall j \in \Nat. j < k \to \forall \omega' \omega'(g(j))\neq\omega(g(j))\to \LL(f)(\vec x, \omega)\neq \LL(f)(\vec x, \omega')$. Moreover the size of the function's graph is polynomial.
+\end{lemma}
+\begin{proof}
+In Lemma \ref{lemma:portosifp}, we have proved that the translation $\LL(\cdot)$ preserves the behaviour of the program, fixed $\omega$, so the result is a consequence of Lemma \ref{lemma:pormap}.
+\end{proof}
+\end{comment}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{From $\SIFPRA$ to $\SIFPLA$}
+\label{sub:sifpratosifpla}
+
+
+In the previous section, we have shown that all the $\POR$ functions
+can be represented by means of
+poly-time $\SIFPRA$ programs. Unfortunately, this is not sufficient to prove the
+result we are aiming to, namely that each $\POR$ function can be represented by
+a $\SFP$ function (Lemma \ref{lemma:taskC2}). However, the proof of
+Lemma \ref{lemma:taskC2} can be built starting from the correspondence between $\POR$
+and $\SIFPRA$.
+However, as we explained above, $\SIFPRA$ is not directly suitable
+for a direct encoding on Stream machines for many reasons. One of those is the
+fact that it adopts a \emph{random access to the oracle}, while $\SFP$ does not.
+To bridge this gap, we defined the $\SIFPLA$ formalism: the dialect of
+$\SIFP$ which does not use the $\fl{e}$ primitive, but
+a simpler modality
+of access to the oracle: $\rb$. This primitive does not allow
+to specify the coordinate to be queried to the oracle. Instead,
+it accesses the bits of a stream $\eta : \Nat \longrightarrow \Bool$ in a sequential way.
+This is why we say that $\SIFPLA$ adopts a form of \emph{linear access to the oracle}.
+%
+In this section we show that each $\SIFPRA$ program can be represented by means of a
+$\SIFPLA$ program equivalent to the first with respect to
+the measure of the oracles mapping each input to the output. Namely:
+
+\begin{lemma}
+  \label{lemma:sifpratosifpla}
+  For each total program $P \in \SIFPRA$ there is a $Q \in \SIFPLA$ such that:
+  $$
+  \forall x, y. \mu\left(\{\omega \in \Bool^\Ss| \llbracket P\rrbracket (x, \omega)= y\}\right)=
+                \mu\left(\{\eta \in \Bool^\Nat| \llbracket Q \rrbracket(x, \eta)= y\}\right).
+  $$
+  Moreover, if $P$ is poly-time $Q$ is poly-time, too.
+\end{lemma}
+
+This result is analogous to what we proved in Corollary \ref{cor:PORtoSIFPRA}.
+%
+In particular, we show that each program in $\lang{\stm_\RA}$
+can be simulated by means of a program in $\lang{\stm_\LA}$
+coherently with Lemma \ref{lemma:sifpratosifpla}.
+%
+We derive Lemma \ref{lemma:sifpratosifpla} as a corollary of the proof that
+$\SIFPRA$ can be simulated in $\SIFPLA$ with respect the
+\emph{small-step} semantic relations defined in Section \ref{subsub:smallstep},
+Definitions \ref{def:sifplass} and \ref{def:sifprass}.
+%
+Indeed, the idea behind those semantics is to enrich the \emph{big-step} operational
+semantic with some
+pieces of information necessary to build an induction
+proof of the reduction from $\SIFPRA$ to $\SIFPLA$, in particular:
+
+
+\begin{itemize}
+  \item We add a value $\Psi$ in order to keep track of the constraints
+  associated to each sequence of transitions.
+  In this way, we can directly prove Lemma \ref{lemma:sifpratosifpla}
+  as a simulation result. In other words,
+  the transitive closures of $\leadstola$ and $\leadstora$ shape this parameter in order
+  to build, together with the reduction, a complete representation of
+  the measurable set of functions which
+  bring the reduction to a certain configuration.
+  \item The book-keeping information which is contained in $\Psi$ can be used to enrich each
+  configuration of the evaluation of $P$ with the associative table
+  which is built by the corresponding program $P'$ during its evaluation.
+\end{itemize}
+
+
+%
+\noindent
+The main issue we encountered during our reduction was proving that the random
+access can be simulated building, in
+a specific register, an associative table,
+which records all the queries which have been previously
+simulated. This approach requires also that:
+\begin{itemize}
+  \item At each simulated query,
+  the destination program looks up this table;
+  \item If it finds the queried coordinate, then it returns the result stored in the table
+  otherwise:
+  \begin{itemize}
+    \item It reduces $\fl{e}$ to a call of $\rb$ which outputs either $\bool=\zzero$ or
+    $\bool=\oone$.
+    \item It records the couple $\langle e,\bool\rangle$ in
+   the associative table and returns the $\bool$.
+  \end{itemize}
+\end{itemize}
+
+We believe that it is not too much of a problem to see, at least intuitively,
+that  this kind of simulation preserves the probability measure
+associated to any possible input-output pair during the translation of a $\SIFPRA$
+program into an equvalent $\SIFPLA$. However,
+the formal proof of Lemma \ref{lemma:sifpratosifpla}
+requires some effort to be given
+in its entirety. It is structured as follows:
+
+\begin{itemize}
+  \item We show that the two operational semantics given for $\SIFPRA$ and $\SIFPLA$
+  are equally expressive, in Section \ref{subsub:smallbigeq}.% ``\nameref{subsub:smallbigeq}''.
+  \item We define a relation $\Theta$ between configurations of the \emph{small-step}
+  semantics of $\SIFPRA$ and $\SIFPLA$. This is done in Section \ref{subsub:thetarelation}.
+  \item We prove a simulation result between the two semantics with respect to the $\Theta$ relation.
+\end{itemize}
+
+\subsubsection{Relating Small Step Semantics and Big Step Semantics}
+\label{subsub:smallbigeq}
+
+In this section, our goal is to define a characterization of the function evaluated by a
+$\lang {\stm_\LA}$ program basing on the
+\emph{small-step} semantics rather than on the
+\emph{big-step} operational semantics we used before.
+%
+From a non-quantitative point of view, the equivalence of those two semantics
+is almost trivial: indeed
+we can characterize the notion of \emph{value} computed by a program of $\SIFPLA$ and
+$\SIFPRA$ using this the \emph{small-step} semantics, simply decomposing the
+\emph{big-step} in many \emph{small-steps} of computation. Intuitively,
+if it is possible to reach a configuration with a single step, it is
+also possible to decompose it by single operations and to represent the whole
+computation placing a \emph{final configuration marker} --- the $\halt$
+instruction --- at the end of the program
+and using the transitive closure of the transition relation.
+This is done in
+Characterizations \ref{char:bigsmallstepla} and \ref{char:bigsmallstepra},
+respectively for $\SIFPLA$'s and $\SIFPRA$'s semantics.
+%
+However, we also need to relate the \emph{big-step} and the \emph{small steps}
+semantics under a quantitative point of view: to do so, we rely on the additional
+book-keeping value $\Psi$ --- which can either be in $\Ss$ or in $\mathit{adt}(M)$ ---
+introduced specifically for this goal in the small step semantics of
+$\SIFPLA$ and $\SIFPRA$. This is done in Lemmas \ref{lemma:sifplaquantsem} and
+\ref{lemma:sifpraquantsem}.
+
+Finally all the four main results of this section rely on the relations $\Yright$,
+which were introduced in Definitions \ref{def:sifplacoherency} and \ref{def:sifpracoherency}
+to the aim of relating oracles and their $\Psi$-representation
+in the setting of the \emph{small-step} semantics.
+%
+Indeed, in Characterizations \ref{char:bigsmallstepla} and \ref{char:bigsmallstepra},
+those two homonym relations are employed to show that the $\Psi$ value collected by the \emph{small-step}
+semantics is coherent with the possible values of the oracle function leading the
+program to the same final store by using the \emph{big-step} semantic instead of the \emph{small-step} one.
+On the other hand, in Lemmas \ref{lemma:sifplaquantsem} and \ref{lemma:sifpraquantsem},
+it is used implicitly to show that, fixed a program and an input, all the possible
+transitions are captured by the \emph{small-step} semantics.
+
+\begin{characterization}[Characterization of the Notion of Function evaluated bu a $\SIFPLA$ program]
+  \label{char:bigsmallstepla}
+  Each program $P \in\SIFPLA$ is such that for each $\sigma,\tau \in \Ss$ and for each
+  $\eta \in \Bool^\Nat$ it holds that:
+  $$
+\llbracket P \rrbracket(\sigma, \eta) = \tau \leftrightarrow \langle P;\halt, [] \as {X_1} \sigma, \varepsilon\rangle \leadstolan *  \langle \halt, \store, \Psi\rangle.
+  $$
+  For some $\Psi \in  \{\zero, \one\}^*$ such that $\eta \Yright \Psi$, and a store $\store$ such that
+  $\store(R)=\tau$.
+\end{characterization}
+
+\begin{characterization}[Characterization of the Notion of Function evaluated bu a $\SIFPRA$ program]
+  \label{char:bigsmallstepra}
+  Each program $P \in\SIFPRA$ is such that for each $\sigma,\tau \in \Ss$ and for each
+  $\omega \in \Bool^\Ss$ it holds that:
+  $$
+\llbracket P \rrbracket(\sigma, \omega) = \tau \leftrightarrow \langle P;\halt, [] \as {X_1} \sigma, \varepsilon\rangle \leadstoran *  \langle \halt, \store, \Psi\rangle.
+  $$
+  For some $\Psi \in  \mathit{adt}(M)$ such that $\omega \Yright \Psi$, and a store $\store$ such that
+  $\store(R)=\tau$.
+\end{characterization}
+
+The proofs of these results are given on the syntax of the program $P$.
+\footnote{For sake of readability, we do not show them in this section:
+they are given in Chapter \ref{app}, Section \ref{app:sifpratosifpla}.}
+
+
+\begin{lemma}[Quantitative Correspondence for $\SIFPLA$]
+  \label{lemma:sifplaquantsem}
+  For every \emph{total} $\SIFPLA$ program $P$, and for each store $\store$
+  there are a finite sequence of strings $\Psi_1 \ldots \Psi_k$
+  and a finite sequence of stores $\store_1, \ldots, \store_k$ such that:
+  $$
+    \left(\forall 1\le i \le k.\langle P;\halt, \store, \eepsilon\rangle \leadstolan * \langle \halt, \Sigma_i,\Psi_i\rangle \right)\land\sum_{1 \le i\le k} \mu(\Psi_i)=1
+  $$
+  and
+  $$
+  \forall i, j \in \Nat. i\neq j \to \{\eta \in \Bool^\Nat | \eta \Yright \Psi_i\}\cap\{\eta \in \Bool^\Nat | \eta \Yright \Psi_j\}=\emptyset.
+  $$
+\end{lemma}
+\begin{proof}
+  The first part is a consequence of the totality of $P$, while the second
+  is a consequence of Lemma \ref{lemma:sumsinvariance} (Chapter \ref{app}):
+  it shows that for each $P \in\SIFPLA$, $\Psi \in \Ss$ and for each
+  store $\store \in \{\zero, \one\}^{\Id}$, said  $W:=\{\Psi'\in \Ss| \langle P, \store, \Psi\rangle \leadstola \langle P, \store, \Psi'\rangle\}$,
+  then $\sum_{\Phi \in W} \mu(\Phi)=\mu(\Psi)$,
+  which entails the claim we are aiming to.
+  Finally, the disjointedness of the sets of oracles can be seen
+  by induction on the length of the derivation of the relation $\leadstolan *$:
+  \begin{itemize}
+    \item[$0$] Trivial because the $\{\Psi_i\}_{i\in \Nat}$ sequence is composed by one only element.
+    \item[$n+1$] The claim is a consequence of the IH and of
+    the fact that the rules defining
+    $\leadstola$ have only one possible target configuration for the majority
+    of the operators, while the only rule which generates two different
+    configurations is the one for the $\rb$ statement. However,
+    these configurations are tagged with $\Psi\zero$ and $\Psi\one$ respectively,
+    so the sets of the claim are respectively:
+    $$
+      \{\eta \in \Bool^\Nat | \eta \Yright \Psi\} \cap \{\eta \in \Bool^\Nat | \eta \Yright \Psi\zero\}
+    $$
+    and
+    $$
+      \{\eta \in \Bool^\Nat | \eta \Yright \Psi\} \cap \{\eta \in \Bool^\Nat | \eta \Yright \Psi\one\}
+    $$
+    which are mutually disjoint, because $\{\eta \in \Bool^\Nat | \eta \Yright \Psi\one\}$
+    and $\{\eta \in \Bool^\Nat | \eta \Yright \Psi\zero\}$ are themselves
+    disjoint.
+  \end{itemize}
+\end{proof}
+
+A similar result for the $\SIFPRA$ language follows, as well.
+
+\begin{lemma}[Quantitative Correspondence for $\SIFPRA$]
+  \label{lemma:sifpraquantsem}
+  For every \emph{total} $\SIFPRA$ program $P$, and for each store $\store$
+  there are a finite sequence of $\Ss\Bool$-maps $\Psi_1 \ldots \Psi_k$
+  and a finite sequence of stores $\store_1, \ldots, \store_k$ such that:
+  $$
+    \left(\forall 1\le i \le k.\langle P;\halt, \store, \eepsilon\rangle \leadstoran * \langle \halt, \Sigma_i,\Psi_i\rangle \right)\land\sum_{1 \le i\le k} \mu(\Psi_i)=1
+  $$
+  and
+  $$
+  \forall i, j \in \Nat. i\neq j \to \{\eta \in \Bool^\Nat | \eta \Yright \Psi_i\}\cap\{\eta \in \Bool^\Nat | \eta \Yright \Psi_j\}=\emptyset.
+  $$
+\end{lemma}
+\begin{proof}
+  Analogous to the proof of Lemma \ref{lemma:sifplaquantsem}.
+\end{proof}
+
+
+
+
+
+\subsubsection{The $\Theta$ Relation}
+\label{subsub:thetarelation}
+We define the encoding from
+$\SIFP_\RA$ to $\SIFP_\LA$
+--- actually, we only need the encoding of $\fl{}$ in $\SIFP_\RA$ ---
+and prove that an appropriate simulation result holds with respect to
+the programs' step semantics.
+%
+In other words, we want to show that there is a relation:
+%
+$$
+\Theta\subseteq \left(\lang{\stm_\RA'}\times \left(\id\to{\Ss}\right)\times \mathcal P (\Bool^\Ss) \right)
+\times
+\left(\lang{\stm_\LA'}\times \left(\id\to{\Ss}\right)\times \mathcal P (\Bool^\Nat) \right)
+$$
+%
+associating to each triple $\langle P_\RA, \Sigma, \Psi\rangle$ other triples
+$\langle P_\LA, \Gamma, \Phi\rangle$ which weakly simulate the relation $\leadstora$
+with respect to $\leadstola$. This is depicted by Figure \ref{fig:commutationsifp}.
+%
+\begin{figure}[]
+  \centering
+  \begin{tikzpicture}[node distance=6cm]
+      \node (PRA) {$\langle P_\RA;Q_\RA, \store, \Psi\rangle$};
+      \node[below of = PRA] (PLA) {$\langle P_\LA;Q_\LA, \Gamma, \Phi\rangle$};
+      \node[right of = PRA] (P1RA) {$\langle Q_\RA, \store', \Psi'\rangle$};
+      \node[right of = PLA] (P1LA) {$\langle Q_\LA, \Gamma', \Phi'\rangle$};
+
+
+      \draw[->] (PRA) edge[draw, decorate, decoration={zigzag, post=lineto, post length=3mm}] (P1RA);
+      \draw[->] (PLA) edge[draw, decorate, decoration={zigzag, post=lineto, post length=3mm}, shorten >=.25em] node[inner sep=0pt,at end,sloped] {${}^*$}(P1LA);
+      \draw[->] (PRA) edge node[fill=white] {$\Theta$} (PLA);
+      \draw[->] (P1RA) edge node[fill=white] {$\Theta$} (P1LA);
+  \end{tikzpicture}
+  \caption{Commutation schema between $\SIFPRA$ and $\SIFPLA$}
+  \label{fig:commutationsifp}
+\end{figure}
+%
+In particular, $\Theta$ is defined upon three co-operating functions or relations:
+%
+\begin{itemize}
+  \item A function
+  $$
+  \alpha: \lang{\stm_\RA'}
+  \longrightarrow
+  \lang{\stm_\LA'}
+  $$
+  which maps the program $P_\RA \in \lang{\stm_\RA'}$ into its
+  corresponding $P_\LA \in \lang{\stm_\LA'}$ with respect to
+  the simulation relation.
+
+  \item A relation
+  $$
+  \beta \subseteq \left(\left(\id\to{\Ss^*}\right) \times \SIFPRA \times \mathit{adt}(M)\right)
+  \times
+  \left(\id\to{\Ss^*}\right)
+  $$
+  which is intended to capture the store-to-store relations
+  between the two configurations.
+  This is done by two conditions:
+  \begin{itemize}
+    \item The two stores are identical if restricted to the
+    domain of the left-hand-side store. The intuition between the relation is that
+    the $\alpha$ function causes the employment of some additional registers by the
+    $\SIFPLA$ program which should not be taken into account by the simulation relation.
+    \item The store on the right hand side must record the associative table in a specific
+    register, which is determined by the structural syntax of the program in $\SIFPRA$.
+  \end{itemize}
+
+  \item A function
+  $$
+  \gamma:
+  \mathit{adt}(M)
+  \longrightarrow
+  \Ss
+  $$
+  which transforms the constraints on the oracle gathered by the relation
+  $\leadstora$ to the information collected by the relation $\leadstora$.
+\end{itemize}
+
+% Together with these conditions, we will also require this relation to preserve
+% the measure of the set of oracles associated to the two
+
+
+% We can state formally these observations by means of the following Proposition
+%
+% \begin{prop}[Simulation of $\SIFPRA$ in $\SIFPLA$]
+%   \label{prop:ratola}
+%   There are a function
+%   $$
+%   \Theta: \left(\lang{\stm_\RA'}\times \left(\id\to{\Ss}\right)\times \mathcal P (\Bool^\Ss) \right)
+%   \longrightarrow
+%   \left(\lang{\stm_\LA'}\times \left(\id\to{\Ss}\right)\times \mathcal P (\Bool^\Nat) \right)
+%   $$
+%   and three functions
+%   $$
+%   \alpha: \lang{\stm_\RA'}
+%   \longrightarrow
+%   \lang{\stm_\LA'}
+%   $$
+%   $$
+%   \beta:\left(\lang {\stm_\RA'}\times\left(\id\to{\Ss^*}\right)\times \mathcal P (\Bool^\Ss) \right)
+%   \longrightarrow
+%   \left(\id\to{\Ss^*}\right)
+%   $$
+%   $$
+%   \gamma:\mathcal P (\Bool^\Ss)
+%   \longrightarrow
+%   P (\Bool^\Nat)
+%   $$
+%   such that
+%   $$
+%   \Theta(P, \store, \Psi) = \langle \alpha(P), \beta(P, \store, \Psi), \gamma(\Psi)\rangle
+%   $$
+%   and
+%   \begin{align*}
+%   &\forall P \in \lang{\stm_\RA'}.\forall \store.\forall \Psi \in \Os.\\
+%   &\quad\exists S \subseteq \Ss. \Psi = \bigcap_{s \in S}C(s) \to\\
+%   &\quad\quad\forall Q.\exists P', \store', \Psi'.\langle P;Q, \store, \Psi\rangle \leadstora \langle P', \store', \Psi'\rangle \to\\
+%   &\quad\quad\quad\exists \Gamma, \Phi \subseteq \Ss^\Nat.\exists k\ge 1.\Theta(P;Q, \store, \Psi) \leadstolan k \langle\alpha(P'), \Gamma, \gamma(\Psi')\rangle\land\\
+%   & \quad\quad\quad\quad \forall G \in \#_r^\stm(P).\beta(P', \store', \Psi')(G)=\Gamma(G) \land\\ & \quad\quad\quad\quad\quad\beta(P',\store', \Psi')(Y_{{|\#_r^\stm(P)|+1}})=\listenc{\listenc {\sigma_1, b_1} 2, \ldots, \listenc {\sigma_t, b_t} 2}t \land\\
+%   & \quad\quad\quad\quad\quad \Gamma(Y_{{|\#_r^\stm(P)|+1}})=\listenc{\listenc {\sigma_{f(1)}, b_{f(1)}} 2, \ldots, \listenc {\sigma_{f(t)}, b_{f(t)}} 2}t
+%   \end{align*}
+%   for some $t \in \Nat$ and some permutation $f:  \{1, \ldots, t\}\longrightarrow \{1, \ldots, t\}$
+% \end{prop}
+%
+% The reader may find the statement of Proposition \ref{prop:ratola}
+% counter-intuitive: it breaks the redction schema described in
+% Figure \ref{fig:commutationsifp} introducing a slightly weaker claim.
+% Indeed, we are allowing the store reached by $\Theta(P;Q, \store, \Psi)$
+% to be not exactly $\beta(P',\store', \Psi')$, as described by te schema, but an
+% approximation. The reason is that during
+% the execution of the program, $\alpha(P)$ may use some registers
+% to support the reduction of $\fl{}$ to $\rb$ apart from the register
+% $Y_{{|\#_r^\stm(P)|+1}}$ which will contain the associative table, but these
+% additional register will not influence the overall reduction of the other steps.
+% The other approzimation is allowing the function $\beta$ to return a
+% permutation of the table computed during the reduction.
+% %
+% Nevertheless, in Lemma \ref{lemma:workreginvariance} we observe the value
+% in the work-registers used for the reduction does not affect the remaining part of
+% the computation, and in Corollary \ref{cor:simperminvariance} we observe that
+% our reduction does not suffer for working with a certain associative table
+% $\listenc{\listenc {\sigma_1, b_1} 2, \ldots, \listenc {\sigma_t, b_t} 2}t$
+% rather than its permutation
+% $\listenc{\listenc {\sigma_{f(1)}, b_{f(1)}} 2, \ldots, \listenc {\sigma_{f(t)}, b_{f(t)}} 2}t$.
+
+This section will be organized as follows:
+
+\begin{itemize}
+  \item First, we define the translation of the $\fl {e}$ statement: the $\mathit{fl}_k$
+  pseudo-procedures for $k \in \Nat$. These are the $\SIFPLA$ programs
+  implementing the associative table and its access policies. In this way,
+  the translation fo a $\SIFPRA$ program into $\SIFPLA$ i capable to
+  simulate \emph{random access to the oracle} within a formalism supporting a
+  weaker form of access to randomness.
+  \item Then, we define the functions
+  $\alpha, \beta$ and $\gamma$ employing $\mathit{fl}_k$ for the definition of $\alpha$;
+  \item We combine these definitions in order to obtain $\Theta$;
+  \item We prove that $\Theta$ is a (weak) simulation relation with respect to
+  $\leadstora$ and $\leadstola$.
+\end{itemize}
+
+
+
+
+
+
+
+
+
+
+\paragraph*{The $\mathit{fl}_k$ pseudo-procedures}
+
+
+In order to define the pseudo-procedure which simulates the $\fl e $ primitive,
+we will reuse some of the functions and the data-structures we defined for
+the reduction from $\POR$ to $\SIFPRA$. In particular, all the functions
+within the class $\POR^-$  can be defined without recurring to $Q$,
+so they are in $\SIFPLA$ as well.
+This is a consequence of
+Lemma \ref{lemma:portosifp} and means that for every $f \in \POR^-$,
+we can employ $\LL f$
+to define the translation of $\fl{e}$. This is done in
+Corollary \ref{cor:trivportosifpla} below.
+%
+After doing that, we show that it is always possible to avoid name clashes when
+defining \emph{syntactical} compositions of programs, as done in Remark \ref{rem:progalpha}.
+%
+Thus we introduce the translation of $\fl e$ in Definition \ref{def:flpseudo}.
+
+\begin{cor}
+  \label{cor:trivportosifpla}
+  All the functions $f \in \POR$ defined in Section \ref{sec:SFPtoPOR} apart from
+  $\chi$ and $\mathit{apply}$ are such that $\LL{f}\in \SIFPLA\cap \SIFPRA$.
+\end{cor}
+\begin{proof}
+  Is is a consequence of the definitions of those functions and of Lemma
+  \ref{lemma:portosifp}: there, together with the correctness of $\LL{f}$, we showed
+  that if a function $f$ is in $\POR^-$, then
+  $\LL{f}$ does not contain any $\fl e$ expression.
+  For this reason it is in $\SIFPLA$, too.
+\end{proof}
+
+To avoid name clashes, we define a procedure which renames
+the registers of a program whose name changes do not affect the program's
+semantics, i.e. all the registers apart from $\{X_i\}_{i\in\Nat}$ and the register $R$.
+%
+This function has not been introduced before because the definition of the
+pseudo-procedure notation prevents itself name cashes requiring the
+$\alpha$-conversions of the program's register names. Moreover, all the functions
+defined  the throughout $\LL\cdot$ operator were intended to respect the same invariants
+while, within the definition of the $\alpha$ function,
+we are plugging them in contexts where these
+properties are not necessarily respected.
+%
+To sum up, in the definition of $\LL f$, name captures were prevented by invariant
+properties which $\alpha(P)$ does not guarantee. So, we need to define a way to
+prevent that phenomenon.
+%
+Finally, to define
+effectively the $\beta$ relation, we need a way to distinguish the
+names of the registers which are used by both $P \in \SIFPRA$
+and $\alpha(P) \in \SIFPLA$ from the registers used only for simulation purposes by the
+$\alpha(P)$ only; in particular, we need a way to identify the
+register storing the associative table.
+This is done introducing a sort of boundary between the
+indexes of the registers used by the two programs, which can be easily
+determined, as stated by Lemma \ref{lemma:freshreg}. The register storing the
+associative table will be easily determined consequently.
+%
+\begin{lemma}
+  \label{lemma:freshreg}
+  For each program $P \in \lang{\stm_\RA}$,
+  $\exists t \in \Nat. \forall k\ge t. Y_{k}, X_k, S_k\not \in\#_r^\stm(P)$.
+\end{lemma}
+\begin{proof}
+ Let $h$ be the maximum index (subscript)
+ used by a register in $\#_r^\stm(P)$. Let $t:=h+1$.
+ It holds that $\forall k\ge t.Y_k, X_k, S_k\not \in\#_r^\stm(P)$.
+\end{proof}
+\noindent
+Thus, we introduce the program $\alpha$-conversion notation
+
+
+
+
+\begin{notation}[Program $\alpha$-conversion]
+  \label{notation:alpha}
+  We denote $P^\alpha_n$ the program $P\in \SIMP$
+  in which all the name of the registers apart from the family $X_i$ and $R$
+  have been reassigned to an appropriate register $S_j$ for $j\ge n$.
+\end{notation}
+
+As expected, this conversion preserves the semantics of the program, as
+showed by the following Remark.
+
+\begin{remark}
+  \label{rem:progalpha}
+  $$
+  \forall P \in \lang{\stm_\RA'}\cup \lang{\stm_\LA'}. \forall k \in \Nat.
+  k\ge \#_r^\stm(P)+1\to \llbracket P^\alpha_k\rrbracket =\llbracket P\rrbracket
+  $$
+  where $\llbracket \cdot \rrbracket$ is the function in Definitions \ref{def:simprafuneval}.
+\end{remark}
+\begin{proof}
+  By induction on the syntax of $P$ and showing an analogous result for expressions,
+  namely that expressions evaluate in the same way in the original store and in the
+  $\alpha$-converted store.
+\end{proof}
+
+Broadly speaking, the simulation of the $\fl e $ statement is defined by means of a
+sequence of pseudo-procedures. We cannot employ a single pseudo-procedure because
+the address of the register storing the value of the associative table cannot be
+fixed constantly for every $P \in\SIFPRA$, but it depends on the code of the
+starting program.
+%
+This family of programs employs the encoding
+for finite functions defined in Section \ref{sub:encoding} to represent
+the associative table. Furthermore, this allows
+us to employ the $\SIFPLA$ translations of the data manipulators
+we defined in Section \ref{sub:encoding} for reduction from $\SFP$ to $\POR$.
+In particular, we employ
+the $\simulate$ schema, which performs a lookup into the associative
+table in order to find a pair whose first element matches with the
+queried coordinate, and thus it returns the second element of that pair.
+%
+Together with $\simulate$, we also reuse the $\ral$ primitive, which allows us to
+construct pairs and to edit the associative table adding, as last element a new
+associated pair.
+
+The overall behavior of this function has already been described at the beginning
+of Section \ref{sub:sifpratosifpla}, but can be summarized as follows:
+
+\begin{enumerate}
+  \item It checks whether the register containing the associative
+  table is empty or not. If it is the case, it initializes it with an empty associative table.
+  \item It checks whether the associative table contains the queried coordinate or not. If it is not the case, it simulates the query extracting a new random bit by means of the $\rb$ primitive which outputs either $\bool=\zzero$ or
+  $\bool=\oone$ and records it in the associative table.
+  \item It queries the associative table, returning the queried result.
+\end{enumerate}
+
+
+\begin{defn}
+  \label{def:flpseudo}
+  The family of programs $\mathit{fl}_k()$ is defined as follows:
+  \begin{align*}
+  \mathit{fl}_k\coloneqq& \while{Y_k\sqsubseteq\epsilon}{\\
+  &\quad Y_k \takes \listenc{} 0;\\
+  &}\\
+  &Y_{k+1}\takes X_1;\\
+  &Y_{k+2}\takes X_2;\\
+  &X_1\takes Y_{k+3};\\
+  &X_2\takes Y_{k};\\
+  &\LL{\simulate}^\alpha_{\max (|\#_r^\stm(\LL{\simulate})|+1,k)}\\
+  &\while {R \sqsubseteq \epsilon}{\\
+  &\quad X_1 \takes \listenc{} 0;\\
+  &\quad X_2 \takes Y_{k+3};\\
+  &\quad\LL{\ral}^\alpha_{\max (|\#_r^\stm(\LL{\ral})|+1,k)}\\
+  &\quad X_1\takes R;\\
+  &\quad \rb;\\
+  &\quad X_2 \takes R;\\
+  &\quad\LL{\ral}^\alpha_{\max (|\#_r^\stm(\LL{\ral})|+1,k)}\\
+  &\quad X_2 \takes R;\\
+  &\quad X_1 \takes Y_k;\\
+  &\quad\LL{\ral}^\alpha_{\max (|\#_r^\stm(\LL{\ral})|+1,k)}\\
+  &\quad Y_k \takes R;\\
+  &}\\
+  & X_1 \takes Y_{k+3};\\
+  & X_2 \takes Y_k;\\
+  &\LL{\simulate}^\alpha_{\max (|\#_r^\stm(\LL{\simulate})|+1,k)}\\
+  & X_1 \takes Y_{k+1};\\
+  & X_2 \takes Y_{k+1};
+  \end{align*}
+\end{defn}
+
+Basically, this piece of code implements an associative function, which is stored
+in the register $Y_k$. It uses exactly the same encoding we gave in
+Definition \ref{def:funenc}.
+This allows us to reuse the function $\simulate$
+we defined in $\POR$ to simulate finite functions --- i.e. to search the associative table.
+If a certain coordinate is present in the function's domain, we are certain that
+the second $\while {}{}$ will not be executed by the correctness
+of $\simulate$ (Lemma \ref{lemma:simcorr}) and by Lemma \ref{lemma:portosifp},
+so it ends returning the value which is associated to that coordinate in the table
+(the simulated value of $\omega (\store(Y_{k+3}))$). Otherwise, the body of the
+cycle is executed once only and ends up adding an entry for the coordinate
+$\omega (\store(Y_{k+3}))$ to the associative table.
+
+\paragraph*{The $\alpha$ function.}
+
+The $\mathit{fl}_k$ pseudo-procedures family covers the definition of the function
+$\alpha$ for the $\fl e$ statements, all the other cases, the translation
+is identical to the source program.
+
+\begin{defn}[$\alpha$ Function]
+  \label{def:alpha}
+  The function $\alpha: \lang{\stm_\RA'}
+    \longrightarrow
+    \lang{\stm_\LA'}$ is defined as an instance of $\alpha'$ which itself is a
+    function
+    $\lang{\stm_\RA'}\times \Nat
+      \longrightarrow
+      \lang{\stm_\LA'}$ defined by
+     induction on the syntax of $\lang{\stm_\RA'}$.
+  \begin{align*}
+    \alpha(P)&:=\alpha'(P, |\#_r^\stm(P)|+1).\\[2ex]
+    \alpha'(\Id \takes e, n) &:= \Id \takes e\\
+    \alpha'(\halt, n) &:= \halt\\
+    \alpha'(s;t) &:= \alpha(s, n);\alpha'(t, n)\\
+    \alpha'(\while e s, n) &:= \while e {\alpha'(s, n)}\\
+    \alpha'(\fl e, n) &:=  Y_{n+3}\takes e; \mathit{fl}_n.
+  \end{align*}
+  Where $|\#_r^\stm(P)|+1$ is such that $Y_{|\#_r^\stm(P)|+1} \not \in \#_r^\stm(P)$
+  is a consequence of Corollary \ref{lemma:freshreg}.
+  The family of programs\footnote{Saying that $\mathit{fl}_n$ are programs instead of pseudo-procedures, we mean that the names of the registers they use must remain the same after their inlining.} $\mathit{fl}_n$ are defined in Definition
+  \ref{def:flpseudo}.
+\end{defn}
+
+As we discussed above, to define $\beta$, we pose two conditions on the store of
+$\alpha(P)$ for $P \in\SIFPRA$:
+\begin{itemize}
+  \item It contains an associative table representing the simulated oracle.
+  \item It is identical to the store of $P$ with respect to its domain.
+\end{itemize}
+
+
+% \begin{defn}[Function $\beta$]
+%   \label{def:beta}
+%   We define
+%   $$
+%   \beta:\left(\left(\lang {\stm_\RA'}\times\id\to{\Ss^*}\right)\times \mathcal P (\Bool^\Ss) \right)
+%   \longrightarrow
+%   \left(\id\to{\Ss^*}\right)
+%   $$
+%   as follows:
+%   \begin{align*}
+%   \beta(P, \store, \bigcap_{i=1}^k C(\sigma_i))&:= \store \as {Y_{{|\#_r^\stm(P)|+1}})} {\listenc{\listenc {\sigma_1, b_{C(\sigma_1)}} 2, \ldots, \listenc {\sigma_k, b_{C(\sigma_k)}} 2}k}\\
+%   \end{align*}
+%   where
+%   $$
+%   b_{C(\sigma)}:= \begin{cases}
+%   \one & \text{ if } C(\sigma)= P(\sigma)\\
+%   \zero & \text{ if } C(\sigma)= N(\sigma)
+%   \end{cases}
+%   $$
+% \end{defn}
+
+\begin{defn}[$\beta$-Relation]
+  \label{def:beta}
+  A triple $\langle \store_1, P, (k_1, \bool_1)::\ldots ::(k_h, \bool_h)::\varepsilon\rangle$
+  is in $\beta$ relation with a store $\store_2$ if and only if the two conditions below hold:
+
+  \begin{itemize}
+    \item $\store_2$ contains an associative table encoded as described in Section
+    \ref{sub:encoding} in the register ${Y_{{|\#_r^\stm(P)|+1}}}$, namely:
+    $$
+    \store_2({Y_{{|\#_r^\stm(P)|+1}})}) = {\listenc{\listenc {k_h, \bool_h} 2, \ldots, \listenc {k_1, \bool_1} 2}k}.
+    $$
+    \item $\store_2$ is identical to $\store_1$ with respect to the registers
+    which are used by the source program, namely:
+    $$
+    \store_2|_{\mathit{dom}(\store_1)} = \store_1.
+    $$
+  \end{itemize}
+
+  If so, we write:
+  $$
+  \beta(\langle \store_1, P, (k_1, \bool_1)::\ldots ::(k_h, \bool_h)::\varepsilon\rangle, \store_2).
+  $$
+\end{defn}
+
+Finally, the $\gamma: \mathit{adt}(M)\longrightarrow \Ss$ function
+relates the $\Ss\Bool$-map to the corresponding
+string $\sigma \in \Ss$. This function is basically a translation between two
+different representations of the set of oracles which are coherent with a
+sequence of transitions.
+
+\begin{defn}[Function $\gamma$]
+  \label{def:gamma}
+  The function $\gamma  :\mathit{adt}(M)\longrightarrow \Ss$ is defined as follows:
+  \begin{align*}
+    \gamma(\varepsilon)&:= \eepsilon\\
+    \gamma((k, \bool)::M)&:=\gamma(M)\bool.
+  \end{align*}
+\end{defn}
+\noindent
+Notice that we are basically reversing the order of the elements
+within the list of pairs $(k, \bool)$ and the output string. This is
+not a mistake, because the $\leadstora$ semantics uses right-associative
+lists\footnote{Indeed, $\mathit{adt}(M)$ is a right associative list
+of $\Ss \times \Bool$ pairs.},
+so that new pairs are inserted on the left of the sequence.
+On the other hand, $\leadstola$ appends the bits on the right of the string thus,
+in this case,
+the new bit is on the right of the string.
+
+\paragraph*{The $\Theta$ Relation}
+
+Combining $\alpha$, $\beta$ and $\gamma$ we can impose enough
+constraints to define a weak simulation relation between two pairs of configurations
+for the $\leadstola$ and $\leadstora$ relations. As an intuition,
+if two configurations $c, d$ are in $\Theta$, then they are such that if
+$c'$ reduces in one step to a configuration $c'$, then also $d$ reduces to
+another configuration $d'$, possibly employing more transitions than $c$, which
+is the definition of \emph{weak simulation}, \cite{bob}.
+
+\begin{defn}[$\Theta$ Relation]
+  \label{def:theta}
+A triple $\langle P, \store_1, \Psi\rangle$ is in
+$\langle Q, \store_2, \Phi\rangle$ if and only if the following conditions hold:
+\begin{itemize}
+  \item $\alpha'(P, k) = Q$ for some $k\ge {|\#_r^\stm(P)|+1}$ --- for sake of readability, we will expressi this condition simply as $\alpha(P)=Q$;
+  \item $\beta(\langle\store_1, P, \Psi\rangle, \store_2)$;
+  \item $\gamma(\Psi) = \Phi$;
+  \item $\mu(\Psi) = \mu(\Phi)$.
+\end{itemize}
+\end{defn}
+
+\subsubsection{Simulation result}
+
+It is now possible to establish that $\Theta$ is indeed a weak simulation relation.
+
+\begin{lemma}[$\Theta$ Weak Simulation]
+  $\Theta$ is a \emph{weak simulation relation} with respect to the small step operational
+  semantics $\leadstora$ and $\leadstola$. Formally,
+  if $\langle P; P', \store_1, \Psi\rangle$ is $\Theta$-related with
+  $\langle Q;Q', \store_2, \Phi\rangle$, then:
+  $$
+  \langle P; P', \store_1, \Psi\rangle \leadstora \langle P', \store_1', \Psi'\rangle
+  \to
+  \langle Q;Q', \store_2, \Phi\rangle \leadstola^* \langle Q', \store_2', \Phi'\rangle.
+  $$
+  and
+  $\langle P', \store_1', \Psi'\rangle$
+  is $\Theta$-related with $\langle Q', \store_2', \Phi'\rangle$.
+\end{lemma}
+\begin{proof}
+  % Before getting into the details of the proof, we observe that the fact that
+  % $\Psi$ is an intersection of cylinders on differnt coordinates, it holds that if
+  % $\langle P;Q, \store,\Psi\rangle \leadstora \langle P', \store',\Psi'\rangle$
+  % then $\Psi'$ can always be expressed as an intersection of cylinders.
+  % This becasue of the definition of $\leadstora$: all therules preserve $\Psi$
+  % apart from the rules for $\fl e$, which have the precondition that
+  % $\Psi\cap C(\sigma)\neq \emptyset$ and define the resulting cylinder as $\Psi\cap C(\sigma)$.
+  % This enatils
+  % that both the funcions $\beta$ and $\gamma$ are defined on their inputs.
+
+  We proceed by cases on $P$.
+  \begin{itemize}
+    \item[$\Id \takes e$] By the construction of $\beta$
+    (Definition \ref{def:beta})
+     we know that the two triplets
+    $\langle \Id \takes e;Q, \Sigma, \Psi\rangle$ and
+    $\Theta(\Id \takes e;Q, \Sigma, \Psi)$ have stores which
+    are identical on all the registers used by $P$ (namely: $\in \#_r^\stm(P)$).
+    This entails that
+    $\Id \takes e$ and $\alpha(\Id \takes e)$ both evaluate to the same assignment
+    $\as {\Id} \sigma$ because both the expressions evaluate to the same value
+    (as a consequence of Lemma \ref{lemma:expred}, Chapter \ref{app}).
+    So, the ending stores are identical on $\#_r^\stm(P)$.
+    Moreover the value contained in $Y_{|\#_r^\stm(P)|+1}$ is unchanged by
+    the $\SIFPLA$ program, so the condition on its value imposed by $\beta$
+    still holds, to this end, notice that the source program cannot
+    assign values to the register storing the associative table. Even
+    $\Psi$ and $\Phi$ do not change during these reduction steps, so the condition
+    concerning their measure is verified in the target configurations, too.
+    \item[$\while e s$] \sloppy By construction of $\beta$ we know that
+    any triple which is in
+    $\Theta$-relation with $~{\langle \while e s; P',\linebreak \store_1, \Psi\rangle}$ works with
+    a store $\store_2$, which
+    is identical to $\store$ with respect to all the registers used by $P$
+    (namely: $\#_r^\stm(P)$).
+    This entails that
+    $e$ evaluates to the same expression $\sigma_e$ in both $P$ and $\alpha(P)$.
+    This implies that if the guard of the cycle is $\one$ in $P$, it is $\one$ in
+    $\alpha(P)$, too. We proceed by cases on this proposition.
+    \begin{itemize}
+      \item If it is true, then:
+          $$
+          \langle \while e s; Q, \store, \Psi\rangle \leadstora \langle s;\while e s; Q, \store, \Psi\rangle
+          $$
+          and
+          $$
+          \begin{gathered}
+          \langle \alpha(\while e s; Q), \beta(\store, \Psi), \gamma(\Psi)\rangle \leadstola\\\quad\quad\quad\quad \langle\alpha(s); \while e {\alpha(s)}; \alpha(Q), \beta(\store, \Psi), \gamma(\Psi)\rangle =
+          \\\quad\quad\quad\quad\langle\alpha(s;\while e s; Q), \beta(\store, \Psi), \gamma(\Psi)\rangle,
+          \end{gathered}
+          $$
+          which proves the claim.
+      \item Conversely, if the proposition does not hold, then:
+          $$
+          \langle \while e s;Q, \store, \Psi\rangle \leadstora \langle Q, \store, \Psi\rangle
+          $$
+          and
+          $$
+          \begin{gathered}
+          \langle \alpha(\while e s; Q), \beta(\store, \Psi), \gamma(\Psi)\rangle \leadstola%\\\quad\quad\quad\quad \langle Q, \beta(\store, \Psi), \gamma(\Psi)\rangle =
+           \langle\alpha(Q), \beta(\store, \Psi), \gamma(\Psi)\rangle,
+          \end{gathered}
+          $$
+          which proves the claim. The condition on the identity of the measures
+          comes form the fact that $\Psi$ is not changed by the semantics
+          of the $\while {e}{s}$ construct.
+    \end{itemize}
+    \item[$\cdot;\cdot$] The result comes from vacuity of the premise.
+    \item[$\fl e$]
+    Suppose $\langle \fl e; P, \store_1, \Psi\rangle \leadstora \langle P, \store_1 \as R b, \Psi'\rangle$
+    and that such triplet is in $\Theta$ relation with
+    %
+    $$
+    \langle Y_{|\#_r^\stm(P)|+3}\takes e; \mathit{fl_{\,|\#_r^\stm(P)|+1}}; Q, \store_2, \Phi\rangle.
+    $$
+    Let $\langle e, \store\rangle \sred \sigma$. Moreover, suppose that
+    $(\sigma, b) \in \Psi$ for $b \in \{\zero, \one\}$.
+%
+    It holds that $\langle e, \store_2\rangle \sred \sigma$ for definition of $\beta$ (Definition \ref{def:beta}) and
+     Lemma \ref{lemma:expred}. We can rewrite the premise applying
+    the reduction rule described for the positive cylinder, obtaining:
+     $$
+     \langle \fl e;Q, \store, \Psi\rangle \leadsto_\RA \langle Q, \store\as R b, \Psi\rangle.
+     $$
+     It also holds that:
+     $$
+     \langle Y_{|\#_r^\stm(P)|+3}\takes e; \mathit{fl_{\,|\#_r^\stm(P)|+1}}; Q, \store_2, \Phi\rangle
+     \leadstolan *
+     \langle Q, \Gamma, \Phi\rangle.
+     $$
+     By definition of $\beta$, we know that $\store_2({Y_{|\#_r^\stm(P)|+1}})$
+     contains the encoding of an associative table $T$ such that
+     $\langle \sigma, b\rangle \in T$. In this case,
+     $\alpha(\fl e)$ performs a lookup in $T$ and returns the value it founds
+     in the table, i.e. $b$. Doing so, $\alpha(\fl e)$ is completely transparent
+     on the registers used by the program $P$, because it backups the values in
+     $X_1$ and $X_2$ and because of the $\alpha$-conversions of the pieces of
+     code embedded in the definition: according to the definition of the names'
+     conversion (Notation \ref{notation:alpha}), all the names
+     are reassigned apart from the $X_i$s and $R$. Anyway, Lemma
+     \ref{lemma:portosifp} ensures that $X_i$s are accessed in read-only mode
+     and that $R$ contains the output of the function, which is $b$
+     by correctness of $\simulate$ (Lemma \ref{lemma:simcorr}).
+     Moreover all the other registers used by $\mathit{fl}_k$
+     are above the range of registers used by $P$.
+     For this reason we can say that $\Gamma$ is
+     equal to $\store_2\as R \one$ in $R, X_1, X_2$ and in all the registers used
+     by $P$ and that
+     $\store_2({Y_{|\#_r^\stm(P)|+1}})=\Gamma({Y_{|\#_r^\stm(P)|+1}})$.
+     Even in this case the measure of $\Psi$ and $\Phi$
+     are preserved by the transitions.
+     Conversely, suppose that $(\sigma, \zero)\not \in \Psi \land(\sigma, \one)\not \in \Psi$.
+     It holds that:
+     \begin{align*}
+     &\langle \fl e;Q, \store, \Psi\rangle \leadsto_\RA \langle Q, \store\as R \one, \Psi\rangle \land\\
+     &\langle \fl e;Q, \store, \Psi\rangle \leadsto_\RA \langle Q, \store\as R \zero, \Psi\rangle.
+     \end{align*}
+     We will take in exam only the first case, the second is analogous.
+     Suppose that $\Psi$ is a generic $\Ss\Bool$-map composed by $k$ elements, then:
+     $$
+     \langle \alpha(\fl e;Q), \store_2, \gamma(\Psi)\rangle \leadstolan * \langle \alpha(Q), \Gamma, \gamma(\Psi)\one\rangle.
+     $$
+     It also holds that:
+     $$
+     \langle \alpha(Q), \Gamma, \gamma(\Psi)\one\rangle=\langle \alpha(Q), \Gamma, \gamma((\sigma, \one)::\Psi))\rangle
+     $$
+     For the definition of $\leadstola$ in the case of $\rb$ and
+     the definition of $\mathit{fl}_k$, the program puts $\one$ in $R$ and
+     adds a new entry in
+     the associative table, as its rightmost element, so the
+     relation $\beta$ between the two stores still hold.
+     We know that $\mu(\Psi)= \mu(\Phi)$. This, but we also know that
+     $\mu((\sigma, b)::\Psi)= \frac 1 2 \mu(\Psi)$, because $\sigma$ does not
+     appear in $\Phi$'s keys. Similarly $\mu(\Phi b)=\frac 1 2\mu(\Phi)$.
+     \qedhere
+  \end{itemize}
+\end{proof}
+\noindent
+Given that $\Theta$ is a weak simulation with respect to the $\leadstola$ and
+$\leadstora$ relations, we can finally prove Lemma \ref{lemma:sifpratosifpla}.
+Namely that:
+\small
+$$
+\forall P \in \SIFPRA\exists Q \in \SIFPLA.\forall x, y \in \Ss.
+\mu(\{\omega \in \Os |\llbracket P\rrbracket (x, \omega)= y\})= \mu(\{\eta \in \{\zero, \one\}^\Nat |\llbracket Q\rrbracket (x, \eta)= y\}).
+$$
+\normalsize
+\begin{proof}[Proof of Lemma \ref{lemma:sifpratosifpla}]
+  We show only one of the two directions, the second is analogous to the first.
+  It holds that the set
+  $$
+    \{\omega \in \Os |\llbracket P\rrbracket (x, \omega)= y\}
+  $$
+  is equal to:
+  $$
+  \bigcup \{\omega \in \Os |\exists \Psi, \Gamma.\langle P;\halt, []\as {X_1} x, \varepsilon\rangle\leadstoran *\langle\halt, \Gamma, \Psi\rangle \land \omega \Yright \Psi\land \Gamma(R)=y\}.
+  $$
+  This is due to Characterization \ref{char:bigsmallstepra}.
+  Moreover, according to Lemma \ref{lemma:sifpraquantsem},
+  we can suppose that all the instances of this union
+  are pairwise disjoint.
+  So, we can call this sequence of $\Ss\Bool$-maps $\Psi_1, \ldots, \Psi_k$
+  and observe that:
+  $$
+  \forall 1 \le i\le k. \mu(\Psi_i) = \mu \left(\{\omega \in \Os |\langle P;\halt, []\as {X_1} x, \varepsilon\rangle\leadstoran *\langle\halt, \Gamma, \Psi_i\rangle \land \omega \Yright \Psi_i\land \Gamma(R)=y\}\right).
+  $$
+  For this reason, the left hand side of the claim can be rewritten as follows:
+  $$
+  \mu\left(\{\omega \in \Os |\llbracket P\rrbracket (x, \omega)= y\}\right) = \sum_{1 \le i \le k} \mu(\Psi_i).
+  $$
+  Thanks to Lemma \ref{lemma:sifpratosifpla}, we know that for every $\Ss\Bool$-map $\Psi$ and $x, y \in \Ss$,
+  $$
+  \begin{gathered}
+  \{\omega \in \Os |\langle P;\halt, []\as {X_1} x, \varepsilon\rangle\leadstoran *\langle\halt, \Gamma, \Psi\rangle \land \omega \Yright \Psi\land \Gamma(R)=y\}\\
+  \Downarrow\\
+  \{\omega \in \Os |\langle \alpha(P);\halt, []\as {X_1} x, \varepsilon\rangle\leadstolan *\langle\halt, \Gamma, \gamma(\Psi)\rangle \land \omega \Yright \gamma(\Psi)\land \Gamma(R)=y\}.
+\end{gathered}
+  $$
+  This means that there is a sequence of sets $\Phi_1, \ldots, \Phi_k$ such that:
+  $$
+  \forall 1 \le i \le k. \mu(\Psi_i)=\mu(\Phi_i).
+  $$
+  The claim is a consequence of the following observations:
+  \footnotesize
+  \begin{align*}
+  \sum_{1 \le i \le k} \mu(\Phi_i) &=
+  \sum_{1 \le i \le k} \mu(\{\eta \in \{\zero, \one\}^\Nat |\exists \Phi_i.\langle \alpha(P);\halt, []\as {X_1} x, \varepsilon\rangle\leadstolan *\langle\halt, \Gamma, \gamma(\Phi_i)\rangle \land \eta \Yright \gamma(\Phi_i)\land \Gamma(R)=y\})\\
+  &=\mu(\bigcup_{1 \le i \le k}\{\eta \in \{\zero, \one\}^\Nat |\exists \Phi_i.\langle \alpha(P);\halt, []\as {X_1} x, \varepsilon\rangle\leadstolan *\langle\halt, \Gamma, \gamma(\Phi_i)\rangle \land \eta \Yright \gamma(\Phi_i)\land \Gamma(R)=y\})\\
+  &=\mu(\{\eta \in \{\zero, \one\}^\Nat |\llbracket \alpha(P)\rrbracket (x, \eta)= y\}).
+  \end{align*}
+  \normalsize
+  Again, this is a consequence of  Characterization \ref{char:bigsmallstepla}
+  and Lemma \ref{lemma:sifplaquantsem}.
+
+  Finally, suppose that a $P$ is poly-time, then $\alpha(P)$ is poly-time as well.
+  Indeed all the statements different from $\fl e$ can be simulated in a linear
+  number of steps, while in order to establish the complexity of $\alpha(\fl e)$,
+  that function has certainly a poly-time complexity in $|x|$:
+  its complexity depends on the complexity of the family of programs $fl_k$, so it requires a
+  constant number of steps plus the cost of the simulation of $\LL \simulate$
+  and $\LL \ral$. Since these functions are in $\POR$, their time complexity
+  is polynomial in the size of their inputs
+  (consequence of Lemma \ref{cor:PORtoSIFPRAweak}), but this cost is
+  itself polynomial because the associative table grows at most of a
+  constant size each step.
+%
+  This concludes the proof.
+  \normalsize
+\end{proof}
+
+
+
+% Before giving the proof of Proposition \ref{prop:ratola},
+% which intuitively shold be valid, we show some technical lemmas.
+% %
+% The first states that if two stores are identical on the variables which appear
+% in an expression, that expression evaluates in the same way in both the stores.
+% %
+% The second will be useful in the proof of Lemma \ref{lemma:sifpratosifpla}, and
+% states that the function $\gamma$ preserves the measure of the input set and of
+% its image.
+%
+% \begin{lemma}
+%   \label{lemma:measureofgamma}
+%   $\forall \Phi \subseteq \Bool^\Nat. \exists \Psi \subseteq \Bool^\Ss.
+%   \Psi = \gamma(\Phi)\to \mu(\Phi)=\mu(\Psi)$
+% \end{lemma}
+% \begin{proof}
+%   By induction on the cardinality of $S$: the set which is used for the definition
+%   of $\gamma$. The hypothesis on $\Psi$ guarantees its existence.
+%   If $S=\emptyset$, then the result is trivial, because $\mu(\Bool^\Nat)=\mu(\Bool^\Ss)$.
+%   Otherwise it comes from the induction hypothesis and from the fact that $s$ is
+%   a set so it contains no repetitions.
+% \end{proof}
+%
+%
+%
+%
+%
+%
+%
+%
+% \begin{defn}[$\Theta$ Function]
+%   \label{def:Theta}
+%   $$
+%   \Theta: \left(\lang{\stm_\RA'}\times \left(\id\to{\Ss}\right)\times \mathcal P (\Bool^\Ss) \right)
+%   \longrightarrow
+%   \left(\lang{\stm_\LA'}\times \left(\id\to{\Ss}\right)\times \mathcal P (\Bool^\Nat) \right)
+%   $$
+%   is defined as follows:
+%   $$
+%   \Theta(P, \store, \Psi):= \langle \alpha(P), \beta(P, \store, \Psi), \gamma(\Psi)\rangle
+%   $$
+%   where $\alpha, \beta, \gamma$ are defined respectively in Definitions \ref{def:alpha}, \ref{def:beta}, \ref{def:gamma}.
+% \end{defn}
+%
+% Finally we can state a corollary which will be useful in the next reduction.
+% Informally it states that for each program $P \in\lang{\stm_\RA}$
+% it's always possible to construcively
+% find a register which is not used by $P$.
+% The reduction from $\SIFPRA$ to $\SIFPLA$ is intimately a rewriting of
+% programs $P \in \lang{\stm_\RA}$ to programs $P \in \lang{\stm_\LA}$;
+% this result allows us to use a register $Y_k$ which is surely not used in $P$.
+%
+% \begin{lemma}
+%   \label{lemma:workreginvariance}
+%   For each progam $P \in \lang{\stm}$, for each store $\store$ and $\Gamma$,
+%   if $\forall G \in \#_r^\stm(P).\store(G)=\Gamma(G)$ and
+%   $\store(Y_{{|\#_r^\stm(P)|+1}})$ is a permutation of
+%   $\Gamma(Y_{{|\#_r^\stm(P)|+1}})$ then for each set of
+%   $\Psi \subseteq \Ss^\Nat$ it holds that
+%   \begin{align*}
+%     &\left(\alpha(P), \store, \Psi\rangle \leadstola \langle Q, \store', \Psi'\rangle\right)\to\\
+%     &\left(\alpha(P), \Gamma, \Psi\rangle \leadstola \langle Q, \Gamma', \Psi'\rangle\right)\land\\
+%     &\forall G \in \#_r^\stm(P)\land \store'(G)=\Gamma'(G) \land\\
+%     &\store'(Y_{{|\#_r^\stm(P)|+1}}) \text{ is a permutation of }\Gamma'(Y_{{|\#_r^\stm(P)|+1}})
+%   \end{align*}
+% \end{lemma}
+%
+% \begin{proof}
+%   By cases on the syntax of $P$. All the cases are trivial apart fron $\mathit{fl}_k$.
+%   In this case, first observe that $k={|\#_r^\stm(P)|+1}$. One may observe that
+%   the only registers which are in  $\#_r^\stm(P)$ and are used by $\alpha(\fl e)$
+%   are the registers of the family $X_i$ adn $R$. Concerning $R$, we an derive that
+%   it's only affected by $\rb$, but since both the reductions use the same set of
+%   oracles $\Psi$ (and because we are supposing that they are ending up with the
+%   same register $\Psi'$), we can derive that the call to $\rb$ had the same result,
+%   so by definition fo $\mathit{fl}_k$, $\store'(R)=\Gamma'(R)$. The registers of
+%   the family $X_i$ are invariant because of the definitions of $\mathit{fl}_k$
+%   and of the invariant on $\LL\cdot$: it accesses those registers as read-only.
+%   Moreover, the $\alpha$-conversion of such program makes those pieces of code
+%   independent from all the registers used by $P$ as a conequence of the definition
+%   of Notation \ref{notation:alpha}. Moreover, working on a symbol table $t$ or
+%   a simbol table $\overline t$ which is a permutation of $t$ in the sense described
+%   by Proposition \ref{prop:ratola} makes no difference for $\mathit{fl}_k$.
+%   This as a consequence of Corollary \ref{cor:simperminvariance}, which asserts
+%   that $\simulate$ is invariant with respect to permutations and Lemma \ref{lemma:portosifp}.
+%   Finally, adding an entry to two lists preserves the fact that one is the permutation
+%   of the other.
+% \end{proof}
+%
+% This result has two important consequences on the definition of $\beta$: we can
+% simply define it as a function which defines the value of
+% $Y_{{|\#_r^\stm(P)|+1}}$. Moreover, it won't be a problem the fact that
+% the procedure $\mathit{fl}_k$ uses some work registers which aren't used by
+% $P$, this because only the register used by $P$ determine the next configuration.
+% %
+% Before defining $\beta$ we can observe that it won't be a problem if such function
+% won't be total: Proposition \ref{prop:ratola} requires $\Psi$ to be an intersection
+% of cylinders, so we can define $\beta$ on that cases only.
+
+% Finally, we should define $\gamma$ which maps the set of oracles described by
+% $\leadstora$ to the set descirbed by the relation $\leadstola$. By the definition
+% of $\alpha$ we gave, it is clear that the accesses to sparse coordinates of the
+% oracles made by $P$, are replaced by accesses to the initial coordinates of
+% the oracles of $\alpha(P)$. So the function $\gamma$ wuold simply convert an
+% intersection of $k$ cylinders of $\Os$ to an intersection of the cylinders
+% $C(0), \ldots, C(n-1)$ for appropriate polarities.
+%
+%
+%
+% We can finally prove Proposition \ref{prop:ratola}.
+%
+%
+% This result concernes only a single single step of the transition, for this
+% reason we need to employ it to prove the inductive case of a analogous result
+% concerning $\leadstoran n$ and $\leadstolan n$ insetad of $\leadstora$ and
+% $\leadstola$. For these reason, the statement of the result which we are addressing
+% is almost identical to the statement of Proposition \ref{prop:ratola},
+% with the difference that we generalize the statement to each number of step $n \in \Nat$.
+% %
+% Basically, the inductive case will rely on the coscusions we draw in Lemma
+% \ref{lemma:workreginvariance} used to justify the definition of the function
+% $\beta$. In order to use the resuslt, we must
+% show that it holds for the $\leadstolan n$ relations, too.
+%
+% \begin{lemma}
+%   \label{lemma:workreginvariance2}
+%   For each progam $P \in \lang{\stm}$, for each store $\store$ and $\Gamma$,
+%   if $\forall G \in \#_r^\stm(P).\store(G)=\Gamma(G)$ and
+%   $\store(Y_{{|\#_r^\stm(P)|+1}})$ is a permutation of
+%   $\Gamma(Y_{{|\#_r^\stm(P)|+1}})$ then for each set of
+%   $\Psi \subseteq \Ss^\Nat$ it holds that
+%   \begin{align*}
+%     &\left(\alpha(P), \store, \Psi\rangle \leadstolan n \langle Q, \store', \Psi'\rangle\right)\to\\
+%     &\left(\alpha(P), \Gamma, \Psi\rangle \leadstolan n \langle Q, \Gamma', \Psi'\rangle\right)\land\\
+%     &\forall G \in \#_r^\stm(P)\land \store'(G)=\Gamma'(G) \land\\
+%     &\store'(Y_{{|\#_r^\stm(P)|+1}}) \text{ is a permutation of }\Gamma'(Y_{{|\#_r^\stm(P)|+1}})
+%   \end{align*}
+% \end{lemma}
+% \begin{proof}
+%   We proceed by induction on $n$:
+%   \begin{itemize}
+%     \item [$0$] This case is trivial, beacuse $\leadstoran 0$ and $\leadstolan 0$
+%     are the identity relation.
+%     \item [$n+1$] The IH states that the simulation of the first
+%     $n$ steps produces a configuration which is almost everywhere identical to
+%     $\langle Q, \store', \Psi'\rangle$, with the differences that
+%     \begin{enumerate}
+%       \item The assocaitive table stored in $\store'(Y_{{|\#_r^\stm(P)|+1}})$
+%       is a permutation of $\Gamma'(Y_{{|\#_r^\stm(P)|+1}})$,
+%       \item Some values on the registers which are not used by $P$ can differ.
+%     \end{enumerate}
+%     The application of Lemma \ref{lemma:workreginvariance} to the inductive
+%     hypothesis produced the claim we are addressing.
+%   \end{itemize}
+% \end{proof}
+%
+% \begin{lemma}
+%   \label{lemma:rantolan}
+%   For $\alpha, \beta, \gamma$ and $\Theta$ defined respectively in Definitions
+%   \ref{def:alpha}, \ref{def:beta}, \ref{def:gamma} and \ref{def:Theta}, it holds that:
+%   \begin{align*}
+%   &\forall n \in \Nat.\forall P \in \lang{\stm_\RA'}.\forall \store.\forall \Psi \in \Os.\\
+%   &\quad\exists S \subseteq \Ss. \Psi = \bigcap_{s \in S}C(s) \to\\
+%   &\quad\quad\forall Q.\exists P', \store', \Psi'.\langle P;Q, \store, \Psi\rangle \leadstoran n \langle P', \store', \Psi'\rangle \to\\
+%   &\quad\quad\quad\exists \Gamma, \Phi \subseteq \Ss^\Nat.\exists k\ge n.\Theta(P;Q, \store, \Psi) \leadstolan k \langle\alpha(P'), \Gamma, \gamma(\Psi')\rangle\land\\
+%   & \quad\quad\quad\quad \forall G \in \#_r^\stm(P).\beta(P', \store', \Psi')(G)=\Gamma(G) \land\\ & \quad\quad\quad\quad\quad\beta(P',\store', \Psi')(Y_{{|\#_r^\stm(P)|+1}})=\listenc{\listenc {\sigma_1, b_1} 2, \ldots, \listenc {\sigma_t, b_t} 2}t \land\\
+%   & \quad\quad\quad\quad\quad \Gamma(Y_{{|\#_r^\stm(P)|+1}})=\listenc{\listenc {\sigma_{f(1)}, b_{f(1)}} 2, \ldots, \listenc {\sigma_{f(t)}, b_{f(t)}} 2}t
+%   \end{align*}
+%   for some $t \in \Nat$ and some permutation $f:  \{1, \ldots, t\}\longrightarrow \{1, \ldots, t\}$
+%   and with $k$ linear in $n$
+% \end{lemma}
+% \begin{proof}
+%   We proceed by induction on $n$:
+%   \begin{itemize}
+%     \item [$0$] This case is trivial, beacuse $\leadstoran 0$ and $\leadstolan 0$
+%     are the identity relation.
+%     \item [$n+1$] The IH states that the simulation of the first
+%     $n$ steps produces a configuration which is almost everywhere identical to
+%     $\Theta (P', \Sigma', \Psi')$, with the differences that
+%     \begin{enumerate}
+%       \item The assocaitive table stored in $Y_{{|\#_r^\stm(P)|+1}}$ is a permutation
+%       of $\beta(P', \store', \Psi')$,
+%       \item Some values on the registers which are not used by $P$ can differ.
+%     \end{enumerate}
+%     The application Lemma \ref{lemma:workreginvariance} allow us to work on
+%     $\Theta (P', \Sigma', \Psi')$ instead of the
+%     configuration yielded by the IH because.
+%     So, we can apply Proposition \ref{prop:ratola} to obtain the claim.
+%   \end{itemize}
+%   The linearity of $k$ holds because Proposition \ref{prop:ratola}
+%   states that each step on the source program can be simulated with a
+%   constant number of steps of the destination program
+% \end{proof}
+%
+% Lemma \ref{lemma:rantolan} can be instantiated to match the premises of
+% Characterization \ref{char:setofos}.
+%
+% \begin{proof}[Proof of lemma \ref{lemma:sifpratosifpla}]
+%   We get the results we were aiming to instantiating Lemma \ref{lemma:rantolan}
+%   with $\store =[]\as X, x$, $\Psi=\Os$ and putting halt at the end of the program.
+%   Then we get that $\alpha(P;\halt)$ reduces to $\halt$, too and that the stores
+%   are identical on the value of $R$, call that value $\tau$
+%   . By the characterization \ref{char:setofos},
+%   we get that
+%   $$
+%   \Psi'=
+%     \{\omega \in \Bool^\Ss| \llbracket P\rrbracket (x, \omega)= \tau\}
+%   $$
+%   and that
+%   $$
+%     \gamma(\Psi')=\{\eta \in \Bool^\Nat| \llbracket \alpha(P) \rrbracket(x, \eta)= \tau\}
+%   $$
+%   Finally Lemma \ref{lemma:measureofgamma} proves that
+%   $$
+%   \mu\left(\{\omega \in \Bool^\Ss| \llbracket P\rrbracket (x, \omega)= \tau\}\right)=
+%   \mu(\Psi')=\mu(\gamma(\Psi'))=
+%     \mu\left(\{\eta \in \Bool^\Nat| \llbracket \alpha(P) \rrbracket(x, \eta)= \tau\}\right)
+%   $$
+%   This concludes the first part of the proof.
+%
+%   Suppose that a $P$ is poly-time, Lemma \ref{lemma:rantolan} states
+%   that $\alpha(P)$ is poly-time, too. This completes the proof.
+% \end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{From $\SIFPLA$ to $\SFPOD$}
+\label{sub:sifplatosfpod}
+
+We have shown that $\POR$ can be reduced to a formalism which does
+not support random access to the tape, namely $\SIFPLA$. In order to complete
+the proof of Lemma \ref{lemma:taskC2}, we want to show that $\SIFPLA$ can be reduced to
+$\SFPOD$: the variant of $\SFP$ defined on a variation on Stream Machines
+which are capable to read characters from the oracle tape
+\emph{on-demand}. Later, we show that $\SFPOD$ can
+be reduced to $\SFP$, concluding the proof of the second part of Theorem
+\ref{thmTaskC}.
+%
+This section is structured as follows:
+\begin{itemize}
+  \item First, we define the formalism of the
+  on-demand stream machines, so to define $\SFPOD$;
+  \item We prove that
+  $\SIFPLA$ can be reduced to $\SFPOD$.
+\end{itemize}
+%
+As for ordinary Stream Machines (Definition \ref{df:streamMachine}), we limit
+our discussion to single-tape machines: which naturally scale to multi-tape
+ones.
+
+%%% DF
+%%%   Stream Machine
+
+\begin{defn}[On-Demand Stream Machine]
+  \label{def:odsm}
+An \emph{On-Demand Stream Machine} is a quadruple
+$M:= \langle \Qs,\Sigma, \delta,q\rangle$,
+where:
+\begin{itemize}
+\itemsep0em
+\item $\Qs$ is a finite set of states ranged over by
+$q_i$ and similar meta-variables.
+%
+\item $\Sigma$ is a finite set of characters ranged over by
+$q_i$ and similar meta-variables.
+%
+\item $\delta:\Qs \times \Sigmab \times
+\{\zzero, \oone, \natural\} \longrightarrow \Qs
+\times \Sigmab \times \{L,R\}$.
+\item $q\in \Qs$ is an initial state.
+\end{itemize}
+\noindent
+Moreover, we want $\delta$ such that $\forall c \in \Sigmab, q \in \Qs$:
+\begin{itemize}
+  \item If
+  $\delta(q, c, \natural)$ is defined, then $\delta(q, c, \zzero)$ and $\delta(q, c, \oone)$
+  are not.
+  \item $\delta(q, c, \zzero)\neq \delta(q, c, \oone)$.
+\end{itemize}
+\end{defn}
+
+Notice that the only difference between Definition \ref{def:odsm} and
+Definition \ref{df:streamMachine} concerns the $\delta$ function: indeed, we
+introduced a new kind of transitions, labelled with
+$\natural$, which do not cause the oracle-tapeto advance.
+%
+The configuration of \emph{on-demand stream machines} can be represented in
+the same way of the configurations of ordinary stream machines, i.e. by
+means of a tuple which contains the current state and the configuration of
+the tapes.
+%
+The main difference between these machines' transition function
+and ordinary STMs' one lies in the necessity for configurations
+which cause no advancements on the oracle-tape.
+
+%%% DF
+%%% Stream Machine Reachability Function
+\begin{defn}[On-Demand Stream Machine Transition Function]
+  \label{def:smodtransfun}
+Given an \emph{on-demand} stream machine $M=\langle \Qs,
+\Sigma, \delta, q\rangle$,
+we define the \emph{partial transition function}
+$\vdash_{\delta} \Sigmab^* \times \Qs
+\times \Sigmab^* \times \{\zzero,
+\oone\}^{\Nat} \longrightarrow \Sigmab^*
+\times \Qs \times \Sigmab^* \times \{\zzero,
+\oone\}^{\Nat}$
+between two configurations of $M_S$ as:
+%
+\begin{align*}
+  \langle \sigma, q, c\tau, \eta\rangle
+  \vdash_{\delta} \langle\sigma c', q', \tau, \eta\rangle
+  \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+  \delta (q,c,\natural)
+  = \langle q',c',R\rangle
+  \\
+  %
+  \langle \sigma c_0, q, c_1\tau,\eta\rangle
+  \vdash_{\delta} \langle \sigma, q', c_0c_1'\tau,
+  \eta\rangle
+   \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+  \delta (q, c_1,\natural)
+  = \langle q', c_1', L\rangle  \\
+  %
+  \langle \sigma, q, c\tau, \bool \eta\rangle
+  \vdash_{\delta} \langle\sigma c', q', \tau, \eta\rangle
+  \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+  \delta (q,c,\bool)
+  = \langle q',c',R\rangle
+  \\
+  %
+  \langle \sigma c_0, q, c_1\tau, \bool
+  \eta\rangle
+  \vdash_{\delta} \langle \sigma, q', c_0c_1'\tau,
+  \eta\rangle
+   \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+  \delta (q, c_1,\bool)
+  = \langle q', c_1', L\rangle .
+  %
+  % \langle \sigma, q, c\tau, \oone \eta\rangle
+  % \vdash_{\delta}
+  % \langle \sigma c', q', \tau, \eta\rangle
+  %  \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+  %  \delta(q, c, \oone)=
+  %  \langle q', c', R\rangle \\
+  %  %
+  %  \langle \sigma c_0, q, c_1\tau,
+  %  \oone\eta\rangle
+  %  \vdash_{\delta} \langle \sigma,
+  %  q', c_0c_1' \tau, \eta \rangle
+  %   \ \ \ \ \ \ \ \ \ \ \ \ \ &\text{ if }
+  %  \delta(q, c_1,\oone)
+  %  = \langle q',c_1', L\rangle.
+\end{align*}
+\end{defn}
+\noindent
+The family of \emph{on-demand stream machine reachability functions} are defined
+exactly as in Definition \ref{df:STMReachability}, even the notion sof
+final configuration (Notation \ref{def:STMFinalConfiguration}),
+function evaluated by a Stream Machine (Definition \ref{df:STMcomputation}) and of
+polynomial Stream Machine (Definition \ref{df:PSTM}) scale naturally to
+the corresponding ones for on-demand stream machines.
+%
+Finally, we can define the class $\SFPOD$.
+
+\begin{defn}[$\SFPOD$]
+  \label{def:sfpod}
+  \small
+  \[
+  \SFP := \{ f \in \Ss \times \Bool^\Nat~|~ \text{There is a poly-time canonical OD STM $M$ such that }f=f_M\}.
+  \]
+  \normalsize
+\end{defn}
+
+
+We will not present the reduction from $\SIFPLA$ to $\SFPOD$ extensively
+because this kind of reductions are administrative
+and many similar reductions are already presented in the literature.
+%
+For these reason we will only describe the \emph{on-demand} stream machine
+which corresponds to the encoded $P \in \lang{\stm_\LA}$.
+
+\begin{prop}
+  \label{prop:SFPODimplSIFPLA}
+  For every $P \in \lang{\stm_\LA}$ there is a $M_P \in \SFP$ such that
+  for every $x \in \Ss$ and $\eta \in \Bool^\Ss$, $P(x, \eta)=P(x, \eta)$.
+  Moreover, if $P$ is poly-time, then $M_P$ is poly-time.
+\end{prop}
+\begin{proof}
+%
+The construction relies on the fact that we can implement a $\SIFPLA$ program
+by means of a multi-tape \emph{on-demand stream machine} machine
+which uses a tape to store the values
+of each register, plus an additional tape containing the partial results
+obtained during the evaluation of the expressions
+and another tape containing $\eta$.
+%
+We will denote with $e$ the tape used for storing the result coming from
+the evaluation of the expressions.
+
+The machine works thanks to some invariant properties:
+%
+\begin{itemize}
+\item On each tape the values are stored to the immediate right of the head.
+\item The result of the last expression evaluated is stored on the $e$ tape to the immediate right of the head.
+%\item After any assignment operation, the value on the $e$ tape is not meaningful anymore.
+\end{itemize}
+
+
+The value of a $\SIFP$ expression can be easily computed using the $e$ tape.
+We show it by induction on the syntax of the expression:
+\begin{itemize}
+  \item Each access to the value stored in a register basically consist in a copy of the
+  content of the corresponding tape to the $e$ tape, which is a simple operation,
+  due to the invariants properties mentioned above.
+  \item Concatenations ($f.\zero$ and $f.\one$)
+  are easily implemented by the addition of a character at the
+  end of the $e$ tape which contains the value of $f$,
+  as stated by the induction hypothesis on the invariant properties.
+  \item The binary expression are non-trivial, but since one of the
+  two operands is a register identifier, the machine can directly compare $e$
+  with the tape which corresponding to the identifier, and to replace the content of $e$
+  with the result of the comparison, which in all cases $\zzero$ or $\oone$.
+\end{itemize}
+All these operations can be implemented without consuming any character
+on the oracle tape and with linear time with respect to the size of the
+expression's value.
+%Moreover, when we defined the $\SIFPRA$ we have used a restricted set of expressions:
+%
+To each statement $s_i$, we assign a sequence of machine states,
+$q_{s_i}^I, q_{s_i}^1, q_{s_i}^2, \ldots, q_{s_i}^F$.
+%
+\begin{itemize}
+  \item Assignments consist in a copy of the value in $e$ to the tape corresponding to
+  the destination register and a deletion of the value on $e$ by replacing its symbols
+  with $\circledast$ characters. This can be implemented without consuming any character
+  on the oracle tape.
+  \item The sequencing operation $s;t$ can be implemented inserting in $\delta$
+  a composed transition from $q_s^F$ to $q_t^I$, which does not consume the oracle tape.
+  \item A $\while$ statement $s:= \while f t$ requires the evaluation of $f$ and
+  then passing to the evaluation of $t$, if $f\sred \one$, or stepping
+  to the next transition if it exists and $f\not\sred \one$.
+  After the evaluation of the body, the machine returns to the initial state of
+  this statement, namely: $q_s^I$.
+  \item A $\rb$ statement is implemented consuming a character on the tape and copying
+  its value on the tape which corresponds to the register $R$.
+\end{itemize}
+
+The following invariants hold at the beginning of the execution and are kept true
+throughout $M_P$'s execution. In particular, if we assume $P$ to be poly-time,
+after the simulation of each statement it holds that:
+
+\begin{itemize}
+  \item The length of the non blank portion of the first tapes corresponding to
+  the register is polynomially bounded because their contents are precisely
+  the contents of $P$'s registers, which are polynomially bounded
+  as a consequence of the hypotheses on their polynomial time complexity.
+  \item The head of all the tapes corresponding to the registers point to the
+  leftmost symbol of the string thereby contained.
+\end{itemize}
+
+It is well-known that the reduction of the number of tapes on a poly-time Turing Machine
+comes with a polynomial overhead in time; for this reason, we can conclude that
+the poly-time \emph{multi-tape} on-demand stream machine we introduced above can be
+\emph{shrinked}
+to a poly-time \emph{canonical} on-demand stream machine. This concludes the proof.
+\end{proof}
+
+\noindent
+As a trivial consequence of Proposition \ref{prop:SFPODimplSIFPLA}, we establish
+that each
+poly-time $\SIFPLA$ program $P$ can be reduced to a poly-time \emph{on demand stream machine}.
+
+\begin{cor}
+  \label{cor:SIFPLAtoSFPOD}
+  For each poly-time $P\in \lang {\stm_\LA}$ there is a poly-time
+  \emph{on demand stream machine} machine $M_P$
+  such that:
+  $$
+  \mu\left(\{\eta \in \Bool^\Nat| \llbracket P\rrbracket (x, \eta)= \tau\}\right)
+  =
+    \mu\left(\{\eta \in \Bool^\Nat|  M_P(x, \eta)= \tau\}\right).
+  $$
+\end{cor}
+\begin{proof}
+  It is a consequence of Proposition \ref{prop:SFPODimplSIFPLA}, indeed:
+  $$
+\{\eta \in \Bool^\Nat| \llbracket P\rrbracket (x, \eta)= \tau\}
+  =
+    \{\eta \in \Bool^\Nat|  M_P(x, \eta)= \tau\}.
+  $$
+\end{proof}
+\noindent
+The main results of Sections \ref{sub:portosifpra}
+and \ref{sub:sifpratosifpla} can be combined in the following statement:
+
+\begin{cor}
+  \label{cor:PORtoSIFPRAweak}
+  $\forall f \in \POR.\exists P \in$ poly-time $\SIFPRA$:
+  $$
+  \forall x, y.
+  \mu\left(\{\omega \in \Bool^\Ss| f(x, \omega)=y\}\right)=
+  \mu\left(\{\omega \in \Bool^\Ss| \llbracket P\rrbracket (x, \omega)=y\}\right).
+  $$
+\end{cor}
+\begin{proof}
+  The proof is a conjunction of Lemmas \ref{lemma:portosifp} and \ref{lemma:compsifpra}.
+\end{proof}
+
+\noindent
+As a consequence of Corollary \ref{cor:PORtoSIFPRAweak} and
+Proposition \ref{prop:SFPODimplSIFPLA},
+we prove that $\POR$ is directly related with~$\SFPOD$.
+
+\begin{cor}
+  For each $f\in \POR$ there exists an $\SFPOD$ machine $M_f$
+  such that:
+  $$
+  \mu\left(\{\omega \in \Bool^\Ss| f (x, \eta)= \tau\}\right)
+  =
+    \mu\left(\{\eta \in \Bool^\Nat| M_P(x, \eta)= \tau\}\right).
+  $$
+\end{cor}
+\begin{proof}
+  From Corollary \ref{cor:PORtoSIFPRAweak}
+  we get that:
+  $$
+  \forall x, y.
+  \mu\left(\{\omega \in \Bool^\Ss| f(x, \omega)=y\}\right)=
+  \mu\left(\{\omega \in \Bool^\Ss| \llbracket P\rrbracket (x, \omega)=y\}\right)
+  $$
+  for some poly-time $P \in \lang{\stm_\RA}$. Lemma \ref{lemma:sifpratosifpla}
+  shows that:
+  $$
+  \mu\left(\{\omega \in \Bool^\Ss| \llbracket P\rrbracket (x, \omega)= y\}\right)=
+  \mu\left(\{\eta \in \Bool^\Nat| \llbracket Q \rrbracket(x, \eta)= y\}\right)
+  $$
+  for some poly-time $Q \in \lang{\stm_\RA}$. Finally, Corollary \ref{cor:SIFPLAtoSFPOD}
+  states that:
+  $$
+  \mu\left(\{\eta \in \Bool^\Nat| \llbracket Q\rrbracket (x, \eta)= \tau\}\right)
+  =
+    \mu\left(\{\eta \in \Bool^\Nat|  M_P(x, \eta)= \tau\}\right).
+  $$
+  Putting together all these equivalences, we get:
+  $$
+    \mu\left(\{\omega \in \Bool^\Ss| f(x, \omega)=y\}\right)=\mu\left(\{\eta \in \Bool^\Nat|  M_P(x, \eta)= \tau\}\right).
+  $$
+  The introduction of the existential on $M_P$ concludes the proof.
+
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{From $\SFPOD$ to $\SFP$}
+\label{sub:sfpodtosfp}
+The aim of this section is to show that each
+on-demand stream machine can be reduced to an equivalent STM.
+%\emph{fully random} (in the sense that each transition has a random outcome).
+%s
+% \begin{prop}
+%   \label{prop:SFPODtoSFP}
+%   For every $M \in \SFPOD$ there is a $N \in \SFP$ such that
+%   for every $x \in \Ss$ there is a Reduction Tree $t \in \RT{\Nat} M x$
+%   and a Reduction Tree $\overline t \in \RT{\SFP} N x$
+%   such that every path $C$ in $\mathit{cylp}(t)$,
+%   the corresponding path $D$ in $\mathit{cylp}(\overline t)$ is such that
+%   $M(x, C) = N(x, D)$.
+% \end{prop}
+%
+This would allow us to conclude that the $\POR$ class of function is
+equivalent to the $\SFP$ formalism, as stated by Theorem \ref{thmTaskC}.
+In particular, the result we are aiming to is formally stated by Lemma \ref{lemma:SFPODtoSFP},
+completing the chain of reductions which connect the $\POR$ class of function to $\SFP$.
+
+\begin{lemma}
+  \label{lemma:SFPODtoSFP}
+  For every $M = \langle \Qs, \Sigma, \delta, q_0\rangle
+  \in \SFPOD$, the machine $N = \langle \Qs, \Sigma, H(\delta), q_0\rangle
+  \in \SFP$ is such that for every $n \in \Nat$,
+  for every configuration of $M$ $\langle \sigma, q, \tau, \eta\rangle$ and for
+  every $\sigma', \tau' \in \Ss, q \in \Qs$:
+  %, if
+  %$\xi =c_1c_2\ldots c_k$ with $c_i \in \Bool$ for $1 \le i \le k$
+  %and $\chi = c_{k+1} c_{k+2}\ldots c_{n}$, then
+  $$
+  \mu \left(\{\eta \in \Bool^\Nat| \exists \eta'. \langle \sigma, q, \tau, \eta\rangle\reaches n \delta \langle \sigma', q', \tau', \eta'\rangle\}\right)
+  =
+  \mu \left(\{\chi \in \Bool^\Nat|  \exists \chi'. \langle \sigma, q, \tau, \xi\rangle\reaches n {H(\delta)} \langle \sigma', q', \tau', \chi'\rangle\}\right).
+  $$
+\end{lemma}
+
+\noindent
+Even in this case, the proof relies on a reduction. In particular,
+we show that
+given an on-demand stream machine $M$ is is possible to build
+stream machine $N$ which is equivalent to $M$.
+This is done by removing the $\natural$ transitions
+form the transition function $\delta$ and replacing them with ordinary transitions.
+%
+The proof of the correctness of the reduction will follow the schema of
+the first part of Theorem \ref{thmTaskC}, when we gave the encoding of
+STMs in $\POR$, but with some simplifications:
+
+\begin{itemize}
+  \item We do not need to extend transition functions to total ones
+  (in the sense of Lemma \ref{lemma:applycorr}) because
+  our encoding will preserve the number of steps used by the reduction and so it
+  will not execute the machine for an over-approximated number of steps.
+  \item The configuration of an on-demand stream machine and the configuration of an
+  ordinary stream machine, are the same type of object.
+\end{itemize}
+\noindent
+This section is structured as follows:
+\begin{itemize}
+  \item First, we introduce the encoding which turns a transition function for the on demand stream machine
+  machine $M$ into a transition function for an equivalent machine in $\SFP$.
+  \item Subsequently, we directly prove Lemma \ref{lemma:SFPODtoSFP}.
+\end{itemize}
+
+Intuitively, the encoding from an \emph{on-demand} stream machine $M$
+to an ordinary stream
+machine takes the transition function $\delta$ of $M$ and substitutes
+each transition not causing the oracle tape to shift --- i.e. tagged with $\natural$ ---
+with two distinct
+transitions, with respectively $\zero$ and $\one$ instead of the symbol $\natural$.
+This causes the resulting machine to produce an identical transition
+but shifting the head on the oracle tape on the right.
+
+\begin{defn}[Encoding from On-Demand to Canonical Stream Machines]
+  \label{def:SFPODtoSFPmap}
+  We define the encoding from an On-Demand Stream Machine to a Canonical Stream Machine
+  as below:
+  $$
+    H := \langle \mathbb Q, \Sigma, \delta, q_0\rangle \mapsto \left\langle \mathbb Q, \Sigma, \bigcup\Delta_H(\delta), q_0\right\rangle.
+  $$
+  where $\Delta_H$ is defined as follows:
+  \begin{align*}
+    \Delta_H(\langle p, c_r, \zzero, q, c_w, d\rangle) &:= \{\langle p, c_r, \zzero, q, c_w, d\rangle\}\\
+    \Delta_H(\langle p, c_r, \oone, q, c_w, d\rangle) &:= \{\langle p, c_r, \oone, q, c_w, d\rangle\}\\
+    \Delta_H(\langle p, c_r, \natural, q, c_w, d\rangle) &:= \{\langle p, c_r, \zzero, q, c_w, d\rangle, \langle p, c_r, \oone, q, c_w, d\rangle\}.\\
+  \end{align*}
+\end{defn}
+
+% In a similar fashion to what we did in Section \ref{sec:SFPtoPOR}, we define a
+% canonical reduction tree for a $\SFPOD$ reduction, then we show that this tree
+% can be relabeled to match the corresponding reduction in $\SFP$.
+
+
+\begin{lemma}
+  \label{lemma:SFPODtoSFP}
+  For every on-demant stream machine $M = \langle \Qs, \Sigma, \delta, q_0\rangle$, the stram machine $N = \langle \Qs, \Sigma, H(\delta), q_0\rangle$ is such that for every $n \in \Nat$,
+  for every configuration of $M$ $\langle \sigma, q, \tau, \eta\rangle$ and for
+  every $\sigma', \tau' \in \Ss, q \in \Qs$:
+  %, if
+  %$\xi =c_1c_2\ldots c_k$ with $c_i \in \Bool$ for $1 \le i \le k$
+  %and $\chi = c_{k+1} c_{k+2}\ldots c_{n}$, then
+  $$
+  \mu \left(\{\eta \in \Bool^\Nat| \exists \eta'. \langle \sigma, q, \tau, \eta\rangle\reaches n \delta \langle \sigma', q', \tau', \eta'\rangle\}\right)
+  =
+  \mu \left(\{\chi \in \Bool^\Nat|  \exists \chi'. \langle \sigma, q, \tau, \xi\rangle\reaches n {H(\delta)} \langle \sigma', q', \tau', \chi'\rangle\}\right).
+  $$
+\end{lemma}
+\begin{proof}
+  The definition of $\reaches n \delta$ (Definition \ref{df:STMReachability}) allows us to rewrite the statement:
+  $$
+  \exists \eta'. \langle \sigma, q, \tau, \eta\rangle\reaches n \delta \langle \sigma', q', \tau', \eta'\rangle
+  $$
+  as
+  \begin{align*}
+    \exists \eta', \eta''\in \Bool^\Nat.\exists c_1, \ldots, c_k. &\langle \sigma, q, \tau, c_1c_2\ldots c_k\eta'\rangle\reaches {n_1} \delta \langle \sigma_1, q_{i_1}, \tau_1, c_1c_2\ldots c_k\eta'\rangle\reaches 1 \delta \langle \sigma_1', q_{i_1}', \tau_1, c_2\ldots c_k\eta'\rangle \land \\
+     &\langle \sigma_1', q_{i_1}', \tau_1, c_2\ldots c_k\eta'\rangle  \reaches {n_2} \delta \langle \sigma_2, q_{i_2}, \tau_2, c_2\ldots c_k\eta'\rangle\reaches 1 \delta \langle \sigma_2', q_{i_2}', \tau_2', c_3\ldots c_k\eta'\rangle \land \\
+     &\langle \sigma_2', q_{i_2}', \tau_2', c_3\ldots c_k\eta'\rangle \reaches {n_3} \delta \ldots \reaches {n_{k+1}} \delta
+    \langle \sigma', q', \tau', \eta'\rangle.
+  \end{align*}
+  According to Lemma \ref{lemma:SFPODtoSFPtech} (Section \ref{app:sfpodtosfp}) and Definitions \ref{def:sfpod} and \ref{def:SFPODtoSFPmap}, we can write:
+  \small
+  \begin{align*}
+    &\exists \eta'', c_1, \ldots, c_k \in\Bool. \exists n_1, \ldots, n_{k+1}\in \Nat.  \forall \xi_1, \ldots, \xi_{k+1}\in \Ss. |\xi_1|=n_1\land \ldots |\xi_{k+1}|=n_{k+1}\land\\
+    &\langle \sigma, q, \tau, c_1c_2\ldots c_k\eta'
+    \rangle\reaches {n_1} \delta \langle \sigma_1, q_{i_1}, \tau_1, c_1c_2\ldots c_k\eta'\rangle\reaches 1 \delta \langle \sigma_1', q_{i_1}', \tau_1, c_2\ldots c_k\eta'\rangle \land \\
+     &\langle \sigma_1', q_{i_1}', \tau_1, c_2\ldots c_k\eta'\rangle  \reaches {n_2} \delta \langle \sigma_2, q_{i_2}, \tau_2, c_2\ldots c_k\eta'\rangle\reaches 1 \delta \langle \sigma_2', q_{i_2}', \tau_2', c_3\ldots c_k\eta'\rangle \land \\
+     &\langle \sigma_2', q_{i_2}', \tau_2', c_3\ldots c_k\eta'\rangle \reaches {n_3} \delta \ldots \reaches {n_{k+1}} \delta
+    \langle \sigma', q', \tau', \eta'\rangle\\
+    &\Longleftrightarrow\\
+    &\langle \sigma, q, \tau, \xi_1c_1\xi_2c_2\ldots c_k\xi_{k+1}\eta''\rangle\reaches {n_1} {H(\delta)} \langle \sigma_1, q_{i_1}, \tau_1, c_1\xi_2c_2\ldots c_k\xi_{k+1}\eta''\rangle\reaches 1 {H(\delta)} \langle \sigma_1', q_{i_1}', \tau_1, \xi_2c_2\ldots c_k\xi_{k+1}\eta''\rangle \land \\
+     &\langle \sigma_1', q_{i_1}', \tau_1, \xi_2c_2\ldots c_k\xi_{k+1}\eta''\rangle  \reaches {n_2} {H(\delta)} \langle \sigma_2, q_{i_2}, \tau_2, c_2\ldots c_k\xi_{k+1}\eta''\rangle\reaches 1 {H(\delta)} \langle \sigma_2', q_{i_2}', \tau_2', \xi_3c_3\ldots c_k\xi_{k+1}\eta''\rangle \land \\
+     &\langle \sigma_2', q_{i_2}', \tau_2', \xi_3c_3\ldots c_k\eta''\rangle \reaches {n_3} {H(\delta)} \ldots \reaches {n_{k+1}} {H(\delta)}
+    \langle \sigma', q', \tau', \eta''\rangle.
+  \end{align*}
+  \normalsize
+  Intuitively, this holds because it suffices to take the
+  $n_i$s as the length of longest sequence of non-shifting transitions of the on-demand sream machine. With this assumption,
+  the conclusion follows as a consequence.
+  Thus, we can express the sets of the claim as follows:
+  \begin{align*}
+    \{\eta \in \Bool^\Nat| \exists \eta'. \langle \sigma, q, \tau, \eta\rangle\reaches n \delta \langle \sigma', q', \tau', \eta'\rangle\} &= \{\eta \in \Bool^\Nat| \forall 0 \le i \le k. \eta(i) =c_i\rangle\}\\
+    \{\chi \in \Bool^\Nat|  \exists \chi'. \langle \sigma, q, \tau, \xi\rangle\reaches n {H(\delta)} \langle \sigma', q', \tau', \chi'\rangle\} &= \{\chi \in \Bool^\Nat| \forall 1 \le i \le k. \chi(n_i+i)=c_i\land \chi(0)=c_1 \rangle\}.
+      \end{align*}
+  The conclusion is trivial because both the set can be expressed as cylinders with the same measure.
+\end{proof}
+\noindent
+As a corollary, we get the result we are aiming to:
+
+\begin{cor}
+  \label{cor:SFPODtoSFP}
+  For every $\SFPOD$ machine $M := \langle \Qs, \Sigma, \delta, q\rangle$,
+  $N := \langle \Qs, \Sigma, H(\delta), q\rangle$ is such that:
+  $$
+  \forall x, y. \mu\left (\{\eta \in \Bool^\Nat | M(x, \eta)=y\}\right)
+  =
+  \mu\left (\{\eta \in \Bool^\Nat | N(x, \eta)=y\}\right).
+  $$
+\end{cor}
+
+\begin{proof}
+  The result comes from the expansion of the definition of function computed
+  by a Stream Machine \ref{df:STMcomputation}.
+  Then, from Definitions \ref{def:sfpod} and \ref{def:SFPODtoSFPmap},
+  we observe that
+  a final configuration on $M$ is a final configuration on $N$, too.
+  Finally, applying Lemma \ref{lemma:SFPODtoSFP} on the initial configurations of
+  $M$ and $N$ (which are identical by definition),
+  we get the result we are aiming to.
+\end{proof}
+
+\subsection{Finalizing the proof}
+\label{sub:finalizing}
+
+In this section we prove the second claim of Theorem \ref{thmTaskC},
+namely that for each $g\in \POR$, there is an  $f \in \SFP$ such that for every $x,y\in \Ss$:
+
+$$
+\mu\big(\{\omega \in \Os \ | \ g(x,\omega) = y\}\big) = \mu\big(\{\eta \in \Bool^\Nat \ | \  f(x, \eta) = y\}\big).
+$$
+%
+The proof is a straightforward conjunction
+of the main results of the previous sections.
+
+
+\begin{proof}[Proof of Theorem \ref{thmTaskC}, Second Part]
+  The claim is a consequence of Corollary \ref{cor:PORtoSIFPRAweak}, Lemma \ref{lemma:sifpratosifpla}, Corollary \ref{cor:SIFPLAtoSFPOD}, Corollary \ref{cor:SFPODtoSFP}.
+\end{proof}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\section{From $\SFP$ to $\PPT$}
+\label{sub:SFPtoPPT}
+
+In this last section we show that the set of all the $\SFP$ functions
+and that of $\PPT$ function are tightly linked. In particular
+the measure of the set of oracles which link an input $\sigma$ and an
+output $\tau$ throughout a computation of a $\SFP$ function $M$ is equal
+to the probability that
+a certain $\PPT$ function computes $\tau$ on the same input $\sigma$, and vice-versa.
+%
+To do so, we give a formal definition of the $\PPT$ functions leveraging the formalism
+of the Probabilistic Turing Machines (already described in Definiton \ref{def:ptminformal}). On top of it, we define a semantic association a function to each machine. Finally, $\PPT$ is basically defined as
+the set of functions computed by a Probabilistic Turing Machine in a polynomial number of steps.
+After that, we show that there
+is a bijection between the class of Stream  machines and PTM
+with the property we are aiming to.
+%
+
+\begin{defn}[Probabilistic Turing Machine]
+  \label{def:ptm}
+A Probabilistic Turing Machine (PTM)
+$M:= \langle \Qs, \Sigma, {\delta}_0, {\delta}_1, q_0 \rangle$ is a quintuple where:
+\begin{itemize}
+  \item $\Qs$ is a finite set of states ranged over by $q_i$ and similar meta-variables.
+  \item $q_0$ is the initial state.
+\item $\Sigma$ is a finite set of characters ranged over by $c_i$ and similar meta-variables.
+\item $\delta_0 : \Qs \times \Sigmab \longrightarrow \Qs \times \Sigmab \times \{L, R\}$
+is a transition function which describes the new configuration reached by a Stream Machine.
+$L, R$ are two fixed and distinct symbols, and $\Sigmab =\Sigma \cup \{\circledast\} \land \circledast\neq \zero \land \circledast \neq \one$.
+\item $\delta_1 : \Qs \times \Sigmab  \times \longrightarrow \Qs \times \Sigmab \times \{L, R\}$ is another transition function.
+\end{itemize}
+\end{defn}
+\noindent
+As for $\SFP$, we discuss only \emph{canonical} PTMs,
+winch use $\{\zzero, \oone\}$ as alphabet and are single-taped.
+%
+
+\begin{defn}[Canonical PTM]
+  A Canonical PTM is a single-tape PTM in which:
+  \begin{itemize}
+    \item $\Sigma =\{\zzero, \oone\}$;
+    \item $L = \zzero, R = \oone$.
+  \end{itemize}
+\end{defn}
+
+Differently from STMs, the function computed by a \emph{canonical} PTM does not map an input in $\Ss$,
+and an oracle in $\Bool^\Nat$ to another input,
+but maps a string in $\Ss$ to a probability distribution on the set $\Ss$. This is
+why we cannot prove that $\PPT=\SFP$, but we will prove a different form of equivalence
+between the two classes.
+%
+The definition of function computed by a PTM passes through the
+notion of configuration and a random variables associated to the machine.
+%
+Configurations are defined as follows:
+%
+\begin{defn}[Configuration of a Probabilistic Turing Machine]
+The \emph{configuration of a PTM} $M$ is a triple $\{\sigma, q, \tau\}$ where:
+\begin{itemize}
+\item $\sigma \in \Sigmab^*$ is the portion of the first tape on the left of the head.
+\item $q \in \Qs$ is the current state of $M$.
+\item $\tau \in \Sigmab^*$ is the portion of the first tape on the right of the head.
+\end{itemize}
+\end{defn}
+
+As we established above, a PTM computes
+\emph{random variables}, instead of simple values. In order to
+give a formal definition of the random variable computed by a PTM, we
+must take in account a probability space of all the possible sequences
+of choices made by a PTM. This is a triple $(\Omega, \mathcal F, P)$.
+A suitable field was introduced in Definition
+\ref{def:cylsigmaalgebra} for every countable set $A$, in order to define a measure
+for the $\sigma$-algebra $\Os$. Together with this field,
+it was even introduced a class of measure functions (Definition \ref{def:mu}).
+Thus, we can define the PTM's Probability Space as follows:
+
+\begin{defn}[PTM Probably Space]
+  We call $\mathscr C_\Ss$ the probability space defined as follows:
+  $$
+  \mathscr C_\Ss := \langle \Bool^\Ss, \mathcal F_\Ss, \mu_\Ss\rangle
+  $$
+  where $\mathcal F_\Ss$ is the field of cylinders obtained instantiating
+  Definition \ref{def:cylsigmaalgebra} with $A=\Ss$ and $\mu_\Ss$
+  is the measure function induced on this set by Definition \ref{def:mu}.
+\end{defn}
+
+
+
+\begin{defn}[Sequence of Random Variables associated to a Probabilistic Turing Machine]
+  \label{def:ptmX}
+Given a PTM  $M$, a configuration $\{\sigma, q, \tau\}$
+and the probability space $\mathscr C_\Ss$ for
+$\Bool^\Nat$ (Definition \ref{def:cylsigmaalgebra}), we define the following
+\emph{sequence of random variables}:
+%
+\begin{align*}
+\forall \eta \in \Bool^\Nat. X_{M, 0}^{\{\sigma, q, \tau\}} &\coloneqq \eta \mapsto \{\sigma, q, \tau\}\\
+\forall \eta \in \Bool^\Nat. X_{M, n+1}^{\{\sigma, q, \tau\}} & \coloneqq \eta \mapsto \begin{cases}
+\delta_0(X_{M, n}^{\{\sigma, q, \tau\}}(\eta)) & \text{ if } \eta(n)=0 \land \exists \langle \sigma', q' \tau'\rangle. \delta_0(X_{M, n}^{\{\sigma, q, \tau\}}(\eta))=\langle \sigma', q', \tau'\rangle\\
+X_{M, n}^{\{\sigma, q, \tau\}}(\eta) & \text{ if } \eta(n)=0 \land \lnot\exists \langle \sigma', q' \tau'\rangle. \delta_0(X_{M, n}^{\{\sigma, q, \tau\}}(\eta))=\langle \sigma', q', \tau'\rangle\\
+\delta_1(X_{M, n}^{\{\sigma, q, \tau\}}(\eta)) & \text{ if } \eta(n)=1 \land \exists \langle \sigma', q' \tau'\rangle. \delta_1(X_{M, n}^{\{\sigma, q, \tau\}}(\eta))=\langle \sigma', q', \tau'\rangle\\
+X_{M, n}^{\{\sigma, q, \tau\}}(\eta) & \text{ if } \eta(n)=1 \land \lnot\exists \langle \sigma', q' \tau'\rangle. \delta_1(X_{M, n}^{\{\sigma, q, \tau\}}(\eta))=\langle \sigma', q', \tau'\rangle.
+\end{cases}
+\end{align*}
+\end{defn}
+
+\noindent
+Intuitively the variable $X_{M, n}^{\{\sigma, q, \tau\}}$ describes
+the configuration reached by the machine after exactly $n$ transitions.
+%
+As we did for the Stream Machines, we need do give a formal definition of random
+variable computed by a PTM. To do so, we define some sort of
+\emph{final} random variable.
+
+\begin{defn}[Final configuration of a PTM]
+We say that a PTM $M$ has final configuration $X_t$
+if and only if $\forall t'>t.X_{M, t'}^{\{\sigma, q, \tau\}}=X_{M, t}^{\{\sigma, q, \tau\}}$.
+\end{defn}
+
+We are interested in finding a characterization the $\PPT$ class of functions.
+For this reason, we define the notion of \emph{poly-time} PTM.
+
+\begin{defn}[Poly-time Probabilistic Turing Machine]
+We say that a PTM $M$ is polynomial in time
+if and only if
+$$
+\exists p\in POLY. \forall \sigma.X_{M, p(\sigma)}^{\langle \epsilon, q_0, \sigma\rangle}
+\text{ is final}.
+$$
+\end{defn}
+
+\begin{defn}[Random Variable computed by a Probabilistic Turing Machine]
+  \label{def:ptmY}
+We say that a PTM $M$ computes $Y_{M,\sigma}$ if and only if
+$\exists t \in \Nat. \forall \sigma.X_{M, t}^{\langle \sigma, q_0, \tau\rangle}$ is final.
+In such case $Y_{M,\sigma}$ is the longest suffix of
+$\pi_1(X_{M, t}^{\langle \sigma, q_0, \epsilon\rangle})$, which does not contain $\circledast$.
+\end{defn}
+
+On top of the definition above, we can build up a formal definition of $\PPT$:
+
+\begin{defn}[$\PPT$ class]
+\label{def:ppt}
+$\PPT$ is the class of distributions which is computable by a poly-time PTM.
+\end{defn}
+
+It is easy to see that the class of the Polynomial Probabilistic Turing Machine has a strong correspondence with the class of $\SFP$: the former hard-codes the randomness on a specific tape, while the latter encodes its as a behavior. It is proved formally by the following proposition:
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\begin{prop}[Polynomial PTM and $\SFP$ equivalence]
+\label{prop:ptm=sfp}
+For each poly-time STM $N$, there is a poly-time PTM $M$, machine $N$ such that:
+$$
+\forall \sigma, \tau.\mu(\{\eta \in \Bool^\Nat| N(\sigma, \eta)= \tau\})=\mathit{Pr}[{Y_{M,\sigma}}=\tau]
+$$
+and vice-versa.
+\end{prop}
+
+
+\begin{proof}
+We observe that, as stated in Definition \ref{def:ptmY}, the random variable
+$Y_{\cdot, \cdot}$ is equal to the random variable
+$X_{M, t}^{\langle \sigma, q_0, \epsilon\rangle}$ for some $t \in \Nat$.
+According to Definition \ref{def:ptmX}, the random variable
+$X_{M, t}^{\langle \sigma, q_0, \epsilon\rangle}$ is defined on the $\sigma$-algebra
+$\mathscr C_\Ss$, using exactly $\mu_\Ss$ as probability measure.
+%
+For these reasons, the claim can be restated as follows:
+%
+\begin{align*}
+\forall \sigma, \tau.\mu(\{\eta \in \Bool^\Nat| N(\sigma, \eta)= \tau\})&=\mu(Y_{M, \sigma}^{-1}(\tau))\\
+\forall \sigma, \tau.\mu(\{\eta \in \Bool^\Nat| N(\sigma, \eta)= \tau\})&=\mu(\{\eta \in \Bool^\Nat| Y_{M,\sigma} (\eta) = \tau\}).
+\end{align*}
+\noindent
+In order to prove what we stated above,
+we will show a stronger result: namely that there is bijection $I: \text{STMs} \longrightarrow \text{PTM}$ such that:
+%
+\begin{equation}
+\label{eq:measure}
+\forall n \in \Nat.\{\eta \in \Bool^\Nat| \langle \sigma, q_0, \tau, \eta\rangle  \reaches n \delta \langle \tau, q, \psi, n\rangle \} = \{\eta \in \Bool^\Nat| X_{I(N), n}^{\langle \epsilon, q_0, \sigma\rangle} (\eta)= {\langle \tau, q, \psi\rangle}\}
+\end{equation}
+\noindent
+which entails:
+%
+\begin{equation}
+\label{eq:measurecons}
+\{\eta \in \Bool^\Nat| N(\sigma, \eta)= \tau\} = \{\eta \in \Bool^\Nat| Y_{I(N),\sigma} (\eta) = \tau\}.
+\end{equation}
+\noindent
+For this reason, it suffices to show $I$ and prove that \ref{eq:measure} holds.
+$I$ is defined splitting the transition function of $N$ in two
+transition functions. A transition from $\delta$ is assigned to $\delta_0$
+if it matches the $\zzero$ character on the oracle-tape, otherwise it
+is assigned to $\delta_1$.
+%
+$I$ can be defined as follows:
+%
+\begin{align*}
+I &\coloneqq \langle \Qs, \Sigma, \delta, q_0 \rangle \mapsto \langle \Qs, \Sigma, \Delta_0(\delta),\Delta_1(\delta), q_0 \rangle\\
+\Delta_i(\delta) &\coloneqq \{\langle p, c_r, i, q, c_w, d \rangle \in \delta \}.
+\end{align*}
+\noindent
+$I$ is bijective. Indeed, its inverse is a function, too.
+$I^{-1}$ takes two transition functions  (ideally the two transition functions of $M$)
+and joins them in a single transition function which behaves as $\delta_0$ if the tape has $\zzero$
+under the head, and as $\delta_1$ otherwise.
+%
+Now we prove the \ref{eq:measure} by induction on the number of steps required by $N$ to compute its output value.
+
+\begin{itemize}
+\item[$0$] In this case we know that:
+\[
+\{\eta \langle \sigma, q_0, \tau, \eta\rangle  \reaches 0 \delta \langle \epsilon, q_0, \sigma, \eta\rangle \} = \Bool^\Nat = \{\eta \in \Bool^\Nat| X_{I(N), 0}^{\langle \epsilon, q_0, \sigma\rangle} (\eta)= {\langle \epsilon, q, \sigma\rangle}\},
+\]
+\noindent
+which proves the thesis.
+
+\item[$n+1$] In this case we must show that:
+\[
+\{\eta \in \Bool^\Nat| \langle \sigma, q_0, \tau, \eta\rangle  \reaches {n+1}\delta \langle \tau, q, \psi, \eta'\rangle \} = \{\eta \in \Bool^\Nat| X_{I(N), n+1}^{\langle \epsilon, q_0, \sigma\rangle} (\eta)= {\langle \tau, q, \psi\rangle}\},
+\]
+which proves the claim. We also know that:
+\[
+\forall m\le n.\{\eta \in \Bool^\Nat| \langle \sigma, q_0, \tau, \eta\rangle  \reaches m \delta \langle \tau, q, \psi, \eta''\rangle \} = \{\eta \in \Bool^\Nat| X_{I(N), m}^{\langle \epsilon, q_0, \sigma\rangle} (\eta)= {\langle \tau, q, \psi\rangle}\},
+\]
+but it is easy to show that $\{\eta \in \Bool^\Nat| \langle \sigma, q_0, \tau, \eta\rangle  \reaches {n+1}\delta \langle \tau, q, \psi, \eta'\rangle \} =$
+\begin{equation}
+\label{eq:simplptm1}
+\begin{gathered}
+\{\eta \in \Bool^\Nat| \langle \sigma, q_0, \tau, \eta\rangle  \reaches n\delta \langle \tau', q', \psi', \zzero\eta'\rangle \vdash_\delta  \langle \tau, q, \psi, \eta'\rangle\}\\
+\cup\\
+\{\eta \in \Bool^\Nat| \langle \sigma, q_0, \tau, \eta\rangle  \reaches {n} \delta \langle \tau', q', \psi', \oone\eta'\rangle \vdash_\delta  \langle \tau, q, \psi, \eta'\rangle\}.
+\end{gathered}
+\end{equation}
+Concerning $\{\eta \in \Bool^\Nat| X_{I(N), n+1}^{\langle \epsilon, q_0, \sigma\rangle} (\eta)= {\langle \tau, q, \psi\rangle}\}$, it is equal to
+\begin{equation}
+\label {eq:simplptm2}
+\begin{gathered}
+\{\eta \in \Bool^\Nat| X_{I(N), n}^{\langle \epsilon, q_0, \sigma\rangle} (\eta)= {\langle \tau', q', \psi' \rangle}\land \eta(n)=0 \land \Delta_0(\delta)(\langle \tau', q', \psi' \rangle)=\langle \tau, q, \psi\rangle\}\\
+\cup\\
+\{\eta \in \Bool^\Nat| X_{I(N), n}^{\langle \epsilon, q_0, \sigma\rangle} (\eta)= {\langle \tau', q', \psi' \rangle}\land \eta(n)=1 \land \Delta_1(\delta)(\langle \tau', q', \psi' \rangle)=\langle \tau, q, \psi\rangle\}.
+\end{gathered}
+\end{equation}
+\noindent
+It is easy to see that the sets in \eqref{eq:simplptm1} and \eqref{eq:simplptm2} are pairwise equal thanks to the IH and the definition of $I$.
+%
+Claim \eqref{eq:measurecons} is a consequence of the definition if $Y$.
+\noindent
+Both the machines require the same number of steps. For this reason, if the first is poly-time also the second one is so.
+The opposite direction comes from the fact that $I$ is a bijection.
+\begin{comment}, so that we can say that $\forall N \in SM\exists M' \in PTM. I^{-1}(M') = N$, so:
+
+\[
+\{\omega \in \Os| I^{-1}(M')(\sigma, \omega)= \tau\} = \{\omega \in \Os| Y_{I(I^{-1}(M')),\sigma} (\omega) = \tau\}= \{\omega \in \Os| Y_{M',\sigma} (\omega) = \tau\}
+\]
+\end{comment}
+\begin{comment}
+\item[0] In this case the $\TT$ function doesn't contain any matching transition for the initial configuration for neither of the possible outputs on the oracle tape, in this case the output is $\sigma$. This means that both $\Delta_0(\TT)$ and $\Delta_1(\TT)$ are undefined for the initial configuration, so $X^{I(N)}_1$ is undefined for all $\omega \in \Os$. This means that $Y^{I(N)}_0=Y^{I(N)}_1$ and that $\forall \omega \in \Os. Y_{I(N),\sigma} (\omega) =\sigma$.
+\begin{align*}
+\{\omega \in \Os| N(\sigma)= \sigma\} &= \Os \\
+                                          &= \Os =\{\omega \in \Os| Y_{I(N),\sigma} (\omega) =\sigma\}
+\end{align*}
+
+For each other value of $\tau$ both the sides of the equivalence \eqref{eq:measure} are $0$. Both the computations took exactly 0 steps.
+\end{comment}
+\end{itemize}
+\end{proof}
+
+This result completes the chain of reductions from $\POR$ to $\PPT$ and vice-versa.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+\subsection{Main Result}
+\label{sec:mainresult}
+
+In the previous sections, we have described all the reductions encoding $\SFP$ in $\POR$
+and vice-versa, so we can finally state and prove the main result of this chapter.
+%
+As we established before,
+the equivalence relation we are proving, is not a strict identity between two classes of functions for many reasons: some of the formalisms are intrinsically dis-homogeneous, for example $\POR$ functions map strings $\sigma \in \Ss$ and an oracle function in $\Os$, while, for instance $\PPT$ maps strings in probability distributions, which means that these sets are disjoint.
+%
+However, the results we showed in the previous sections can be used to prove the main result of this chapter: the statement of Conjecture \ref{conj1}.\footnote{Since we showed that Conjecture \ref{conj1} actually holds, we restate it as a theorem, namely Theorem \ref{thm:taskC}.}
+
+
+% Proposition \ref{prop:ptm=sfp} completes the picture, showing that the class of
+% functions $\SFP$ corresponds strictly to $\PPT$. Thanks to that result, we can prove
+% that Conjecture \ref{conj1} holds joining Theorem \ref{thmTaskC} and
+% Proposition \ref{prop:ptm=sfp}.
+
+\begin{theorem}
+  \label{thm:taskC}
+It holds that:
+  \begin{itemize}
+    \item $\forall f\in \PPT. \exists g_f \in \POR. \mathit{Pr}[f(x)=y]=
+    \mu(\{x \in \{\zzero, \oone\}^\Ss | g_f(x, \omega)=y\})$;
+    \item $\forall g \in \POR. \exists f_g \in \PPT.
+     \mu(\{x \in \{\zzero, \oone\}^\Ss | g(x, \omega)=y\})=\mathit{Pr}[f_g(x)=y]$.
+  \end{itemize}
+\end{theorem}
+
+\begin{proof}
+  Consequence of Theorem \ref{thmTaskC} and Proposition \ref{prop:ptm=sfp}.
+\end{proof}
+\noindent
+Furthermore, joining this result with Theorem \ref{thm:TaskAB}, we get the
+$\PPT$ representability result we were aiming to:
+
+\pptrepr*
+\begin{proof}
+  Consequence of Theorems \ref{thm:TaskAB} and \ref{thm:taskC}.
+\end{proof}

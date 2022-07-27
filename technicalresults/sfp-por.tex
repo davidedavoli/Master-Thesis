@@ -1,0 +1,688 @@
+%!TeX spellcheck = en-US
+\subsection{The $\SIFP$ language}
+\label{sub:techsifplan}
+
+
+\begin{lemma}
+  \label{lemma:expfun}
+  The relation $\sred$ of Definition \ref{def:expsemantics} is a function
+  $\sred: \lang{\xp} \times (\id \longrightarrow \{\zero, \one\}^*)\times \Os \longrightarrow \{\zero, \one\}^*$.
+\end{lemma}
+\begin{proof}
+  By induction on the syntax of the expression, we have the following cases:
+  \begin{itemize}
+    \item If the expression is $\eepsilon$, a bit concatenation or an identifier, we can apply only a single rule.
+    \item If the expression is a predicate, two rules can be applied to the expression, but in all the cases, these rules are mutually exclusive.
+  \end{itemize}
+\end{proof}
+
+
+\begin{lemma}
+  \label{lemma:sifprasemfun}
+  The relation $\ssos$ of Definition \ref{def:sifpraos} is a function
+  $\lang{\stm_\RA} \times (\id \longrightarrow \{\zero, \one\}^*)\times \Os\longrightarrow (\id \longrightarrow \{\zero, \one\}^*)$.
+\end{lemma}
+\begin{proof}
+  By induction on the syntax of the program $P$.
+  \begin{itemize}
+    \item If the statement is $\fl e$, the consequence comes from the fact that $\omega$ is a function.
+    \item If the statement is an assignment, the result is a consequence of Lemma \ref{lemma:expfun}.
+    \item If the statement is $\cdot;\cdot$, the result comes from the IH.
+    \item If the statement a $\while{}{}$, the result comes from the observation that the two rules are mutually exclusive, due to Lemma \ref{lemma:expfun}, and to the IH if the condition is true.
+  \end{itemize}
+\end{proof}
+
+\begin{lemma}
+  \label{lemma:sifplasemfun}
+  The relation $\ssos$ of Definition \ref{def:sifplaos} is a function
+  $\lang{\stm_\LA} \times (\id \longrightarrow \{\zero, \one\}^*)\times \Os\longrightarrow (\id \longrightarrow \{\zero, \one\}^*)$.
+\end{lemma}
+\begin{proof}
+  By induction on the syntax of the program $P$.
+  \begin{itemize}
+    \item If the statement is $\rb$, the consequence comes from the fact that $b$ is an unique value.
+    \item If the statement is an assignment, the result is a consequence of Lemma \ref{lemma:expfun}.
+    \item If the statement is $\cdot;\cdot$, the result comes from the IH.
+    \item If the statement a $\while{}{}$, the result comes from the observation that the two rules are mutually exclusive, due to Lemma \ref{lemma:expfun}, and to the IH if the condition is true.
+  \end{itemize}
+\end{proof}
+
+\subsection{From $\POR$ to the $\SIFPRA$ Language}
+\label{app:portosifpra}
+
+
+\lpwterm*
+% Proof
+\begin{proof}[Proof of Lemma \ref{lemma:size}]
+The proof is by induction on the production of the term.
+\begin{itemize}
+%
+\item If the term is a digit or the empty string, it has no variables in it and its size is
+$1$, which is a constant.
+All constants are polynomials with no variables, so the claim is proved.
+%
+\item If the term is a variable, its size consists in the size of
+its variable, which is a polynomial in the size of the variables of the term.
+%
+\item If the term is the concatenation
+of two terms $t\conc s$, its size is the sum of the sizes of
+its sub-terms, which are polynomials for the IH.
+Since the sum of polynomials is still polynomial, the union
+of the variables of $t$ and $s$ is polynomial in its turn.
+%
+\item If the term is the product of two terms
+$t\times s$, the size of $s$ is a polynomial $p_s$ in
+the size of the variables in $s$, and the size of
+$t$ is still polynomial $p_t$ in the size of
+the variables in $t$.
+Hence, the size of the term $t\times s$
+is given by $p_tp_s$, which is polynomial
+in the size of the variables in $t\times s$.
+\end{itemize}
+\end{proof}
+
+%%% Lemma
+\portermsize*
+\begin{proof}[Proof of Lemma \ref{lemma:sizeofterms}]
+The proof is by induction on the structure of $f\in \POR$. Base cases:
+\begin{itemize}
+\item if $f$ is $E$, we introduce the the constant $1$.
+%
+\item If $f$ is $P_i$ we introduce the polynomial
+$\sum^n_{i=0}|x_i|+1$.
+It is easy to see that such value is greater or
+equal than the size of each input.\footnote{Actually,
+we are over-killing the bound: introducing the polynomial
+$|x_i|$ for each
+$P^n_i$ is sufficient.}
+%
+\item If $f$ is $\Cf$, we introduce the
+constant $1$.
+%
+\item If $f$ is $\Sf_0$ or $\Sf_1$, we introduce the
+polynomial $|x|+1$.
+%
+\item If $f$ is $\query$, we introduce the constant
+$1$.
+\end{itemize}
+Inductive cases:
+\begin{itemize}
+\item Composition. Consequence of the IH
+$$
+\forall 1\leq i\leq k.\exists p_i\in \POLY(h_i(x_1,\dots, x_n,\omega)|
+\leq p_i(|x_1|,\dots, |x_n|)\big).
+$$
+So, a similar bound $q$ exists for the external
+function $f$. The composition of $q$
+with the sequence of polynomials $p_i$ is
+still a polynomial and bounds the size of the composition
+of the function by IH.
+%
+\item Bounded Recursion.
+By IH, we know that the size of $g$ is bounded by a polynomial
+$p_g$ in its inputs. Moreover, the size of the value computed
+by $f$ in the inductive cases is polynomial in its input, as
+it is truncated to the size of a term in $\Lpw$,
+whose size is polynomial in its variables
+(that are the inputs of $f$), by Lemma~\ref{lemma:size}.
+Call this polynomial $p_t$. We introduce the polynomial $p_g+p_t$
+Then, we proceed on induction
+on the length of the string $\tau$ that is passed as recursion bound.
+If such string has length $0$, it is
+$\eepsilon$.
+So, the function $f$ coincides with $g$,
+and the size of its output is smaller than $p_g$ for induction hypothesis.
+Otherwise, the size of the value computed
+by $f$ is polynomial in its input, as
+it is truncated to the size of a $t \in \Lpw$,
+whose size is smaller than $p_t$ by induction hypothesis
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[Complexity of $\MM$]
+\label{lemma:compmm}
+$\forall t \in \Lpw. \MM_t$ can be computed in number of steps which is polynomial in the size of the variables in $t$ with respect to Definition \ref{def:sifpcost}.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on the syntax of $t$.
+\begin{itemize}
+\item[$\epsilon$] If the term is $\epsilon$, $\MM_t$ consists in two steps.
+\item[$\zero,\one$] If the term is a digit, $\MM_t$ consists in two steps.
+\item[$x$] If the term is a variable, $\MM_t$ consists in two steps.
+\item[$t \conc s$] From the Lemmas \ref{lemma:corrcopyb} and \ref{lemma:compcopyb} we know that $\copyb$ requires a constant number of steps, and that each time $\copyb$ is executed, $Z$ grows by one. Moreover, we know that the pseudo-procedure respects the invariant that $Z$ is a prefix of $S$. For this reason, the complexity of the $\while\ \ $ statement is linear in the size of $Z$. Finally, the complexity takes in account two polynomial due the recursive hypothesis on $\MM$ and two steps for the two assignments before the $\while\ \ $. The overall sum of these complexities is still a polynomial.
+\item[$t \times s$] We will distinguish the three levels of $\while\ \ $s by calling them \emph{outer}, \emph{middle} and \emph{inner}. For Lemmas \ref{lemma:compcopyb} and \ref{lemma:corrcopyb}, the inner $\while\ \ $s take at most $|T|$ steps, such value is a polynomial over the free variables of $t$ according to Lemma \ref{lemma:sizeofterms} and the induction hypothesis. The value of $T$ remains constant after its first assignment, for this reason all the inner cycles require a polynomial number of steps. The middle cycles implementing the $\mathtt{if}$ construct are executed only once for each outer cycle as stated in the definition of the $\mathtt{if}$ syntax in Notation \ref{remark:if}. Moreover, they add a constant number of steps to the complexity of the inner cycles. This means that, modulo an outer cycle, the complexity is still polynomial. For the same argument of Lemma \ref{lemma:compcopyb}, the outer cycle takes at most $|S|$ steps which is a polynomial according to Lemma \ref{lemma:sizeofterms} and the induction hypothesis.
+\end{itemize}
+\end{proof}
+
+
+\begin{defn}[Truncating pseudo-procedure]
+  \label{def:trunc}
+The $\trunc(T, R)$ pseudo-procedure is a $\SIFP$ program with free names $T$ and $R$, defined as follows:
+%
+\begin{comment}
+\begin{align*}
+trunc(T, R) \coloneqq &Q \takes R;\\
+                      &R \takes \epsilon;\\
+                      &Z \takes \epsilon;\\
+                      &\while {Z \sqsubset T} {\\
+                      &\quad B \takes \one;\\
+                      &\quad \while {Z.\zero \sqsubseteq T \land B} {\\
+                      &\quad \quad B \takes \one;\\
+                      &\quad \quad \while {R.\zero \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\zero;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad \while {R.\one \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\one;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad Z \takes Z.0;\\
+                      &\quad \quad B \takes 0;\\
+                      &\quad \quad }\\
+                      &\quad \while {Z.\one \sqsubseteq T \land B} {\\
+                      &\quad \quad B \takes \one;\\
+                      &\quad \quad \while {R.\zero \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\zero;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad \while {R.\one \sqsubseteq Q \land B} {\\
+                      &\quad \quad \quad R \takes R.\one;\\
+                      &\quad \quad \quad B \takes \zero;\\
+                      &\quad \quad \quad }\\
+                      &\quad \quad Z \takes Z.0;\\
+                      &\quad \quad B \takes 0;\\
+                      &\quad \quad }\\
+                      &}
+\end{align*}
+\end{comment}
+\begin{align*}
+\trunc(T, R) \coloneqq &Q \takes R;\\
+                      &R \takes \epsilon;\\
+                      &Z \takes \epsilon;\\
+                      &Y_0 \takes \epsilon;\\
+                      &\while {Z \sqsubset T} {\\
+                      &\quad \If {Z.\zero \sqsubseteq T} {\\
+                      &\quad \quad \copyb(R, Q, Y_0)\\
+                      &\quad \quad Z \takes Z.\zero;\\
+                      &\quad \quad }\\
+                      &\quad \If {Z.\one \sqsubseteq T} {\\
+%                      &\quad \quad B \takes \one;\\
+                      &\quad \quad \copyb(R, Q, Y_0)\\
+                      &\quad \quad Z \takes Z.\one;\\
+                      &\quad \quad }\\
+                      &}
+\end{align*}
+\end{defn}
+
+\begin{lemma}[Complexity of truncation]
+\label{lemma:comptrunc}
+The pseudo-procedure $\trunc$ requires a number of steps which is at most polynomial in the sizes of its free names with respect to Definition \ref{def:sifpcost}.
+\end{lemma}
+
+\begin{proof}
+By Lemma \ref{lemma:compcopyb} we know that the pseudo-procedure $\copyb$ requires a constant number of steps. Furthermore, the cycles implementing the $\mathtt{if}$ are executed only once for each outer cycle as a consequence of to what stated ater the introduction of the $\mathtt{if}$ syntax in Notation \ref{remark:if}. Finally the number of outer cycles is bounded by the $|T|$, so the whole complexity of the pseudo-procedure is polynomial (linear) in $|T|$.
+\end{proof}
+
+\begin{lemma}[Correctness of truncation]
+\label{lemma:corrtrunc}
+The pseudo-procedure $\trunc$ truncates the register $R$ to its $|T|$-th prefix.
+\end{lemma}
+
+\begin{proof}
+We proceed by induction on $T$.
+\begin{itemize}
+\item[$\epsilon$] Trivially we have $R=\epsilon$ since the cycle is not executed.
+\item[$\sigma b$] In this case, only one of the sub-cycles implementing the $\mathtt{if}$ is executed (they are mutually-exclusive), another bit of $Q$ is stored in $R$ according to Lemma \ref{lemma:corrcopyb}, and $Q$ is unchanged after the execution of $\copyb$. Theses arguments prove the claim. The register $Y$ has no practical implications since it's only used in order to leverage the lemmas on $\copyb$.
+\end{itemize}
+\end{proof}
+
+\begin{lemma}[Complexity of $\SIFPRA$]
+  \label{lemma:compsifpra}
+$\forall f \in \POR. \LL{f}$ takes a number of steps which is polynomial in the size of the arguments of $f$ with respect to Definition \ref{def:sifpcost}.
+\end{lemma}
+\begin{proof}
+We proceed by induction on the proof of the fact that $f$ is indeed in $\POR$. All the base cases ($E$, $S_0$,$S_1$, ${P}^n_i$, $C$,$Q$) are trivial. The inductive steps follow easily:
+\begin{itemize}
+\item In the case of composition, we know that the claim holds for all the pseudo-procedures $\LL\cdot$. The program requires a finite number of assignments more, so its complexity is still polynomial.
+\item In the case of iteration we can move the same argument of Lemma \ref{lemma:compcopyb} to prove that the outer cycle is executed only $|Z|$ times, which is a polynomial in an argument of the encoded function. Moreover, the implementation of the $\mathtt{if}$ construct relies on cycles, but as a consequence of the definition of the $\mathtt{if}$ syntax in Notation \ref{remark:if}, they are executed only once for each outer cycle. So the claim comes from Lemmas \ref{lemma:comptrunc}, \ref{lemma:compmm}, from the fact that the composition of polynomials is still polynomial and from the IH.
+\end{itemize}
+\end{proof}
+
+\subsection{From $\SIFPRA$ to $\SIFPLA$}
+\label{app:sifpratosifpla}
+
+% \begin{proof}[Proof of Characterization \ref{char:bigsmallstepla}]
+%   In order to strengthen the IH, we will prove a stronger result:
+%   if $\tau\eta \Yright \Psi$, then
+%   $$
+%   \langle P, \Gamma, \tau\eta\rangle \ssos \langle \Sigma, \eta\rangle \leftrightarrow  \exists \Psi' \in \mathit{adt}(M).\langle P;\halt, \Gamma, \Psi\rangle \leadstolan *  \langle \halt, \store, \Psi'\rangle \land \tau\eta \Yright \Psi'.
+%   $$
+%   This can be done by induction on the syntax of $P$.
+%   \begin{itemize}
+%     \item[$Id \takes e$] In this case, since $\sred$ is a function (Lemma \ref{lemma:expfun}),
+%     in both cases $e$ reduces to the same string $\sigma$, thus the \emph{big-step} semantics
+%     returns $\Gamma \as {Id} \sigma$, and
+%     $$
+%     \langle Id \takes e; \halt, \Gamma, \Psi\rangle \leadstolan 1  \langle \halt, \Gamma \as {Id} \sigma,\Psi\rangle.
+%     $$
+%     The second part of the claim holds because $\Psi$ is unchanged by the transition.
+%     \item[$\rb$] In this case, the \emph{big-step} semantics acts as follows:
+%     $$
+%       \langle \rb, \Gamma, \bool\eta\rangle \ssos \langle \Gamma\as R \bool, \eta\rangle
+%     $$
+%     On the other hand:
+%     $$
+%     \langle \rb; \halt, \Gamma, \Psi\rangle \leadstolan 1  \langle \halt, \Gamma \as {R} \one,\Psi\one\rangle
+%     $$
+%     and
+%     $$
+%     \langle \rb; \halt, \Gamma, \Psi\rangle \leadstolan 1  \langle \halt, \Gamma \as {R} \zero,\Psi\zero\rangle.
+%     $$
+%     Since we know that $\tau\eta \Yright \Psi$, then also $\bool \eta \Yright \Psi\one\lor \bool \eta \Yright \Psi\zero$.
+%     \item[$s;t$] Suppose that:
+%     $$
+%     \langle s;t, \Gamma, \tau_1\tau_2\eta\rangle \ssos \langle \store, \eta\rangle.
+%     $$
+%     According to the definition of $\ssos$, this means that:
+%     $$
+%     \langle s, \Gamma, \tau_1\tau_2\eta\rangle \ssos \langle \Gamma', \tau_2\eta\rangle
+%     $$
+%     and that:
+%     $$
+%     \langle t, \Gamma', \tau_2\eta\rangle \ssos \langle \store, \eta\rangle.
+%     $$
+%     For the IH, this is equivalent to
+%     $$
+%     \langle s;\halt, \Gamma, \Psi\rangle \leadstolan * \langle \halt, \Gamma', \Psi'\rangle \land \tau_1\tau_2\eta\Yright \Psi'
+%     $$
+%     and
+%     $$
+%     \langle t;\halt, \Gamma', \Psi'\rangle \leadstolan * \langle \halt, \store, \Psi''\rangle \land \tau_1\tau_2\eta\Yright \Psi''.
+%     $$
+%     Thus, we proved that:
+%     $$
+%     \langle s;t;\halt, \Gamma, \Psi\rangle \leadstolan * \langle \halt, \store, \Psi''\rangle \land \tau_1\tau_2\eta\Yright \Psi''.
+%     $$
+%     \item[$\while{e}{s}$] We go by cases on the value of $e$ in $\Gamma$. If it does
+%     not reduce to $\one$, we have that:
+%     $$
+%     \begin{gathered}
+%       \langle \while{e}{s}, \Gamma, \eta\rangle \ssos \langle \Gamma, \eta\rangle \land
+%       \langle \while{e}{s};\halt, \Gamma, \Psi\rangle \leadstolan 1 \langle \halt, \Gamma, \Psi\rangle.
+%     \end{gathered}
+%     $$
+%     So, the conclusion is trivial.
+%     Otherwise, if $e$ reduces to $\one$, we have that:
+%     $$
+%     \langle s, \Gamma, \tau_1\tau_2\eta\rangle \ssos \langle \Gamma', \tau_2\eta\rangle
+%     \land
+%     \langle \while{e}{s}, \Gamma'', \tau_2\eta\rangle \ssos \langle \store, \eta\rangle.
+%     $$
+%     By induction hypothesis, we know that:
+%     $$
+%     \langle s;\halt, \Gamma, \Psi\rangle \leadstolan* \langle \halt, \Gamma', \Psi'\rangle \land \tau_1\tau_2\eta \Yright \Psi'
+%     $$
+%     and that:
+%     $$
+%     \langle \while{e}{s};\halt, \Gamma', \Psi'\rangle \leadstolan* \langle \halt, \store, \Psi''\rangle \land \tau_1\tau_2\eta \Yright \Psi''.
+%     $$
+%     But, since $e$ reduces to $\one$, we know that:
+%     $$
+%       \langle \while{e}{s};\halt, \Gamma, \Psi'\rangle \leadstolan 1 \langle s;\while{e}{s};\halt, \Gamma, \Psi\rangle \land \tau_1\tau_2\eta \Yright \Psi.
+%     $$
+%     Summing together these three last conclusions, we get the claim we where aiming to.
+%   \end{itemize}
+%   The final result comes instantiating the universal quantifiers with the initial values
+%   as for Definition \ref{def:simplafuneval}.
+% \end{proof}
+
+\begin{proof}[Proof of Characterization \ref{char:bigsmallstepla}]
+  In order to strengthen the IH, we will prove a stronger result:
+%  if $\tau\eta \Yright \Psi$, then
+  $$
+  \langle P, \Gamma, \eta\rangle \ssos \langle \Sigma, \eta'\rangle \leftrightarrow  \exists \Psi' \in \mathit{adt}(M).\langle P;\halt, \Gamma, \Psi\rangle \leadstolan *  \langle \halt, \store, \Psi'\rangle \land \Psi\eta = \Psi'\eta'.
+  $$
+  This can be done by induction on the syntax of $P$.
+  \begin{itemize}
+    \item[$Id \takes e$] In this case, since $\sred$ is a function (Lemma \ref{lemma:expfun}),
+    in both cases $e$ reduces to the same string $\sigma$, thus the \emph{big-step} semantics
+    returns $\Gamma \as {Id} \sigma$, and
+    $$
+    \langle Id \takes e; \halt, \Gamma, \Psi\rangle \leadstolan 1  \langle \halt, \Gamma \as {Id} \sigma,\Psi\rangle.
+    $$
+    The second part of the claim holds because $\Psi$ and $\eta$ do not change during the transition.
+    \item[$\rb$] In this case, the \emph{big-step} semantics acts as follows:
+    $$
+      \langle \rb, \Gamma, \bool\eta\rangle \ssos \langle \Gamma\as R \bool, \eta\rangle
+    $$
+    On the other hand:
+    $$
+    \langle \rb; \halt, \Gamma, \Psi\rangle \leadstolan 1  \langle \halt, \Gamma \as {R} \one,\Psi\one\rangle
+    $$
+    and
+    $$
+    \langle \rb; \halt, \Gamma, \Psi\rangle \leadstolan 1  \langle \halt, \Gamma \as {R} \zero,\Psi\zero\rangle.
+    $$
+%    Since we know that , then also $\bool \eta \Yright \Psi\one\lor \bool \eta \Yright \Psi\zero$.
+    Moreover, it holds that $\Psi\bool\eta=\Psi\zero\eta \lor \Psi\bool\eta=\Psi\one\eta$ proving the claim
+    \item[$s;t$] Suppose that:
+    $$
+    \langle s;t, \Gamma, \eta\rangle \ssos \langle \store, \eta''\rangle.
+    $$
+    According to the definition of $\ssos$, this means that:
+    $$
+    \langle s, \Gamma, \eta\rangle \ssos \langle \Gamma', \eta'\rangle
+    $$
+    and that:
+    $$
+    \langle t, \Gamma', \eta'\rangle \ssos \langle \store, \eta''\rangle.
+    $$
+    For the IH, this is equivalent to:
+    $$
+    \langle s;\halt, \Gamma, \Psi\rangle \leadstolan * \langle \halt, \Gamma', \Psi'\rangle .
+    $$
+    and
+    $$
+    \langle t;\halt, \Gamma', \Psi'\rangle \leadstolan * \langle \halt, \store, \Psi''\rangle .
+    $$
+    Thus, we proved that:
+    $$
+    \langle s;t;\halt, \Gamma, \Psi\rangle \leadstolan * \langle \halt, \store, \Psi''\rangle.
+    $$
+    But also we know that:
+    $$
+    \Psi\eta = \Psi'\eta'=\Psi''\eta''.
+    $$
+    \item[$\while{e}{s}$] We go by cases on the value of $e$ in $\Gamma$. If it does
+    not reduce to $\one$, we have that:
+    $$
+    \begin{gathered}
+      \langle \while{e}{s}, \Gamma, \eta\rangle \ssos \langle \Gamma, \eta\rangle \land
+      \langle \while{e}{s};\halt, \Gamma, \Psi\rangle \leadstolan 1 \langle \halt, \Gamma, \Psi\rangle.
+    \end{gathered}
+    $$
+    So, the conclusion is trivial.
+    Otherwise, if $e$ reduces to $\one$, we have that:
+    $$
+    \langle s, \Gamma, \eta\rangle \ssos \langle \Gamma', \eta'\rangle
+    \land
+    \langle \while{e}{s}, \Gamma', \eta'\rangle \ssos \langle \store, \eta''\rangle.
+    $$
+    By induction hypothesis, we know that:
+    $$
+    \langle s;\halt, \Gamma, \Psi\rangle \leadstolan* \langle \halt, \Gamma', \Psi'\rangle
+    $$
+    and that:
+    $$
+    \langle \while{e}{s};\halt, \Gamma', \Psi'\rangle \leadstolan* \langle \halt, \store, \Psi''\rangle.
+    $$
+    Moreover, we also know that:
+    $$
+    \Psi\eta = \Psi'\eta' \land \Psi'\eta' = \Psi''\eta''
+    $$
+    But, since $e$ reduces to $\one$, we know that:
+    $$
+      \langle \while{e}{s};\halt, \Gamma, \Psi\rangle \leadstolan 1 \langle s;\while{e}{s};\halt, \Gamma, \Psi'\rangle .
+    $$
+    Summing together these three last conclusions, we get the claim we where aiming to.
+  \end{itemize}
+  We will not show the other direction, which is analogous, apart from the fact that
+  it requires to observe that for every $h, h \in \Nat$:
+  $$
+  \langle P, \Sigma, \Psi\rangle \leadstolan h \langle P', \Sigma', \Psi'\rangle \land
+  \langle P, \Sigma, \Psi\rangle \leadstolan {h+k} \langle P'', \Sigma'', \Psi''\rangle
+  $$
+  entails that $\Psi'\subseteq\Psi''$.
+  The final result comes instantiating the universal quantifiers with the initial values
+  as for Definition \ref{def:simplafuneval}. In particular, we get $\eta \Yright \Psi$,
+  because $\eepsilon \eta = \Psi\eta'$ for some $\eta'$, thus $\Psi$ is a prefix of $\eta$.
+\end{proof}
+
+\begin{proof}[Proof of characterization \ref{char:bigsmallstepra}]
+  In order to strengthen the IH, we will prove a stronger result:
+  if $\omega \Yright \Psi$, then
+  $$
+  \langle P, \Gamma, \omega\rangle \ssos \Sigma \leftrightarrow  \exists \Psi' \in \mathit{adt}(M).\langle P;\halt, \Gamma, \Psi\rangle \leadstoran *  \langle \halt, \store, \Psi'\rangle \land \omega \Yright \Psi'.
+  $$
+  This can be done by induction on the syntax of $P$.
+  \begin{itemize}
+    \item[$Id \takes e$] In this case, since $\sred$ is a function (Lemma \ref{lemma:expfun}),
+    in both cases $e$ reduces to the same string $\sigma$, thus the \emph{big-step} semantics
+    returns $\Gamma \as {Id} \sigma$, and
+    $$
+    \langle Id \takes e; \halt, \Gamma, \Psi\rangle \leadstoran 1  \langle \halt, \Gamma \as {Id} \sigma,\Psi\rangle.
+    $$
+    The second part of the claim holds because $\Psi$ is unchanged by the transition.
+    \item[$\fl e$] Even in this case, since $\sred$ is a function,
+    the \emph{big-step} semantics acts as the \emph{small-step} semantics acts,
+    in particular, suppose that $\langle e, \Gamma\rangle \sred \sigma$:
+    $$
+      \langle \fl e, \Gamma, \omega\rangle \ssos \Gamma\as R {\omega(\sigma)}.
+    $$
+    On the other hand, supposing $\forall b \in \{\zero, \one\}, (\sigma, b)\not \in \Psi$, we have:
+    $$
+    \langle \fl e; \halt, \Gamma, \Psi\rangle \leadstoran 1  \langle \halt, \Gamma \as {R} \omega(\sigma),(\sigma, b)::\Psi\rangle
+    $$
+    for $b \in \{\zero, \one\}$.
+    % and
+    % $$
+    % \langle \rb; \halt, \Gamma, \Psi\rangle \leadstoran 1  \langle \halt, \Gamma \as {R} \zero,(\sigma, \zero)::\Psi\rangle
+    % $$
+    Since we know that $\omega \Yright \Psi$, then also $\omega \Yright (\sigma, b)::\Psi$
+    for \emph{some} $b \in \{\zero, \one\}$.
+    Conversely, if we suppose that the pair $(\sigma, \bool)$ is in $\Psi$, we have:
+    $$
+    \langle \fl e; \halt, \Gamma, \Psi\rangle \leadstoran 1  \langle \halt, \Gamma \as {R} \omega(\sigma),\Psi\rangle,
+    $$
+    for the definition fo $\leadstola$. The coherency claim, in this case,  is trivial.
+    \item[$s;t$] Suppose that
+    $$
+    \langle s;t, \Gamma, \omega\rangle \ssos \store.
+    $$
+    According to the definition of $\ssos$, this means that:
+    $$
+    \langle s, \Gamma, \omega\rangle \ssos \Gamma'
+    $$
+    and that:
+    $$
+    \langle t, \Gamma', \omega\rangle \ssos \store.
+    $$
+    For the IH, this is equivalent to:
+    $$
+    \langle s;\halt, \Gamma, \Psi\rangle \leadstoran * \langle \halt, \Gamma', \Psi'\rangle \land \omega\Yright \Psi'
+    $$
+    and
+    $$
+    \langle t;\halt, \Gamma', \Psi'\rangle \leadstoran * \langle \halt, \store, \Psi''\rangle \land \omega\Yright \Psi''.
+    $$
+    Thus, we proved that:
+    $$
+    \langle s;t;\halt, \Gamma, \Psi\rangle \leadstoran * \langle \halt, \store, \Psi''\rangle \land \omega\Yright \Psi''.
+    $$
+    \item[$\while{e}{s}$] We go by cases on the value of $e$ in $\Gamma$. If it does
+    not reduce to $\one$, we have that:
+    $$
+    \begin{gathered}
+      \langle \while{e}{s}, \Gamma, \omega\rangle \ssos \langle \Gamma, \omega\rangle \land
+      \langle \while{e}{s};\halt, \Gamma, \Psi\rangle \leadstoran 1 \langle \halt, \Gamma, \Psi\rangle,
+    \end{gathered}
+    $$
+    so the conclusion is trivial.
+    Otherwise, if $e$ reduces to $\one$, we have that:
+    $$
+    \langle s, \Gamma, \omega\rangle \ssos \langle \Gamma', \omega\rangle
+    \land
+    \langle \while{e}{s}, \Gamma', \omega\rangle \ssos \langle \store, \omega\rangle.
+    $$
+    By induction hypothesis, we know that:
+    $$
+    \langle s;\halt, \Gamma, \Psi\rangle \leadstoran* \langle \halt, \Gamma', \Psi'\rangle \land \omega \Yright \Psi',
+    $$
+    and that:
+    $$
+    \langle \while{e}{s};\halt, \Gamma', \Psi'\rangle \leadstoran* \langle \halt, \store, \Psi''\rangle \land \omega \Yright \Psi''.
+    $$
+    But since $e$ reduces to $\one$, we know that:
+    $$
+      \langle \while{e}{s};\halt, \Gamma, \Psi'\rangle \leadstoran 1 \langle s;\while{e}{s};\halt, \Gamma, \Psi\rangle \land \omega \Yright \Psi.
+    $$
+    Summing together these three last conclusions, we get the claim we where aiming to.
+  \end{itemize}
+  The final result comes instantiating the universal quantifiers with
+  the values described in Definition \ref{def:simprafuneval}.
+  %
+  The opposite direction can be obtained by a proof very similar to this one,
+  reversing the order of the observations. Even in this case observing that
+  for every $h, h \in \Nat$:
+  $$
+  \langle P, \Sigma, \Psi\rangle \leadstoran h \langle P', \Sigma', \Psi'\rangle \land
+  \langle P, \Sigma, \Psi\rangle \leadstoran {h+k} \langle P'', \Sigma'', \Psi''\rangle
+  $$
+  entails that all the pairs $\langle k, \bool\rangle$ of $\Psi'$ belongs to $\Psi''$, too.
+  \end{proof}
+
+\begin{lemma}
+  \label{lemma:sumsinvariance}
+  For each $\SIFPLA$
+  % or $\SIFPRA$
+  program $P$, for each $\Psi \in \Ss$ and for each
+  store $\store \in \{\zero, \one\}^{Id}$, said
+  $$
+  W:=\{\Psi'\in \Ss| \langle P, \store, \Psi\rangle \leadstola \langle P, \store, \Psi'\rangle\},
+  $$
+  % or respectively
+  % $$
+  % W:=\{\Psi'\in \mathit{adt}(M)| \langle P, \store, \Psi\rangle \leadstora \langle P, \store, \Psi'\rangle
+  % $$
+  then $\sum_{\Phi \in W} \mu(\Phi)=\mu(\Psi)$.
+\end{lemma}
+\begin{proof}
+  By cases on the definition of the program:
+  \begin{itemize}
+    \item The rules for assignments and while loops do not change the value of $\Psi$, so the result is trivial.
+    \item $\rb$ associates to each configuration two different images, one which adds $\zero$ at the end of $\Psi$
+    and one which adds $\one$ at the end of $\Psi$. For this reason, the measure is given by
+    \begin{align*}
+    \mu(\Psi\zero)+\mu (\Psi\one) &= \mu(\{\eta \in \Bool^\Nat | \eta_{|\Psi\zero|}=\Psi\zero\})+\mu(\{\eta \in \Bool^\Nat | \eta_{|\Psi\one|}=\Psi\one\})\\
+                                  &=\frac 1 2 \mu(\{\eta \in \Bool^\Nat | \eta_{|\Psi|}=\Psi\})+\frac 1 2\mu(\{\eta \in \Bool^\Nat | \eta_{|\Psi|}=\Psi\})\\
+                                  &= \mu(\{\eta \in \Bool^\Nat | \eta_{|\Psi|}=\Psi\}).
+  \end{align*}
+  \item $\fl e$, supposing that $\langle e, \store\rangle \sred \sigma$ and
+  that $(\sigma, b)\not \in\Psi$ for each $b \in\Bool$, we observe that
+  $\leadstora$
+  associates to each configuration a pair of configurations
+  in which $\Psi$ has been replaced by $(\sigma, b)::\Psi$ for $b \in \{\zero, \one\}$.
+  We show that the claim holds by cases. Suppose that $\sigma \not \in \Psi$.
+  this case is very similar to the previous one, indeed:
+  \begin{align*}
+     \mu\left((\sigma, \zero)::\Psi\right)+\mu \left((\sigma, \one)::\Psi\right) &= \mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in (\sigma, \zero)::\Psi. \omega(\sigma)=\bool\}\right)\\
+                                                           &\ +\mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in (\sigma, \one)::\Psi. \omega(\sigma)=\bool\}\right)\\
+                                                           &= \mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\cap \{\omega \in \Bool^\Ss| \omega(\sigma)= \zero\}\right)\\
+                                                           &\ +\mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\cap \{\omega \in \Bool^\Ss| \omega(\sigma)= \one\}\right)\\
+                                   &=2 \cdot\left(\frac 1 2 \mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\right)\right)\\
+                                   &=\mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\right).
+   \end{align*}
+   Indeed we can rewrite
+   $$
+   \{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\cap \{\omega \in \Bool^\Ss| \omega(\sigma)= b\}
+   $$
+   as
+   $$
+   \frac 1 2 \mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\right),
+   $$
+   because $\sigma \not \in \Psi$.
+   Otherwise, if $\sigma \in \Psi$
+   \begin{align*}
+     \mu\left((\sigma, \zero)::\Psi\right)+\mu \left((\sigma, \one)::\Psi\right) &= \mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in (\sigma, \zero)::\Psi. \omega(\sigma)=\bool\}\right)\\
+                                                           &\ +\mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in (\sigma, \one)::\Psi. \omega(\sigma)=\bool\}\right)\\
+                                                           &= \mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\cap \{\omega \in \Bool^\Ss| \omega(\sigma)= \zero\}\right)\\
+                                                           &\ +\mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\cap \{\omega \in \Bool^\Ss| \omega(\sigma)= \one\}\right),
+   \end{align*}
+
+   which is equal to $\mu\left(\{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\}\right)$
+   because one there is $b \in \{\zero, \one\}$ such that:
+   $$
+   \{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\} \subseteq \{\omega \in \Bool^\Ss| \omega(\sigma)= b\}
+   $$
+   and thus, said $\overline b$ its complementary element, it holds that:
+   $$
+   \{\omega \in \Bool^\Ss | \forall (\sigma, \bool) \in \Psi. \omega(\sigma)=\bool\} \cap \{\omega \in \Bool^\Ss| \omega(\sigma)= b\}= \emptyset.
+   $$
+   Conversely, if we suppose that $(\sigma, b) \in \Psi$ for some $b \in \Bool$
+   we the semantics $\leadstora$ admits only one transition towards a configuration
+   in which $\Psi'=\Psi$, so the claim in this case is trivial.
+  \end{itemize}
+\end{proof}
+
+
+\begin{lemma}[Reduction of expressions]
+  \label{lemma:expred}
+  $\forall e \in \lang{\xp}.\forall \store, \Gamma.
+  (\forall G \in \#_r^\xp(e)) \store(e)=\Gamma(e)\to
+  \langle e, \store\rangle \sred \sigma \to \langle e, \Gamma\rangle \sred \sigma$.
+\end{lemma}
+\begin{proof}
+  By induction on the syntax of $e$.
+  \begin{itemize}
+    \item $\epsilon$ is the only base case, and the conclusion is trivial.
+    \item For all the other cases, the conclusion is a consequence of the IH(es).
+  \end{itemize}
+\end{proof}
+
+\subsection{From $\SFPOD$ to $\SFP$}
+\label{app:sfpodtosfp}
+\begin{lemma}
+  \label{lemma:SFPODtoSFPtech}
+  For every $M = \langle \Qs, \Sigma, \delta, q_0\rangle
+  \in \SFPOD$, the there is a $N = \langle \Qs, \Sigma, H(\delta), q_0\rangle
+  \in\SFP$ such that
+  for every $\langle \sigma, q, \tau, \eta\rangle$ configuration of $M$, if
+  $\xi =c_1c_2\ldots c_k$ with $c_i \in \Bool$ for $1 \le i \le k$, then
+  \begin{enumerate}
+    \item if $\langle \sigma, q, \tau, \xi\eta\rangle \reaches {k} \delta \langle \sigma', q', \tau', \xi\eta\rangle$, then
+    $\langle \sigma, q, \tau, \xi\eta\rangle \reaches {k} {H(\delta)} \langle \sigma', q', \tau', \eta\rangle$.
+    \item if $\langle \sigma, q, \tau, \bool\eta\rangle \reaches {1} \delta \langle \sigma', q', \tau', \eta\rangle$, then
+    $\langle \sigma, q, \tau, \bool\eta'\rangle \reaches {1} {H(\delta)} \langle \sigma', q', \tau', \eta'\rangle$.
+  \end{enumerate}
+\end{lemma}
+\begin{proof}
+  We start with the first claim, the proof is by induction on $k$.
+  \begin{itemize}
+    \item If $k=0$, the thesis is trivial.
+    \item If $k=j+1$, the hypothesis induction states that:
+    $$
+    \forall \chi =c_1c_2\ldots c_j.
+\left(\langle \sigma, q, \tau, \chi\eta\rangle \reaches {j} \delta \langle \sigma'', q'', \tau'', \chi\eta\rangle \right)\to
+\left(\langle \sigma, q, \tau, \chi\eta\rangle \reaches {j} {H(\delta)} \langle \sigma'', q'', \tau'', \eta\rangle\right),
+    $$
+    we know that:
+    $$
+    \left(\langle \sigma, q, \tau, c_1c_2\ldots c_{j+1}\eta\rangle \reaches {j+1} \delta \langle \sigma', q', \tau', c_1c_2\ldots c_{j+1}\eta\rangle \right),
+    $$
+    so we derive that:
+    $$
+    \left(\langle \sigma, q, \tau, c_1c_2\ldots c_j(c_{j+1}\eta)\rangle \reaches {j} \delta \langle \sigma'', q'', \tau'', c_1c_2\ldots c_j(c_{j+1}\eta)\rangle \right)\reaches 1\delta \langle\sigma', q', \tau', c_1c_2\ldots c_{j+1}\eta\rangle.
+    $$
+    We can feed this sentence to the induction hypothesis obtaining:
+    $$
+    \left(\langle \sigma, q, \tau, c_1c_2\ldots (c_{j+1}\eta)\rangle \reaches {j} {H(\delta)} \langle \sigma', q', \tau', c_{j+1}\eta\rangle\right).
+    $$
+    Finally, we observe that since
+    $$
+    \langle \sigma'', q'', \tau'', c_1c_2\ldots c_j(c_{j+1}\eta)\rangle \reaches 1\delta\langle \sigma', q', \tau', c_1c_2\ldots c_{j+1}\eta\rangle,
+    $$
+    then, according to Definition \ref{def:SFPODtoSFPmap}, the function $\delta$
+    contains a transition labeled with $\natural$  which matches exactly the
+    current configuration, moreover, according to Definition \ref{def:SFPODtoSFPmap},
+    $H(\delta)$ contains a pair of transitions which match both the possible
+    characters on the tape, namely $\zzero$ or $\oone$.
+    so:
+    $$
+    \langle \sigma'', q'', \tau'', c_{j+1}\eta\rangle \reaches 1{H(\delta)}\langle \sigma', q', \tau',\eta\rangle.
+    $$
+    This concludes the derivation.
+  \end{itemize}
+  The second claim comes from the definition fo $H(\delta)$: the oracle consuming
+  transition which are in $\delta$ are in $H(\delta)$, too.
+\end{proof}

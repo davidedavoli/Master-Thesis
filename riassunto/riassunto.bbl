@@ -1,0 +1,314 @@
+% $ biblatex auxiliary file $
+% $ biblatex bbl format version 3.1 $
+% Do not modify the above lines!
+%
+% This is an auxiliary file used by the 'biblatex' package.
+% This file may safely be deleted. It will be recreated by
+% biber as required.
+%
+\begingroup
+\makeatletter
+\@ifundefined{ver@biblatex.sty}
+  {\@latex@error
+     {Missing 'biblatex' package}
+     {The bibliography requires the 'biblatex' package.}
+      \aftergroup\endinput}
+  {}
+\endgroup
+
+
+\refsection{0}
+  \datalist[entry]{nty/global//global/global}
+    \entry{ADLP21}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=64e8c715ecc1707be6766715d9c428b9}{%
+           family={Antonelli},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=94299738be3799d6a6d4e705e95f56c6}{%
+           family={Dal\bibnamedelima Lago},
+           familyi={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={U.},
+           giveni={U\bibinitperiod}}}%
+        {{hash=95701418555942da58d30a4bf3b29549}{%
+           family={Pistone},
+           familyi={P\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=49a663e4d34ee220de0f79355bf763c9}{%
+           family={Proceedings},
+           familyi={P\bibinitperiod},
+           given={CEUR\bibnamedelima Workshop},
+           giveni={C\bibinitperiod\bibinitdelim W\bibinitperiod}}}%
+      }
+      \strng{namehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{fullhash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{bibnamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authorbibnamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authornamehash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{authorfullhash}{8ac0ebce0a36bb308c0aa84f8a77bf75}
+      \strng{editorbibnamehash}{49a663e4d34ee220de0f79355bf763c9}
+      \strng{editornamehash}{49a663e4d34ee220de0f79355bf763c9}
+      \strng{editorfullhash}{49a663e4d34ee220de0f79355bf763c9}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proc. ICTCS '21}
+      \field{title}{On Counting Propositional Logic and Wagner's Hierarchy}
+      \field{volume}{3072}
+      \field{year}{2021}
+      \field{pages}{107\bibrangedash 121}
+      \range{pages}{15}
+    \endentry
+    \entry{ADLP}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=64e8c715ecc1707be6766715d9c428b9}{%
+           family={Antonelli},
+           familyi={A\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=ae1bb02eb18feaace77b6ebcf51b3f19}{%
+           family={Del\bibnamedelima Lago},
+           familyi={D\bibinitperiod\bibinitdelim L\bibinitperiod},
+           given={U.},
+           giveni={U\bibinitperiod}}}%
+        {{hash=95701418555942da58d30a4bf3b29549}{%
+           family={Pistone},
+           familyi={P\bibinitperiod},
+           given={P.},
+           giveni={P\bibinitperiod}}}%
+      }
+      \name{editor}{4}{}{%
+        {{hash=c107c7120c94aa8b6a53a890ecd6ab95}{%
+           family={De\bibnamedelima Mol},
+           familyi={D\bibinitperiod\bibinitdelim M\bibinitperiod},
+           given={L.},
+           giveni={L\bibinitperiod}}}%
+        {{hash=211dc1aa067b77a76a1bf09bf1d87f03}{%
+           family={Weiermannn},
+           familyi={W\bibinitperiod},
+           given={A.},
+           giveni={A\bibinitperiod}}}%
+        {{hash=8464275093270cd0829ed91d9592e72f}{%
+           family={Manea},
+           familyi={M\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+        {{hash=84890ea4134ccfd55cfb9f0f6dd4f845}{%
+           family={Fernández-Duque},
+           familyi={F\bibinithyphendelim D\bibinitperiod},
+           given={D.},
+           giveni={D\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {Springer}%
+      }
+      \strng{namehash}{7627907cb86a661d382689f33054afd6}
+      \strng{fullhash}{7627907cb86a661d382689f33054afd6}
+      \strng{bibnamehash}{7627907cb86a661d382689f33054afd6}
+      \strng{authorbibnamehash}{7627907cb86a661d382689f33054afd6}
+      \strng{authornamehash}{7627907cb86a661d382689f33054afd6}
+      \strng{authorfullhash}{7627907cb86a661d382689f33054afd6}
+      \strng{editorbibnamehash}{ec1347c8db6dab5071f777c014151787}
+      \strng{editornamehash}{ec1347c8db6dab5071f777c014151787}
+      \strng{editorfullhash}{0ce23a4024f956ceb5fe6f8fbd228c44}
+      \field{sortinit}{A}
+      \field{sortinithash}{2f401846e2029bad6b3ecc16d50031e2}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Connecting with Computabiliy}
+      \field{title}{On Measure Quantifiers in First-Order Arithmetic}
+      \field{year}{2021}
+      \field{pages}{12\bibrangedash 24}
+      \range{pages}{13}
+    \endentry
+    \entry{Buss86}{thesis}{}
+      \name{author}{1}{}{%
+        {{hash=f22f5bd47daf8e3f962bfa1b42690a8e}{%
+           family={Buss},
+           familyi={B\bibinitperiod},
+           given={S.R.},
+           giveni={S\bibinitperiod}}}%
+      }
+      \list{institution}{1}{%
+        {Princeton University}%
+      }
+      \strng{namehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{fullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{bibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorbibnamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authornamehash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \strng{authorfullhash}{f22f5bd47daf8e3f962bfa1b42690a8e}
+      \field{sortinit}{B}
+      \field{sortinithash}{d7095fff47cda75ca2589920aae98399}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{title}{Bounded Arithmetic}
+      \field{type}{phdthesis}
+      \field{year}{1986}
+    \endentry
+    \entry{Chistikov2021PresburgerAW}{article}{}
+      \name{author}{3}{}{%
+        {{hash=dfb9ed7d7d4e054ba92bffd31726a2b9}{%
+           family={Chistikov},
+           familyi={C\bibinitperiod},
+           given={Dmitry},
+           giveni={D\bibinitperiod}}}%
+        {{hash=d6c61b9c8b319ddc87cfd4d714d134d7}{%
+           family={Haase},
+           familyi={H\bibinitperiod},
+           given={Christoph},
+           giveni={C\bibinitperiod}}}%
+        {{hash=c19abda4211d44e24ae500913607f48c}{%
+           family={Mansutti},
+           familyi={M\bibinitperiod},
+           given={Alessio},
+           giveni={A\bibinitperiod}}}%
+      }
+      \strng{namehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{fullhash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{bibnamehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{authorbibnamehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{authornamehash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \strng{authorfullhash}{9fc0a3d764b24dac9c173ac1441afb6e}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ArXiv}
+      \field{title}{Presburger arithmetic with threshold counting quantifiers is easy}
+      \field{volume}{abs/2103.05087}
+      \field{year}{2021}
+    \endentry
+    \entry{Cobham1965}{incollection}{}
+      \name{author}{1}{}{%
+        {{hash=6c4441a0e2bb320ad229dada2d6d0144}{%
+           family={Cobham},
+           familyi={C\bibinitperiod},
+           given={Alan},
+           giveni={A\bibinitperiod}}}%
+      }
+      \name{editor}{1}{}{%
+        {{hash=addb53644c6c18534ffa421ae20c930d}{%
+           family={Bar{-}Hillel},
+           familyi={B\bibinitperiod},
+           given={Yehoshua},
+           giveni={Y\bibinitperiod}}}%
+      }
+      \list{publisher}{1}{%
+        {North-Holland Publishing}%
+      }
+      \strng{namehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{fullhash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{bibnamehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{authorbibnamehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{authornamehash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{authorfullhash}{6c4441a0e2bb320ad229dada2d6d0144}
+      \strng{editorbibnamehash}{addb53644c6c18534ffa421ae20c930d}
+      \strng{editornamehash}{addb53644c6c18534ffa421ae20c930d}
+      \strng{editorfullhash}{addb53644c6c18534ffa421ae20c930d}
+      \field{sortinit}{C}
+      \field{sortinithash}{4d103a86280481745c9c897c925753c0}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Logic, Methodology and Philosophy of Science: Proceedings of the 1964 International Congress (Studies in Logic and the Foundations of Mathematics)}
+      \field{title}{The Intrinsic Computational Difficulty of Functions}
+      \field{year}{1965}
+      \field{pages}{24\bibrangedash 30}
+      \range{pages}{7}
+    \endentry
+    \entry{Ferreira88}{unpublished}{}
+      \name{author}{1}{}{%
+        {{hash=78a09d7a5b8d78dc141814ea9ad3ee9d}{%
+           family={Ferreira},
+           familyi={F\bibinitperiod},
+           given={F.},
+           giveni={F\bibinitperiod}}}%
+      }
+      \strng{namehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{fullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{bibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorbibnamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authornamehash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \strng{authorfullhash}{78a09d7a5b8d78dc141814ea9ad3ee9d}
+      \field{sortinit}{F}
+      \field{sortinithash}{2638baaa20439f1b5a8f80c6c08a13b4}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{month}{12}
+      \field{note}{Ph.D. Dissertation}
+      \field{title}{Polyonmial Time Computable Arithmetic and Conservative Extesions}
+      \field{year}{1988}
+    \endentry
+    \entry{Gradel}{inproceedings}{}
+      \name{author}{3}{}{%
+        {{hash=b874aff77cb41173c684952df5eb3420}{%
+           family={Gradel},
+           familyi={G\bibinitperiod},
+           given={E.},
+           giveni={E\bibinitperiod}}}%
+        {{hash=0a38da51c4d257133288b0e90fd76d35}{%
+           family={Otto},
+           familyi={O\bibinitperiod},
+           given={M.},
+           giveni={M\bibinitperiod}}}%
+        {{hash=523aefca09f8453dc031ccf72b032352}{%
+           family={Rosen},
+           familyi={R\bibinitperiod},
+           given={E.},
+           giveni={E\bibinitperiod}}}%
+      }
+      \strng{namehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{fullhash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{bibnamehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{authorbibnamehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{authornamehash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \strng{authorfullhash}{ddd7ad9d68567dcf4fac2680c3204c1d}
+      \field{sortinit}{G}
+      \field{sortinithash}{32d67eca0634bf53703493fb1090a2e8}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{booktitle}{Proceedings of Twelfth Annual IEEE Symposium on Logic in Computer Science}
+      \field{title}{Two-variable logic with counting is decidable}
+      \field{year}{1997}
+      \field{pages}{306\bibrangedash 317}
+      \range{pages}{12}
+      \verb{doi}
+      \verb 10.1109/LICS.1997.614957
+      \endverb
+    \endentry
+    \entry{Schweikardt}{article}{}
+      \name{author}{1}{}{%
+        {{hash=9d41cda0123e3c91bf925f52e5424ce5}{%
+           family={Schweikardt},
+           familyi={S\bibinitperiod},
+           given={Nicole},
+           giveni={N\bibinitperiod}}}%
+      }
+      \strng{namehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{fullhash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{bibnamehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{authorbibnamehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{authornamehash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \strng{authorfullhash}{9d41cda0123e3c91bf925f52e5424ce5}
+      \field{sortinit}{S}
+      \field{sortinithash}{b164b07b29984b41daf1e85279fbc5ab}
+      \field{labelnamesource}{author}
+      \field{labeltitlesource}{title}
+      \field{journaltitle}{ACM Transactions on Computational Logic}
+      \field{month}{12}
+      \field{title}{Arithmetic, First-Order Logic, and Counting Quantifiers}
+      \field{volume}{6}
+      \field{year}{2002}
+      \verb{doi}
+      \verb 10.1145/1071596.1071602
+      \endverb
+    \endentry
+  \enddatalist
+\endrefsection
+\endinput
+

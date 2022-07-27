@@ -1,0 +1,1440 @@
+%!TeX spellcheck = en-US
+\section{From $\RS$ Representability to $\POR$}
+\label{sec:TaskB}
+% !TEX root = Conjecture.tex
+
+
+In this section, we show
+that if a function is
+$\Sigma^b_1$-representable
+in $\RS$,
+then it is in $\POR$, as stated by Theorem \ref{thm:taskB}
+
+
+\begin{theorem}\label{thm:taskB}
+Let $\RS \vdash \forall x.\exists y\preceq t.A(x,y)$,
+where $A$ is a $\Sigma^b_1$-formula
+with only $x,y$ free.
+For any function $f:\Ss\times \Os \rightarrow \Ss$,
+if $\forall x.\exists y\preceq t. A(x,y)$
+represents $f$ so that:
+\begin{enumerate}
+\itemsep0em
+\item $\RS \vdash \forall x.\exists !y.A(x,y)$
+\item $\llbracket A(s_1,s_2)\rrbracket =
+\{\omega \ | \ f(s_1,\omega)=s_2\}$,
+\end{enumerate}
+then $f\in \POR$.
+\end{theorem}
+
+
+The proof is based on the work by Cook and Urquhart's
+for the system IPV$^\omega$~\cite{CookUrquhart}
+and is structured as follows:
+\begin{enumerate}
+\itemsep0em
+\item
+First, in Section~\ref{sec:PORo},
+we define
+a basic equational theory
+$\PORo$
+for a simply typed $\lambda$-calculus
+enriched with primitives corresponding
+to functions of $\POR$.
+
+\item
+Then, in Section~\ref{sec:IPORo},
+we we show that for each $\Sigma^b_1$-representable function
+there is a $\PORo$ term which computes that function.
+To do so, we define a
+first-order \emph{intuitionist} theory
+$I\PORo$, which extends
+$\PORo$ with usual predicate calculus. Then,
+we show that from any derivation of
+$\forall x.\exists y.A(x,y)$,
+where $A$ is a $\Sigma^b_0$-formula,
+one can extract a $\lambda$-term
+$\tTerm$ of $\PORo$
+such that $\forall x.A(x,\tTerm x)$
+is provable {in $I\PORo$}.
+This allows us to conclude
+that every function which is $\Sigma^b_1$-representable
+in $I\RS$ is in $\POR$. Finally,
+we extend this result to classical
+$\RS$.
+\end{enumerate}
+
+As for Section \ref{sec:TaskA}, we will not get into the technical
+details of the proof, as they can be consulted in \cite{RBA}.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%% SUBSECTION
+%%%%%% The system POR\lambda
+\subsection{The System $\PORo$}\label{sec:PORo}
+$\PORo$ is an equational theory
+for a simply typed $\lambda$-calculus
+augmented typed constants for $\POR$-like primitive functions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%%%%% SUBSUBSECTION
+%%%%%%%% The SYNTAX OF POR\lambda
+\subsubsection{The $\PORo$ Theory}
+
+$\PORo$ is an equational theory whose terms are ordinary
+simply-typed $\lambda$-terms. Together with ordinary $\lambda$-terms,
+the language of $\PORo$ contains constants
+corresponding to $\POR$-like primitives (Definition \ref{def:termsPORo}).
+Thus, the derivation system of $\PORo$ is
+induced by a set of equational-axioms defining the reduction rules of the base functions of $\PORo$, $\lambda$-terms and a set derivation rules describing the
+behavior of the identity predicate.
+
+
+%% Terms of POR\lambda
+\begin{defn}[Terms of $\PORo$]\label{def:termsPORo}
+\emph{Terms of $\PORo$}
+are standard, simply typed
+$\lambda$-terms plus the
+constants from the signature below:
+\begin{align*}
+\zT, \oT, \eT &: \sT \\
+\cdotT &: \sT \arrowT \sT \arrowT \sT \\
+\Tail &: \sT \arrowT \sT \\
+\Trunc &: \sT \arrowT \sT \arrowT \sT \\
+\Cond &: \sT \arrowT \sT \arrowT \sT \arrowT \sT \arrowT \sT \\
+\flipcoin &: \sT \arrowT \sT \\
+\Rec &: \sT \arrowT (\sT \arrowT \sT \arrowT \sT)
+\arrowT (\sT \arrowT \sT \arrowT \sT) \arrowT
+(\sT \arrowT \sT) \arrowT \sT \arrowT \sT.
+\end{align*}
+\end{defn}
+%
+%
+\noindent
+{In addition to the constants of Definition \ref{def:termsPORo},
+we employ a set of axioms
+endowing specific equational behaviors to these symbols.
+These equations ground a $\POR$-like function algebra
+in which:
+\begin{itemize}
+  \item $\Tail(x)$ computes the string
+  obtained by deleting
+  {the rightmost of $x$}; thus it can be defined by the axioms:
+  \begin{align*}
+    \Tail(\eepsilon) &= \eepsilon\\
+    \Tail(x b) &= b.
+  \end{align*}
+  \item $\Trunc(x,y)$
+  outputs the \emph{left} prefix
+  $x$ obtained truncating $x$ at the length of $y$;
+  this corresponds to the $\Lpw$ (and $\POR$'s truncating operator $\cdot|_\cdot$).
+  \item $\Cond(x,y,z,w)$ corresponds to $\POR$'s $C$: indeed, it
+  computes the function that
+  yields $y$
+  when $x=\eepsilon$,
+  $z$ when $x=x'\zzero$, and
+  $w$ when $x=x'\oone$;
+  \item $\flipcoin(x)$ is a random bit
+  generator, corresponding to $\POR$'s $Q$.
+  \item $\Rec$
+  is the operator for bounded recursion
+  on notation.
+\end{itemize}
+
+Notice that with respect to $\POR$, we are not defining a composition term constant, this because
+$\lambda$-calculus is itself compositional.
+%
+For readability's sake, we will use some syntactical conventions:
+
+\begin{notation}
+We will usually denote $x\cdotT y$ simply
+as $xy$.
+Moreover, to enhance readability,
+let $\TT$ be any constant
+$\Tail, \Trunc, \Cond, \flipcoin, \Rec$
+of arity $n$,
+we indicate $\TT \uT_1\dots \uT_n$
+as $\TT(\uT_1,\dots, \uT_n)$.
+\end{notation}
+
+
+$\PORo$ is reminiscent of {PV$^\omega$}
+by
+Cook and Urquhart~\cite{CookUrquhart};
+however an important variation is
+the constant
+$\flipcoin$,
+deonting a function
+which
+randomly generates either
+{$\zzero$} or
+{$\oone$}
+depending on its input string.
+As for $\RS$, our
+deduction system does not have $\flipcoin$ specific rules,
+because the behavior of this primitive
+will be only given by means of a set of axioms
+$T_\omega$, depending on a specific $\omega \in \Os$, such that:
+$$
+\flipcoin(t)\in T_\omega \Leftrightarrow \omega(t)=\one
+$$
+
+\begin{defn}[$\flipcoin$-Defining Axioms]
+  \label{def:flipaxs}
+  Given a function $\omega \in \Os$, we denote with
+  $T_\omega$ the set of flip-defining axioms:
+  \begin{align*}
+    \flipcoin(\zT) &= \omega(\zero)\\
+    \flipcoin(\oT) &= \omega(\one)\\
+    \flipcoin(\zT\zT) &= \omega(\zero\zero)\\
+    \ldots\quad\quad &= \ldots\ .
+  \end{align*}
+\end{defn}
+
+
+% \noindent
+% We now introduce some abbreviations
+% for composed functions:
+% \begin{itemize}
+% \itemsep0em
+%
+% % B
+% \item $\BT(x):=\Cond(x,\eT,\zT,\oT)$
+% indicates the function that
+% computes the last digit of $x$,~i.e. coerces $x$ to a Boolean value.
+%
+% % BNeg
+% \item $\BNeg(x):=\Cond(x,\eT,\oT,\zT)$
+% indicates the function that computes
+% the Boolean negation of $\BT(x)$.
+%
+% % BOr
+% \item $\BOr(x,y):=\Cond(\BT(x), \BT(y), \BT(y),\oT)$
+% indicates the function that
+% coerces $x,y$ to Booleans and then performs
+% the OR-operation.
+%
+% % BAnd
+% \item $\BAnd(x,y) := \Cond\big(\BT(x), \eT, \zT,
+% \BT(y)\big)$ indicates the function that coerces
+% $x,y$ to Booleans and then performs the AND-operation.
+%
+% % Eps
+% \item $\Eps(x):= \Cond(x,\oT,\zT,\zT)$
+% indicates the characteristic function of the
+% predicate ``$x=\epsilon$''.
+%
+% % Bool
+% \item $\boolT(x):=\BAnd\big(\Eps(\Tail(x)),\BNeg(\Eps(x))\big)$
+% indicates the characteristic function of the predicate
+% ``$x= \zero \vee x=
+% \one$''.
+%
+%  % Zero
+%  \item $\Zero(x) := \Cond\big(\boolT(x), \zT, \Cond(x,\zT,\zT,\oT),\zT\big)$
+%  indicates the characteristic
+%  function of the predicate  ``$x=\zero$''.
+%
+%  % Conc
+%  \item $\Conc(x,y)$ indicates the concatenation
+%  function
+%  defined by the equations below:
+%  \begin{align*}
+%  \Conc(x,\eT) &:= x \\
+%  \Conc(x,y\zT) &:= \Conc(x,y)\zT \\
+%  \Conc(x,y\oT) &:= \Conc(x,y)\oT.
+%  \end{align*}
+%
+%  % Eq
+%  \item $\Eq(x,y)$ indicates
+%  the characteristic function
+%  of the predicate  ``$x=y$''
+%  and is defined by double recursion by
+%  the equations below:
+%  \begin{align*}
+%  \Eq(\eT,\eT) &:= \oT \\
+%  \Eq(\eT, y\zT) = \Eq(\eT, y\oT) &:=\zT \\
+%  \\
+%  \Eq(x\zT, \eT) &:= \zT \\
+%  \Eq(x\zT,y\zT) &:= \Eq(x,y) \\
+%  \Eq(x\zT,y\oT) &:= \zT \\
+%  \\
+%  \Eq(x\oT,\eT) &:= \zT \\
+%  \Eq(x\oT,y\zT) &:= \zT \\
+%  \Eq(x\oT,y\oT) &:= \Eq(x,y).
+%  \end{align*}
+%
+%  % Times
+%  \item $\Times(x,y)$ indicates the function for
+%  self-concatenation, $x,y\mapsto x \times y$,
+%  and is defined by the equations below:
+%  \begin{align*}
+%  \Times(x,\eT) &:= \eT \\
+%  \Times(x,y\bT) &:= \Conc(\Times(x,y), x),
+%  \end{align*}
+%  where $\bT\in \{\zT,\oT\}$.
+%
+%
+%
+%  % Sub
+%  \item $\Sub(x,y)$ indicates {the initial-substring
+%  function $x,y\mapsto \emph{S}(x,y)$,}
+%  and is defined by bounded recursion as follows:
+%  \begin{align*}
+%  \Sub(x,\eT) &:= \Eps(x) \\
+%  \Sub(x,y\zT) &:= \BOr\big(\Sub(x,y),
+%  \Eq(x,y\zT)\big) \\
+%  \Sub(x,y\oT) &:= \BOr\big(\Sub(x,y),
+%  \Eq(x,y\oT)\big).
+%  \end{align*}
+% \end{itemize}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+% of $\PORo$.
+%
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%% SUBSECTION
+%%% Relating POR and POR\lambda
+\subsubsection{Relating $\POR$ and $\PORo$}
+\label{subsub:relating}
+
+In this section, we assess that all the functions
+within $\POR$ are representable by a term $\tTerm\in \PORo$.
+This is done in Theorem \ref{theorem:provRepr} by induction
+on the syntactical syntax of the function.
+%
+To do so, we define an encoding of
+strings within $\PORo$ (Definition \ref{def:stringencporo}) and notion of representability
+of $\POR$ functions in $\PORo$
+(Definition \ref{def:provableRepresentability}).
+
+
+\begin{defn}
+  \label{def:stringencporo}
+  For any string $s\in \Ss$, let
+  $\ooverline{s} : \sT$
+  denote the term of $\PORo$
+  corresponding to it,~i.e.:
+  %
+  \begin{align*}
+  \ooverline{\eepsilon}&:=\eT\\
+  \ooverline{s\zzero}&:=\ooverline{s}\zT\\
+  \ooverline{s\oone}&:=\ooverline{s}\oT.
+  \end{align*}
+\end{defn}
+
+
+%%% definition
+%%% df:flipcoin
+\begin{defn}[Provable Representability]\label{def:provableRepresentability}
+For every $f:\Ss^j \times \Os \longrightarrow \Ss$,
+we say that a term $\tTerm :\sT \arrowT \dots \arrowT \sT$
+of $\PORo$
+\emph{provably represents} $f$
+if and only if for all strings $s_1,\dots, s_j,s
+\in \Ss$,
+and $\omega \in \Os$,
+$$
+f(s_1,\dots, s_n,\omega) = s \ \ \ \Leftrightarrow \ \ \
+T_\omega \vdash_{\PORo} \tTerm \ooverline{s_1} \dots
+\ooverline{s_j} = \ooverline{s}.
+$$
+with $T_\omega$ being a $\flipcoin$-defining set of axioms, as described in Definition \ref{def:flipaxs}
+\end{defn}
+%
+%
+\noindent
+The representability of base functions is almost trivial.
+Take, for example, the most peculiar of $\PORo$ base constants:
+$\flipcoin$. Its representability is shown in the example below.
+
+
+%% Example
+\begin{ex}\label{ex:flipcoin}
+The term $\flipcoin:\sT \arrowT \sT$
+provably represents
+the query function $\query(x,\omega)=\omega(x)$
+of $\POR$,
+since for any $s\in \Ss$ and $\omega\in \Os$,
+$$
+\flipcoin(\ooverline{s})=\ooverline{\omega(s)}\vdash_{\PORo}
+\flipcoin(\ooverline{s}) =\ooverline{\query(s,\omega)}.
+$$
+\end{ex}
+
+\noindent
+This observation can be generalized to cover all the base cases
+and even the inductive ones,
+which are composition and bounded recursion on notation.
+This is stated by the first claim of Theorem \ref{theorem:provRepr}.
+The second claim guarantees the inverse direction.
+An exhaustive proof of this result is out of the scope of this work.
+For that reason, we will only take in exam some exemplificative cases of the proof. For further details, see \cite{RBA}.
+
+
+
+% Let us show that some of the terms described above
+% provably represent the intended functions.
+% Let $\func{\Tail}(s,\omega)$ indicate the string obtained by chopping
+% the first digit of
+% $s$ (with $E(s,\omega)=\eepsilon$) and
+% $\func{\Trunc}(s_1,s_2,\omega)=s_1|_{s_2}$ %and
+%$$
+%\func{cond}(s_1,s_2,s_3,s_4) =
+%\begin{cases}
+%s_2 \ \ \ &\text{if } s_1 = \eepsilon \\
+%s_3 \ \ \ &\text{if } s_1=s' \zzero \\
+%s_4 \ \ \ &\text{if } s_1 =s' \oone.
+%\end{cases}
+%$$
+
+
+
+
+
+
+%%% LEMMA
+% \begin{lemma}
+% {The terms
+% $\Tail,\Trunc,\Cond$ provably represent
+% the functions $\func{\Tail}, \func{\Trunc}$
+% and $\Cf$, respectively.}
+% \end{lemma}
+%
+% \begin{proof}[Proof Sketch]
+% For $\Tail$ and $\Cond$, the claim
+% follows immediately from the defining
+% axioms of the corresponding constants.
+% For example, if $s_1=s_2{\zzero}$,
+%  then
+% $\func{\Tail}(s_1,\omega)=s_2$ {and
+% $\ooverline{s_1}=\ooverline{s_2\zzero}=
+% \ooverline{s_2}\zT$}.
+% Using the defining axioms of $\Tail$:
+% $$
+% \vdash_{\PORo} \Tail(\ooverline{s_1}) = \Tail(\ooverline{s_2}\zT)
+% = \ooverline{s_2}.
+% $$
+% For $\Trunc$ by double induction
+% on two strings
+% $s_1,s_2\in \Ss$ we conclude that:
+% $$
+% \vdash_{\PORo} \Trunc(\ooverline{s_1}, \ooverline{s_2}) =
+% \ooverline{s_1 |_{s_2}}.
+% $$
+% \end{proof}
+
+
+
+
+
+
+%% Theorem
+%% provably representable
+\begin{theorem}\label{theorem:provRepr}
+\begin{enumerate}~
+\itemsep0em
+\item Any function $f\in \POR$ is provably represented
+by a term $\tTerm \in \PORo$.
+\item For any term $\tTerm \in \PORo$,
+there is a function $f\in \POR$ such that
+$f$ is provably represented by $\tTerm$.
+\end{enumerate}
+\end{theorem}
+
+%%% COROLLARY
+\begin{cor}
+For any function $f: \Ss^j \times \Os \rightarrow \Ss$,
+$f\in \POR$ if and only if $f$ is provably represented
+by some term $\tTerm :\sT \arrowT \dots \arrowT \sT
+\in \PORo$.
+\end{cor}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+%%%%% SUBSECTION
+%%%%% THE THEORY IPOR\lambda
+\subsection{Realizability of $I\RS$}\label{sec:IPORo}
+
+In this section, we show that for each $I\RS$-representable function
+it is possible to extract term $\tTerm$ of $\PORo$.
+The theory $I\RS$ is
+obtained from the same axioms of $\Lpw$, using an
+intuitionist derivation system instead of a
+classical logic proof system.
+%
+To prove this result, we extend $\PORo$'s language to include
+first-order quantifiers and propositional connectives,
+even $\PORo$'s derivation system is extended with an
+induction system and an intuitionist predicate calculus.
+The theory thus obtained is called $I\PORo$.
+%
+The correspondence between $I\PORo$ and $I\RS$ relies on
+a proof of realizability \cite{Buss98, CookUrquhart}: by induction on the
+proof that $I\RS \vdash F$ we show that we can build an
+$I\PORo$ term $\tTerm$ realizing $F$, similarly, by induction on
+the fact that $\tTerm$ realizes $F$, we can show that $F$ provable under
+$I\RS$'s axioms. As a consequence of the Definition of realizability
+given in \cite{RBA},
+we get that, if $I\RS\vdash \forall x.\exists ! y F(x, y)$, then the
+term $\tTerm$ realizing that formula is such that  $F(x, \tTerm x)$.
+This proves the following Theorem.
+
+%%% Corollary
+  \begin{theorem}\label{cor:PORTerm}
+Let $\forall x.\exists y.A(x,y)$
+be a closed theorem of $I\PORo$,
+where $A$ is a $\Sigma^b_1$-formula.
+Then, there exists a closed term $\tTerm:\sT \arrowT \sT$
+of $\PORo$ such that:
+$$
+\vdash_{I\PORo} \forall x.A(x,\tTerm x).
+$$
+\end{theorem}
+
+
+
+
+
+
+
+
+
+
+
+
+Now, we have all the ingredients to prove that
+if a function is $\Sigma^b_1$-representable
+in $I\RS$, in the sense of Definition~\ref{df:Sigmab1},
+then
+it is in $\POR$.
+
+
+
+
+
+%%% COROLLARY
+\begin{cor}\label{cor:taskBmain1}
+%Let $(\forall x)(\exists y)A(x,y)$ be a closed theorem of $I\RS$, where $A$ is a $\Sigma^b_1$-formula.
+%
+For any function $f:\Os \times \Ss \rightarrow \Ss$,
+if there is a closed formula $\Sigma^b_1$-formula
+$A(x,y)$ in $\Lpw$ such that:
+%
+%
+\begin{enumerate}
+\itemsep0em
+\item $I\RS \vdash \forall x.\exists !y.A (x,y)$
+%
+\item $\llbracket A(\overline{\overline{s_1}},\overline{\overline{s_2}})\rrbracket
+=\{\omega \ | \ f(\omega,s_1)=s_2\}$,
+%
+\end{enumerate}
+then $f\in\POR$.
+\end{cor}
+
+\begin{proof}
+Since
+$\vdash_{I\RS} \forall x.\exists ! y.A(x,y)$,
+also $\vdash_{I\POR} \forall x.\exists! y.A (x,y)$.
+From $\vdash_{I\PORo} \forall x.\exists y.A(x,y)$
+we deduce $\vdash_{I\PORo} \forall x.A(x,\mathtt{g}x)$
+for some closed term
+$\mathtt{g}:\sT \arrowT \sT$ of $\PORo$, by
+Theorem~\ref{cor:PORTerm} and,
+%
+by Theorem~\ref{theorem:provRepr},
+there is a function $g\in \POR$ such that
+for any $\omega \in \Os, s_1,s_2\in \Ss$,
+$$
+T_\omega \vdash_{I\PORo} A(\ooverline{s_1},\ooverline{s_2})
+\ \Leftrightarrow \ g(s_1,\omega)=s_2.
+$$
+From this we conclude:
+\begin{align*}
+g(s_1,\omega)=s_2 \ & \Leftrightarrow \ T_\omega \vdash_{I\PORo}
+A(\ooverline{s_1},\ooverline{s_2}) \\
+&\stackrel{~}{\Leftrightarrow} \
+\omega \in \llbracket A(\ooverline{s_1},
+\ooverline{s_2})\rrbracket \\
+& \Leftrightarrow \ f(s_1,\omega)=s_2.
+\end{align*}
+So, $f=g$ and, thus,
+$f\in \POR$.
+\end{proof}
+
+To conclude this the main claim of this chapter,
+we show that
+%is its extension from intuitionistic
+%$I\RS$ to classical $\RS$, showing that
+any function
+which is $\Sigma^b_1$-representable
+in $\RS$ is also $\Sigma^b_1$-representable
+in $I\PORo$. Once this result has been accomplished,
+Corollary~\ref{cor:taskBmain1}
+will allow us to obtain the result we are looking for,
+asserting that all the functions which are
+also $\Sigma^b_1$-representable
+in $I\RS$ can be represented $I\PORo$, too. This representability
+result is the claim of Proposition \ref{prop20}.
+%
+%(and the equivalent generalization
+%of $I\PORo$ due to the principle \MP).
+Then, it is possible to show that the realizability
+interpretation extends to such
+$I\PORo$ + \EM{}, so that
+for any of its closed theorems
+$\forall x.\exists y\preceq \tTerm.A(x,y)$,
+with $A$ in $\Sigma^b_1$,
+there is a closed term $\tTerm:\sT \arrowT
+\sT$ of $\PORo$ such that
+$\vdash_{I\POR} \forall x.A(x,\tTerm x)$.
+%
+%
+%
+%
+%
+% \subsubsection{From $I\PORo$ to
+% $I\PORo$ + \MP.}
+% Let $\EM$ be the Excluded-Middle schema,
+% $A\vee \neg A$
+% and \emph{Markov's principle} be defined as follows.
+% %%% DEFN
+% %%% MARKOV's PRINCIPLE
+% %\begin{defn}[Markov's Principle]
+% %Let \emph{Markov's principle} be the schema below:
+% \begin{align*}
+% \neg\neg(\exists x)A \rightarrow (\exists x)A, \tag{Markov}
+% \end{align*}
+% where $A$ is a $\Sigma^b_1$-formula.
+% %\end{defn}
+%
+%
+%
+%
+%
+%
+%
+%
+% %%% Proposition
+% %%% prop:MP
+% \begin{prop}\label{prop:MarkovEM}
+% For any $\Sigma^b_1$-formula
+% $A$, if $\vdash_{I\PORo+\EM} A$,
+% then  $\vdash_{I\PORo + \MP} A$.
+% \end{prop}
+%
+% %
+% %
+% %
+% %
+% \noindent
+% So, we basically need to show that the
+% realizability interpretation defined
+% in Section~\ref{sec:realizability} extends
+% to $I\PORo$ + \MP, that is for any of
+% its closed theorems $(\forall x)(\exists y\preceq \tTerm)
+% A(x,y)$, with $A$ in $\Sigma^b_1$,
+% there is a closed term $\tTerm:\sT \arrowT \sT$
+% of $\PORo$ such that
+% $\vdash_{I\PORo} (\forall x)A(x,\tTerm x)$.
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+% \paragraph{From $I\PORo$ to $(I\PORo)^*$}
+%
+%
+% Let us assume given a subjective encoding
+% $\enc:(\sT \arrowT \sT)\arrowT \sT$
+% {in $I\PORo$ of first-order unary functions as strings,
+% together with a ``decoding'' function
+% $\app:\sT \arrowT \sT \arrowT \sT$ satisfying}:
+% $$
+% \vdash_{I\PORo} \app(\enc \fTerm,x)= \fTerm x.
+% $$
+% Moreover,
+% let
+% $$
+% x*y := \enc\big(\lambda z.\BAnd\big(\app(x,z),\app(y,z)\big)\big)
+% $$
+% and
+% $$
+% T(x) := (\exists y)\big(\BT(\app(x,y))=\zT\big).
+% $$
+% There is a \emph{meet semi-lattice} structure
+% on the set of terms of type $\sT$
+% defined by
+% $
+% \tTerm \sqsubseteq \uT
+% $
+% iff
+% $
+% \vdash_{I\PORo} T(\uT)\rightarrow
+% T(\tTerm)
+% $
+% with top element
+% $\topO = \enc(\lambda x.\oT)$
+% and meet given by $x*y$.
+% %
+% %
+% Indeed, from $T(x*\oT) \leftrightarrow T(x)$,
+% $x\sqsubseteq \topO$ follows.
+% Moreover, from
+% $\BT(\app(x,\uT))=\zT$, we obtain
+% $\BT\big(\app(x*y,\uT)\big)=
+% \BAnd\big(\app(x,\uT),\app(y,\uT)\big)=\zT$,
+% whence $T(x)\rightarrow T(x*y)$,~i.e.
+% $x*y\sqsubseteq x$.
+% One can similarly prove $x*y\sqsubseteq y$.
+% Finally, from $T(x)\rightarrow T(v)$
+% and $T(y)\rightarrow T(v)$,
+% we deduce $T(x*y)\rightarrow T(v)$,
+% by observing that
+% $\vdash_{I\PORo} T(x*y)\rightarrow T(y)$.
+% %
+% Notice that the formula $T(x)$ is \emph{not} in
+% $\Sigma^b_1$, as its existential
+% quantifier is not bounded.
+%
+%
+%
+%
+%
+% %%% DEFINITION
+% \begin{defn}
+% For any formula $A$ {of $I\PORo$}
+% and
+% fresh variable $x$,
+% we define formul\ae{}
+% $x\Vdash A$ inductively, as follows:
+% \begin{align*}
+% x \Vdash A &:= A\vee T(x) \ \ \ \ \ \ \ \ \  (A \ atomic) \\
+% %
+% x \Vdash B\wedge C &:= x \Vdash B \wedge x
+% \Vdash C \\
+% %
+% x\Vdash B\vee C &:= x \Vdash B\vee x \Vdash C \\
+% %
+% %x \Vdash \neg A &:= (\forall y)\big(y\Vdash A \rightarrow T(x*y)\big) \\
+% %
+% x\Vdash B \rightarrow C &:=
+% (\forall y)\big(y\Vdash B \rightarrow x*y \Vdash C\big) \\
+% %
+% x \Vdash (\exists y)B &:=
+% (\exists y)x \Vdash B \\
+% %
+% x \Vdash (\forall y)B &:=
+% (\forall y)x \Vdash B.
+% \end{align*}
+% \end{defn}
+% %
+% %
+% \noindent
+% %Then, the following lemmas are proved as in~\cite{CoquandHofmann}.
+% %
+% The following Lemma~\ref{lemma21} is
+% then
+% established by induction on the structure
+% of formul\ae{} in $I\PORo$.
+%
+%
+%
+%
+% % Lemma
+% \begin{lemma}\label{lemma21}
+% If $A$ is provable in $I\PORo$ without using
+% $\NP$-induction,
+% then $x\Vdash A$ is provable in $I\PORo$.
+% \end{lemma}
+% %\begin{proof}
+% %Immediate by induction.
+% %\end{proof}
+%
+%
+%
+%
+% % Lemma
+% \begin{lemma}\label{lemma22}
+% Let $A=(\exists x\preceq \tTerm)B$,
+% where $B$ is a $\Sigma^b_0$-formula.
+% Then, there exists a term
+% $\uT : \sT$, with $FV(\uT_A)=FV(B)$,
+% such that:
+% $$
+% \vdash_{I\PORo} A \leftrightarrow T(\uT_A).
+% $$
+% \end{lemma}
+% \begin{proof}
+% Since $B(x)$ is a $\Sigma^b_0$-formula,
+% for all terms $\vTerm :\sT$,
+% $\vdash_{I\PORo} B(x) \leftrightarrow \tTerm_{x\preceq
+% \tTerm \wedge B}(x)=\zT$
+% (where $t_{x\preceq t\wedge B}$
+% has the free variables of $t$ and $B$).
+% %
+% Let $C(x)$ be a $\Sigma^b_0$-formula,
+% one can show by induction on its structure
+% that
+% for all term $\vTerm:\sT$, $\tTerm_{C(\vTerm)}=\tTerm_C(\vTerm)$.
+% %
+% Then,
+% $$\vdash_{I\PORo} A\leftrightarrow
+% (\exists x)\tTerm_{x\preceq \tTerm
+% \wedge B}(x)=\zT \leftrightarrow
+% (\exists x)T(\enc(\lambda x.\tTerm_{x\preceq \tTerm \wedge B}(x))).
+% $$
+% So, we let $\uT_A=\enc(\lambda x.t_{x\preceq \tTerm \wedge B}(x))$.
+% \end{proof}
+% %
+% %
+% %
+% %
+% %
+% %
+% %
+% %% Lemma
+% %% Lemma 8
+% %\begin{lemma}
+% \noindent
+% From which we obtain the following three
+% properties:
+% \begin{itemize}
+% \itemsep0em
+% \item[i.] $\vdash_{I\PORo} (x\Vdash A) \leftrightarrow
+% (A\vee T(x))$
+% \item[ii.] $\vdash_{I\PORo} (x\Vdash \neg A) \leftrightarrow
+% (A\rightarrow T(x))$
+% \item[iii.] $\vdash_{I\PORo} (x\Vdash \neg\neg A) \leftrightarrow
+% (A\vee T(x))$.
+% \end{itemize}
+% where $A$ is a $\Sigma^b_1$-formula.
+% %\end{lemma}
+%
+%
+% %%% COROLLARY
+% %%% MARKOV's PRINCIPLE
+% \begin{cor}[Markov's Principle]\label{cor:Markov}
+% If $A$ is a $\Sigma^b_1$-formula,
+% then
+% $$
+% \vdash_{I\PORo} x\Vdash \neg\neg A \rightarrow A.
+% $$
+% \end{cor}
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+% Then, to define the extension $(I\PORo)^*$
+% of $I\PORo$, we start by formally introducing
+% \PIND.
+%
+% \begin{defn}[\PIND]
+% Let \PIND(A) indicate the formula:
+% $$
+% \big(A(\eT) \wedge \big((\forall x)(A(x) \rightarrow
+% A(x\zT)) \wedge (\forall x)(A(x) \rightarrow A(x\oT))\big)
+% \rightarrow (\forall x)A(x).
+% $$
+% \end{defn}
+% %
+% %
+% \noindent
+% Observe that  if
+% $A(x)$ is a formula of the form
+% $(\exists y\preceq \tTerm)\uT=\vT$, then
+% the formula
+% $z\Vdash$ \PIND$(A)$
+% is of the form
+% \PIND$\big(A(x) \vee T(z)\big)$,
+% which is \emph{not}
+% an instance of the $\NP$-induction
+% schema (as the formula
+% $T(z)=(\exists x)\BT\big(\app(z,x)\big)=\zT$
+% is not bounded).
+% %
+% %
+% %
+% %
+% %
+% %
+% \begin{defn}[The Theory $(I\PORo)^*$]
+% Let ($I\PORo$)* indicate the theory
+% extending $I\PORo$
+% with all instances of the induction
+% schema \PIND$\big(A(x)\vee B\big)$,
+% where $A(x)$ is of the form
+% $(\exists y\preceq \tTerm)\uT=\mathsf{v}$,
+% and $B$ is an arbitrary formula
+% with $x\not\in FV(B)$.
+% \end{defn}
+% %
+% %
+% \noindent
+% {From the discussion above} we deduce:
+%
+%
+% %%% PROPOSITION
+% \begin{prop}
+% For any $\Sigma^b_1$-formula
+% $A$, if $\vdash_{I\PORo} A$,
+% then $\vdash_{(I\PORo)^*} x\Vdash A$.
+% \end{prop}
+% %
+% %
+% %
+% \noindent
+% Then, we can extend the realizability
+% interpretation of Section~\ref{sec:realizability}
+% to $(I\PORo)$ by simply constructing a realizer
+% for \PIND$(A(x) \vee B)$.
+%
+% %% Lemma
+% \begin{lemma}\label{lemma26}
+% Let $A(x)=(\exists y\preceq \tTerm)\uT=\zT$
+% and $B$ be any formula not containing
+% free occurrences of $x$.
+% Then, there exist terms $\termO$
+% such that:
+% $$
+% \vdash_{I\POR} \termO \realize \emph{\PIND}(A(x)
+% \vee B).
+% $$
+% \end{lemma}
+%
+% %\begin{proof}
+% %Let $D(x)=A(x)\vee B$.
+% %It suffices to construct a realizer of:
+% %$$
+% %\big(D(\eT) \wedge (\forall x)(A(x) \rightarrow D(x\zT)) \wedge (\forall x)(A(x) \rightarrow D(x\oT))\big) \rightarrow (\forall x)D(x).
+% %$$
+% %Let us assume that:
+% %\begin{itemize}
+%
+% %\item $\varO_1 \realize D(\eT)$, that is $\varO_1=x_1^0x_1^1\varO^2_1$, where
+% %$$
+% %\big(x^0_1 = \zT \wedge x^1_1 \preceq \tTerm[\eT/x] \wedge \uT[\eT/x, x^1_1/y] = \zT\big) \vee \big(x^0_1 = \oT \wedge \varO^2_1 \realize B\big).
+% %$$
+%
+%
+% %%
+% %\item $\varO_2\realize (\forall x)(A(x) \rightarrow D(x\zT))$, where $\varO_2 = x_2^0x_2^1\varO^2_2$ and under the assumption $y\preceq t$ and $u=\zT$,
+% %$$
+% %\big(x^0_2 xy=\zT \wedge x^1_2 xy \preceq \tTerm [y\zT/x] \wedge \uT[y\zT/x, x^1_2 xy/y] = \zT\big) \vee \big(x^0_2 xy=\oT \wedge \varO^2_2 xy \realize B\big).
+% %$$
+%
+%
+%
+% %%%
+% %\item $\varO_3 \realize (\forall x)(A(x) \to D(x\oT))$, where $\varO_3=x^0_3x^1_3\varO_3^2$ and under the assumption $y\preceq \tTerm$ and $\uT=\zT$,
+% %$$
+% %\big(x^0_3xy = \zT \wedge x^1_3xy \preceq \tTerm[y\oT/x] \wedge \uT[y\oT/x, x^1_3xy/y] = \zT\big) \vee \big(x^0_3xy=\oT \wedge \varO^2_3xy \realize B\big).
+% %$$
+% %\end{itemize}
+% %
+% %
+% %
+% %We will construct a term $\uT:\sT\to\sT$ satisfying the following specifications:
+% %\begin{itemize}
+% %\itemsep0em
+%
+% %% a.
+% %\item[a.] $\vdash_{I\RS} \Eps(\uT x)=\zT$
+%
+%
+% %% b.
+% %\item[b.] If $\BT(\uT x)=\zT$, then $\Tail(\uTerm x)\realize A(x)$
+%
+%
+% %% c.
+% %\item[c.] If $\BT(\uT x)=\oT$, then
+% %$$
+% %x^0_1 = \oT \vee \big( y_0 \preceq \tTerm\{x_0/y\} \wedge \uT\{x_0, y_0/x\} = \zT \wedge \BOr(\varO^2_2 x_0y_0, \varO^2_3 x_0y_0)=\oT\big)
+% %$$
+% %where $x_0=\Tail(\uT x)$ and $y_0=\Tail(x_0)$.
+% %\end{itemize}
+% %Notice that the three conditions above can all be specified by way of an equation of the form $v[\uTerm,x]=\zT$.
+% %
+% %Indeed, if such a term exists, then we can define  $\termO=\tTerm_1\tTerm_2\tTerm_3$ realizing $A(x)\vee B$ by
+% %\begin{align*}
+% %\tTerm_1x &:= \BT(\uT x) \\
+% %\tTerm_2x &:= \Tail(\uT x) \\
+% %\tTerm_3x &:= \Cond\big(x^0_1,\eT, \varO^2_1, \BOr(\varO^2_2 x_0 y_0, \varO^2_3 x_0y_0)\big).
+% %\end{align*}
+% %We can define $\uT$ by bounded recursion as follows:
+% %\begin{align*}
+% %\uT\eT &:= \Cond(x^0_1, \eT, x^1_1 \zT, \oT) \\
+% %
+% %\uT(x\zT) &:= \Cond\big(\uT x, \eT, \Cond(x_2^0 x(\Tail(\uT x)), \eT, x^1_2 x(\Tail(\uT x))\oT), \Cond(x^0_1,\eT,\eT,\oT)\oT\big) \\
+% %
+% %\uT(x\oT) &:= \Cond\big(\uT x, \eT, \Cond(x^0_2x(\Tail(\uT x)), \eT, x^1_2 x(\Tail(\uT x))\zT, \varO^2_2 x(\Tail(\uT x))\oT), \Cond(x^0_1, \eT, \eT, \oT)\oT\big).
+% %\end{align*}
+% %
+% %
+% %We show that $\Gamma\vdash_{I\RS} \vT[\uT, x]=\zT$, where $\Gamma=\varO_1 \realize  D(\eT), \varO_2 \realize (\forall x)(A(x) \rightarrow D(x\zT)), \varO_3 \realize (\forall x)(A(x) \rightarrow D(x\oT))$, by $\NP$-induction:
+% %
+% %
+% %
+% %
+% %\begin{itemize}
+% %\itemsep0em
+%
+%
+%
+%
+% %
+% %\item $\vT(\uT, \eT) =\zT$:
+% %\begin{itemize}
+% %\itemsep0em
+% %\item[a.] From $\varO_1\realize D(\eT)$ it can be deduced that $x^0_1 = \zT \vee x^0_1 = \oT$.
+% %Using this fact, together with $\Eps(\uT\eT)=\Eps(\Cond(x^0_1, \eT, x^1_1\zT,\oT)=\zT$, the claim is proved due to the defining axioms of $\Cond$.
+%
+% %\item[b.] $\BT(\uT \eT)=\zT \rightarrow \uT \eT =x^1_1 \zT$, whence $\Tail(\uT \eT)=x^1_1$ which, by hypothesis, realizes $A(\eT)$.
+%
+% %\item[c.] $\BT(\uT\eT)=\oT \rightarrow x^0_1=\oT$.
+% %\end{itemize}
+%
+%
+%
+%
+%
+%
+% %\item $\vT[\uT, x]=\zT \rightarrow \vT[\uT,x\zT]=\zT$.
+% %Suppose $\vT[\uT,x]=\zT$ holds, i.e. a.-c. hold for $x$:
+% %\begin{itemize}
+%
+%
+% %\item[a.] From $x^0_1=\zT \vee x^0_1=\oT$ and the fact that $x^0_1 =\zT \vdash_{I\PORo} \BT(\uT(x\zT)) =\zT$ and $x^0_1 =\oT \vdash_{I\PORo} \BT(\uT(x\zT))=\oT$, we deduce $\BT(\uT\rm(x\zT))=\zT \vee \BT(\uT(x\zT))=\oT$, which implies $\Eps(\uT(x\zT))=\zT$.
+%
+% %
+% % b.
+% %\item[b.] $\BT(\uT\zT))=\zT$ implies $\uT x=\zT$ together with
+% %$$
+% %\Tail(\uT(x\zT))=\Cond(x^0_2x (\Tail(\uT x)), \eT, x^1_2 x(\Tail(\uT x))\zT, \varO^2_1 x(\Tail(\uT x))\oT) x^0_2(\Tail(\uT x))=\zT.
+% %$$
+% %From $\vT[\uT, x]$ and $\uT x=\zT$, we deduce $\Tail (\uT x)\realize A(x)$ and, thus, by $\varO_2\realize (\forall x)(A(x) \rightarrow D(x\zT))$, also $\varO_2x(\Tail(\uT x)) \realize D(x\zT)$.
+% %From $x^0_2 x (\Tail (\uT x))=\zT$, we conclude  $\Tail(\uT(x\zT))= x^1_2 x(\Tail(\uTerm x))\realize A(x\zT)$.
+%
+%
+%
+% %
+% % c.
+% %\item[c.] If $\BT(\uT(x\zT))=\oT$, there are two possible cases:
+% %\begin{itemize}
+% %\item $\BT(\uT x)=\oT$ and $x^0_1=\oT$.
+%
+%
+% %\item $\BT(\uT x)=\zT$ and $x^0_2x(\Tail(\uT x))=\oT$.
+% %Then, by $\vT[\uT, x]$, b. we deduce that $\Tail(\uT x)\realize A(x)$.
+% %So, by $\varO_2 \realize (\forall x)(A(x) \rightarrow D(x\oT))$, also $\varO_2x(\Tail(\uT x)) \realize D(x\zT)$.
+% %Moreover, from $x^0_2 x(\Tail(\uT x))=\oT$, we conclude $\Tail (\uT(x\zT))= \varO^2_2 x(\Tail(\uT x)) \realize B$.
+% %\end{itemize}
+% %\end{itemize}
+%
+%
+%
+% %\item $\vT[\uT, x]=\zT \to \vT[\uT, x\oT]=\zT$.
+% %This is proved similarly to the previous case.
+% %\end{itemize}
+%
+% %\end{proof}
+% %
+% %
+% %
+% \noindent
+% So, by Theorem~\ref{theorem:realSound},
+% we obtain immediately, for any
+% $\Sigma^b_1$-formula $A$ and
+% formula $B$,
+% with$x\not\in FV(A)$,
+% $$
+% \vdash_{I\PORo} \emph{\PIND}(A(x) \vee B).
+% $$
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+%
+% %%%% PROPOSITION
+% %\begin{prop}
+% %For any $\Sigma^b_1$-formula $A$ and formula $B$, with $x\not\in FV(A)$, $\vdash_{I\PORo} \PIND(A(x)\vee B)$.
+% %\end{prop}
+%
+%
+%
+% \begin{cor}[$\forall\NP$-Conservativity
+% of $I\PORo$ + \EM \ over $I\PORo$]
+% {
+% Let $A$ be a $\Sigma^b_1$-formula,
+% if $\vdash_{I\PORo+\EM} (\forall x)(\exists y\preceq \tTerm)A(x,y)$
+% then $\vdash_{I\PORo} (\forall x)(\exists y\preceq \tTerm)A(x,y)$.}
+% \end{cor}
+%
+%
+%
+%
+%
+%
+% \paragraph{Concluding the Proof.}
+%
+% We can finally conclude proving
+% Proposition~\ref{prop20}.
+%
+%
+In doing so, we first introduce the theory
+$I\PORo$ + \EM, where \EM{} is the Excluded Middle rule:
+$$
+\vdash_{I\PORo + \EM} A \lor \lnot A.
+$$
+Thus, we prove that a representability theorem
+in the style of Theorem \ref{cor:PORTerm} relating this
+class to $I\PORo$, this is done in Proposition \ref{prop20}.
+
+
+%% Proposition
+\begin{prop}\label{prop20}
+Let $\forall x.\exists y\preceq \tTerm. A(x,y)$
+be a closed theorem of $I\PORo$ + \EM,
+where $A$ is a $\Sigma^b_1$-formula.
+Then, there exists a closed term
+$\tTerm:\sT\arrowT \sT$ of $\PORo$ such that:
+$$
+\vdash_{I\PORo} \forall x.A(x,\tTerm x).
+$$
+\end{prop}
+\noindent
+Even in this case, a comprehensive and exhaustive proof is out of the scope of this chapter. The reader who is interested in further details can consult \cite{RBA}.
+
+
+% \begin{proof}
+% If $I\PORo$ + \MP \ proves
+% $(\forall x)(\exists y)A(x,y)$, then
+% by Parikh's Proposition~\ref{prop:Parikh},
+% it also proves $(\exists y\preceq \tTerm)A(x,y)$
+% and $(I\PORo)^*$
+% proves $z\Vdash (\exists y\preceq \tTerm)A(x,y)$.
+% Let $B:=(\exists y\preceq \tTerm)A(x,y)$.
+% By taking $\mathsf{z}=\uT_C$,
+% using Lemma~\ref{lemma22},
+% we deduce $\vdash_{(I\PORo)^*}B$
+% and thus, by Lemma~\ref{lemma21} and
+% Lemma~\ref{lemma26},
+% we deduce that there exist
+% $\termO,\termT$
+% such that
+% $\vdash_{I\PORo} \termO,\termT\realize
+% B$,
+% which implies
+% $\vdash_{I\PORo} A(x,\termO x)$.
+% Thus,
+% $\vdash_{I\PORo} (\forall x)(A(x), \termO x)$.
+% \end{proof}
+
+
+Then, we can observe than, since $I\PORo$ + \EM{} contains
+$I\RS$ plus the Excluded Middle law, then all the theorems of
+$\RS$ are in  $I\PORo$ + \EM, too.
+From this we conclude our proof arguing
+as for Corollary~\ref{cor:taskBmain1}.
+%
+%
+%
+%\newpage
+%
+%
+%%% THEOREM
+%\begin{theorem}
+%{Let $\vdash_{I\POR + \emph{\EM}}
+%(\forall x)(\exists y\preceq \tTerm)A(x,y)$,
+%where
+%$A$ is a $\Sigma^b_1$-formula with
+%only $x,y$ free.}
+%Then, there is a closed term
+%$\tTerm:\sT \arrowT \sT$ of $\PORo$ such that:
+%$$
+%\vdash_{I\PORo} (\forall x)A(x,\tTerm x).
+%$$
+%\end{theorem}
+%\noindent
+%From which we deduce the following
+%Corollary~\ref{cor:main2}, by arguing as
+%for Corollary~\ref{cor:taskBmain1}.
+
+
+
+%% COROLLARY
+\begin{cor}\label{cor:main2}
+Let $\RS \vdash \forall x.\exists y\preceq t.A(x,y)$,
+where $A$ is a $\Sigma^b_1$-formula
+with only $x,y$ free.
+For any function $f:\Ss\times \Os \rightarrow \Ss$,
+if $\forall x.\exists y\preceq t. A(x,y)$
+represents $f$ so that:
+\begin{enumerate}
+\itemsep0em
+\item $\RS \vdash \forall x.\exists !y.A(x,y)$
+\item $\llbracket A(\ooverline{s_1},\ooverline{s_2})\rrbracket =
+\{\omega \ | \ f(s_1,\omega)=s_2\}$,
+\end{enumerate}
+then $f\in \POR$.
+\end{cor}
+%\noindent
+%This proof is obtained by adapting the method from~\cite{CoquardHofmann}.
+\noindent
+As we mentioned in the introduction of this chapter, Corollary \ref{cor:main2}, together with Theorem \ref{theorem1}, completes the proof of Theorem \ref{thm:TaskAB}.

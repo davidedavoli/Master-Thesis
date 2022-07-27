@@ -1,0 +1,163 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {1}Preliminaries}{11}{chapter.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.1}Turing Machines}{11}{section.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.2}On Measure Theory and Probability Thery}{13}{section.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.3}Randomized Computation}{15}{section.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {1.4}Bounded Arithmetic}{19}{section.1.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.4.1}The Language of Buss' Arithmetic}{19}{subsection.1.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {1.4.2}The $S^1_2$ Theory}{20}{subsection.1.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {2}A Randomized Bounded Arithmetic}{23}{chapter.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.1}The $\mathcal {POR}$ Function Algebra and ${\mathit {RS}^1_2}$ Theory}{24}{section.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.1}Notational preliminaries}{24}{subsection.2.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.2}The Class $\mathcal {POR}$}{24}{subsection.2.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.1.3}The Theory ${\mathit {RS}^1_2}$}{25}{subsection.2.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.3.1}The Language $\mathcal {L}$.}{25}{subsubsection.2.1.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.3.2}Semantics for Formul\ae {} in $\mathcal {L}$}{26}{subsubsection.2.1.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.1.3.3}The Theory ${\mathit {RS}^1_2}$.}{28}{subsubsection.2.1.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.2}All Functions in $\mathcal {POR}$ are $\Sigma ^b_1$-Representable in ${\mathit {RS}^1_2}$}{29}{section.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {2.3}From ${\mathit {RS}^1_2}$ Representability to $\mathcal {POR}$}{31}{section.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3.1}The System $\mathcal {POR}^\lambda $}{32}{subsection.2.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.3.1.1}The $\mathcal {POR}^\lambda $ Theory}{32}{subsubsection.2.3.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {2.3.1.2}Relating $\mathcal {POR}$ and $\mathcal {POR}^\lambda $}{33}{subsubsection.2.3.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {2.3.2}Realizability of $I{\mathit {RS}^1_2}$}{34}{subsection.2.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {3}On the equivalence between $\mathbf {PPT}$ and $\mathcal {POR}$}{37}{chapter.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.1}The Class $\mathbf {SFP}$}{38}{section.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.2}From $\mathbf {SFP}$ to $\mathcal {POR}$}{41}{section.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.1}Preliminary Notions}{43}{subsection.3.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.1.1}(Poly-time) Finite Stream Turing Machine}{43}{subsubsection.3.2.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.1.2}The Class $\mathcal {POR}^-$}{44}{subsubsection.3.2.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.2}From $\mathbf {SFP}$ to $\mathcal {PTF}$}{45}{subsection.3.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.3}From $\mathcal {PTF}$ to $\mathcal {POR}^-$}{46}{subsection.3.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.3.1}The Function $\mathit {apply}$}{46}{subsubsection.3.2.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.3.2}Power Function}{47}{subsubsection.3.2.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.3.3}Representing Transition in $\mathcal {POR}^-$}{48}{subsubsection.3.2.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.2.3.4}Composing the Pieces}{49}{subsubsection.3.2.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.4}Extractor Function in $\mathcal {POR}$}{50}{subsection.3.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.2.5}Concluding the Proof}{51}{subsection.3.2.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.3}From $\mathcal {POR}$-functions to $\mathbf {SFP}$}{52}{section.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.1}The $\mathsf {SIFP}$ language}{53}{subsection.3.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.1.1}Big step semantics}{56}{subsubsection.3.3.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.1.2}Small Step Semantics}{57}{subsubsection.3.3.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.1.3}Lexical facilitations}{59}{subsubsection.3.3.1.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.2}From $\mathcal {POR}$ to the $\mathsf {SIFP_{{\mathsf {RA}}}}$ Language}{60}{subsection.3.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.3}From $\mathsf {SIFP_{{\mathsf {RA}}}}$ to $\mathsf {SIFP_{{\mathsf {LA}}}}$}{67}{subsection.3.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.3.1}Relating Small Step Semantics and Big Step Semantics}{68}{subsubsection.3.3.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.3.2}The $\Theta $ Relation}{70}{subsubsection.3.3.3.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {3.3.3.3}Simulation result}{75}{subsubsection.3.3.3.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.4}From $\mathsf {SIFP_{{\mathsf {LA}}}}$ to $\mathbf {SFP_{\mathbf {OD}}}$}{77}{subsection.3.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.5}From $\mathbf {SFP_{\mathbf {OD}}}$ to $\mathbf {SFP}$}{81}{subsection.3.3.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.3.6}Finalizing the proof}{83}{subsection.3.3.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {3.4}From $\mathbf {SFP}$ to $\mathbf {PPT}$}{83}{section.3.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {3.4.1}Main Result}{86}{subsection.3.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {4}On the equivalence between $\mathbf {FP}$ and Cobham's Algebra}{89}{chapter.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.1}The class $\mathcal {F}_{\mathsf {Cob}}$}{89}{section.4.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.2}From $\mathbf {FP}$ to a Cobham style Function Algebra}{91}{section.4.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.3}From a Cobham style Function Algebra to $\mathbf {FP}$}{92}{section.4.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {4.4}Concluding the proof}{93}{section.4.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {5}Characterizing complexity classes}{95}{chapter.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.1}The $\mathcal {L}^{\mathsf {MQ}}$ Language}{95}{section.5.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {5.2}Characterizations}{97}{section.5.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2.1}$\mathbf {BPP}$}{97}{subsection.5.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2.2}$\mathbf {RP}$ and co-$\mathbf {RP}$}{98}{subsection.5.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {5.2.3}$\mathbf {ZPP}$}{99}{subsection.5.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {6}Omitted Concepts and Results}{101}{chapter.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.1}Encodings}{101}{section.6.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.1.1}Statical encodings}{102}{subsection.6.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.1.1.1}{Lists}}{103}{subsubsection.6.1.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.1.2}Dynamic Encoding}{106}{subsection.6.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.1.2.1}A Simple Boolean Algebra.}{106}{subsubsection.6.1.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.1.2.2}Strings}{108}{subsubsection.6.1.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.1.2.3}Natural Numbers}{108}{subsubsection.6.1.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\numberline {6.1.2.4}Lists}{110}{subsubsection.6.1.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {6.2}Auxiliary Results}{113}{section.6.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.1}The Theory ${\mathit {RS}^1_2}$}{113}{subsection.6.2.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.2}The Class $\mathbf {SFP}$}{114}{subsection.6.2.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.3}From $\mathcal {PTF}$ to $\mathcal {POR}^-$}{114}{subsection.6.2.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.4}Extractor Function in $\mathcal {POR}$}{118}{subsection.6.2.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.5}The $\mathsf {SIFP}$ language}{118}{subsection.6.2.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.6}From $\mathcal {POR}$ to the $\mathsf {SIFP_{{\mathsf {RA}}}}$ Language}{119}{subsection.6.2.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.7}From $\mathsf {SIFP_{{\mathsf {RA}}}}$ to $\mathsf {SIFP_{{\mathsf {LA}}}}$}{122}{subsection.6.2.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\numberline {6.2.8}From $\mathbf {SFP_{\mathbf {OD}}}$ to $\mathbf {SFP}$}{126}{subsection.6.2.8}%
+\defcounter {refsection}{0}\relax 
+\contentsline {chapter}{\numberline {7}Conclusions}{129}{chapter.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {section}{\numberline {7.1}Future work}{130}{section.7.1}%

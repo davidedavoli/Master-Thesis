@@ -1,0 +1,186 @@
+%!TeX spellcheck = en-US
+This research was aimed to address the study of probabilistic
+complexity classes by means of a bounded arithmetic.
+To this end, we defined the function algebra $\POR$ (Section \ref{sec:POR})
+and we introduced the $\Lpw$ first-order language and the $\RS$
+bounded arithmetic (Section \ref{sec:S13}),
+together with a notion of $\Sigma^b_1$-representability within $\RS$,
+establishing that the $\POR$ functions are exactly the
+$\Sigma^b_1$-representable functions of $\RS$, Theorem \ref{thm:TaskAB}.
+%
+In particular, this result relies on the extension of the standard \emph{qualitative}
+semantics of first-order formul\ae{} with the introduction of a
+non-standard \emph{quantitative} semantics (Definition \ref{def:quantsem})
+associating to each formula
+a measurable set. This novel semantics is employed in the notion of
+$\Sigma^b_1$-representability to describe the probability distributions
+computed by the represented functions.
+
+
+Probabilistic complexity classes are usually defined basing on
+the class of Probabilistic Turing Machines. For this reason,
+we showed that the $\POR$ functions --- and consequently the class of
+$\Sigma^b_1$-representable functions --- are exactly the
+PTM poly-time computable functions ($\PPT$).
+
+The proof of this result required some effort. First, to bridge the gap
+between the definitions of the classes $\POR$ and $\PPT$,
+we defined an intermediate class of functions $\SFP$,
+which is grounded on the TM-like paradigm of the Stream Turing Machines
+and is meant to be equivalent to both $\POR$ and $\PPT$. Then, we proposed a series of reductions connecting $\POR$ and $\SFP$.
+
+The reduction from $\SFP$ to $\POR$ (Section \ref{sec:SFPtoPOR}) is
+quite straightforward: it relies on the fact that
+in $\POR$ it is possible to define a function which,
+taking in input the initial configuration
+of a polynomial Stream Turing Machine,
+outputs the corresponding final configuration.
+
+On the other hand,
+we encountered some obstacles attempting a
+direct reduction from $\POR$ to $\SFP$  (Section \ref{sec:PORtoSFP}).
+The biggest has to do with the different ways adopted by
+$\POR$ and $\SFP$ to access randomness.
+In particular, the reduction of each $\POR$ function
+relies to at most to exponentially many
+random bits in the size of their input,
+while $\SFP$ functions can access only
+polynomially many random bits during their reduction.
+%
+Our proof relies on three intermediate formalisms
+which were introduce to bridge the separate the paradigm
+related concerns of the reduction --- indeed we were
+reducing a functional paradigms towards a TM-like one ---
+from the probabilistic aspects of the reduction process.
+
+At the end of Chapter \ref{chap:sfptopor},
+we managed to show that a form of equivalence holds
+between $\POR$ and $\SFP$. Finally, we also managed to show that
+the class of functions $\SFP$ is equivalent to the $\PPT$ class (Proposition \ref{prop:ptm=sfp}).
+Thanks to this last result, we manage to extend the $\Sigma^b_1$ representability
+result (Theorem \ref{thm:TaskAB}) from the class of $\POR$ function to the
+class of $\PPT$ functions (Theorem \ref{thm:TaskABC}).
+
+After Chapter \ref{chap:sfptopor}, we employed the
+large amount of technical results given in those pages to
+prove, as a corollary, the equivalence of the
+Cobham style function algebra $\fcob$ and the class $\FP$.
+This was done because similar results are widely agreed among the literature,
+although being almost completely folklore: as far as we know,
+up to now, there were not exhaustive and self-contained
+proofs of this result.
+%
+In this case, the proof was quite simple: the first inclusion
+relies on the fact that
+$\POR$ is a generalization of $\fcob$, but that
+all the non-random $\POR$ functions have an equivalent $\FP$ function.
+Similarly, the second inclusion relies on the observation that
+$\SFP$ is a generalization of $\FP$ and that under the hypothesis
+that an $\SFP$ function does not depend on random choices, it
+is in $\fcob$ as well.
+
+
+After we have found a characterization of all the $\PPT$
+functions within the language $\Lpw$,
+in Chapter \ref{chap:characterization}, we addressed
+the problem of defining characterization of thinner
+probability complexity classes, such as $\BPP$, $\RP$,
+co-$\RP$ and $\ZPP$.
+To this aim, we extended the $\Lpw$'s language and semantics with
+a non-standard measure quantifiers $\cq{s/t}$,
+whose quantitative semantics has measure equal to $1$ if and only if the
+semantics of the formula they are quantifying
+has measure greater or equal to $\frac{|s|}{|t|}$.
+The language thus obtained has been named $\Lmq$ and
+was proved being a conservative extension of $\Lpw$, Remark \ref{rem:lpwlmq}.
+
+Due to this extension, we were capable to reformulate the definitions of $\BPP$,
+$\RP$, co-$\RP$ within $\Lmq$. Then, these characterizations have
+been employed together with a standard result of probabilistic complexity theory ---
+$\ZPP = \RP \cap$ co-$\RP$ (Theorem \ref{thm:zpprpcorp1})  --- to develop a characterization of  $\ZPP$.
+% In our opinion, this proof is particularly interesting not due to the result
+% itself, which is quite easy by itself, but due to the high level of abstraction
+% of the proof, which relies only on the characterizations we defined and on
+% some simple logical observations.
+
+\section{Future work}
+
+In the next months, we plan to investigate the characterizations of probabilistic
+complexity classes given in Chapter \ref{chap:characterization} in order to determine whether
+it is possible to develop equivalent characterizations within
+a standard first-order arithmetical language. This would pass through
+reduction of the measure quantifier $\cq{s/t}$ to a standard existential quantifier
+and the reduction of the predicate $\Flip$ to a first-order formula.
+
+A similar result would pave the way to the identification of a \emph{recursively enumerable} subset
+of those non-recursively enumerable complexity classes. Indeed, none of $\BPP$, $\RP$,
+co-$\RP$ and $\ZPP$ are known to be such and thus are considered
+\emph{semantical} complexity classes.
+
+To do so, we plan to reduce our non-standard logic $\Lmq$
+to a standard first-order logic.
+This would also cause the reduction of the \emph{quantitative} semantics
+to a \emph{qualitative} semantics.
+
+%For example, take in exam $\BPP$:
+Concerning the reduction of the non-standard quantifiers, we conjecture that,
+due to the syntactical constraints on
+the formul\ae{} within our characterizations, they
+can be reduced to a threshold-existential quantifier, \cite{Gradel}.
+Intuitively, this quantifier, denoted by $\exists^\ge{k}x. F$
+holds if and only if there are at least $k$ interpretations of the variable $x$
+which satisfy the formula $F$. We believe that this reduction is possible:
+intuitively, stating
+an assertion similar to
+$\mu(\llbracket F \rrbracket)\ge \frac s t$ is equivalent to stating that
+``over $N$ classes of $\Flip$ possible interpretations, at least $\frac s t$
+of them satisfy the quantified formula''. Thus, the quantitative semantics of the
+$\Lmq$ would be encoded inside the language of the logic enriched with threshold quantifiers.
+This would come with the substitution of the $\Flip(t)$ predicate with a new formula
+$\phi(t, s)$ which is equivalent to $\Flip(t)$
+under the hypothesis that $s$ encodes an interpretation of such
+predicate.
+%
+% On the other hand, we are planning to leverage the variable introduced by
+% the counting quantifier $\exists^{\ge k}z.$
+% To replace the predicate $\Flip(x)$ with a formula $\phi(x, z)$.
+Intuitively, we want this formula $\phi$ to mean
+``if the interpretation of flip is $s$, then $\Flip(t)$ would hold''.
+%
+Precisely, we plan to define $\phi$ leveraging the encoding of
+lists and functions of Section \ref{subsub:encodings}, thus we could define
+the predicate as a $\POR^-$ function and leverage Theorem \ref{theorem1}
+to conclude that the $\phi$ formula we are aiming to exists.
+
+Subsequently, we plan to adapt some works for counting quantifiers elimination
+--- such as for example \cite{Schweikardt, Chistikov2021PresburgerAW}.
+Those works describes procedures for eliminating counting quantifiers from
+Presburger's Arithmetic. Even if Presburger's Arithmetic is a small
+and even decidable fragment of Peano Arithmetic, we think that
+it is possible to develop similar techniques
+aimed to \emph{reduce} counting quantifiers to standard existentials
+instead of eliminating them. Moreover, we are confident about the possible
+outcomes of this process because we are facilitated by working in
+the peculiar context of our characterizations
+rather than in a general one.
+
+Once the characterizations proposed in Chapter \ref{chap:characterization}
+will be expressed in the language of first-order logic, it will be possible
+to identify recursively enumerable subsets of probabilistic semantic classes by means of
+the provability relation $\vdash$. For instance, assume that $\BPP$ can be described
+by means of a class of first-order formul\ae{} $\{\psi_i\}_{i \in \Nat}$,
+in the sense that each of these formul\ae{} corresponds to a problem in $\BPP$,
+then it would be possible to choose a proof system --- for example $\PA$'s axioms ---
+and to recursively enumerate all the derivations proving one
+of those formul\ae{}, namely all the $\psi_i$ such that $\PA \vdash \psi_i$.
+All the formul\ae{} enumerated this way would correspond
+to a language in $\BPP$. Let $\PBPP$ be this class of languages:
+it would certainly hold that $\PBPP\subseteq \BPP$. However,
+we believe that $\BPP \not \subseteq \PBPP$:
+contrarily, we would be surprised discovering a similar result, due to the
+incompleteness of $\PA$ and to the widely agreed
+conjecture that $\BPP$ is indeed a non recursively enumerable complexity class \cite{AroraBarak}.
+
+Finally, it would be worth to investigate the set $\PBPP$ under an
+extensional perspective: which $\BPP$
+problems are in $\PBPP$? Which problems are in $\PBPP \setminus \BPP$?

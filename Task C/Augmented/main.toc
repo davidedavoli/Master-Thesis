@@ -1,0 +1,27 @@
+\boolfalse {citerequest}\boolfalse {citetracker}\boolfalse {pagetracker}\boolfalse {backtracker}\relax 
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\tocparagraph {}{}{Introduction}}{1}{section*.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\tocparagraph {}{}{Outline}}{1}{section*.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\tocsubsection {}{0.1}{$\mathbf {SFP}$ and other tools}}{1}{subsection.0.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\tocsubsubsection {}{0.1.1}{On $\mathbf {SFP}$ functions}}{2}{subsubsection.0.1.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\tocsubsubsection {}{0.1.2}{Cylindes and Reduction Trees}}{5}{subsubsection.0.1.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\tocsubsection {}{0.2}{From $\mathbf {SFP}$ to $\mathcal {POR}$ functions}}{7}{subsection.0.2}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\tocparagraph {}{}{Basic data structures and functions.}}{7}{section*.4}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\tocparagraph {}{}{Complex Data Structures and Functions.}}{9}{section*.5}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\tocparagraph {}{}{Expressivity of the $\mathcal {POR}$ Formalism}}{10}{section*.6}%
+\defcounter {refsection}{0}\relax 
+\contentsline {paragraph}{\tocparagraph {}{}{Concluding the Proof.}}{11}{section*.7}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsection}{\tocsubsection {}{0.3}{From $\mathcal {POR}$-functions to $\mathbf {SFP}$-machines}}{11}{subsection.0.3}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\tocsubsubsection {}{0.3.1}{The $\mathcal {POR}^-$-formalism}}{12}{subsubsection.0.3.1}%
+\defcounter {refsection}{0}\relax 
+\contentsline {subsubsection}{\tocsubsubsection {}{0.3.2}{The $\mathbf {SIMP}$ formalism}}{14}{subsubsection.0.3.2}%

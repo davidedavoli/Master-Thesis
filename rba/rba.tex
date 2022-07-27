@@ -1,0 +1,74 @@
+%!TeX spellcheck = en-US
+In this chapter, we introduce a novel bounded arithmetic for randomized computation
+strongly inspired by Ferreira's PTCA, ~\cite{Ferreira90}.
+%
+As for PTCA, the terms of our arithmetic describe binary strings by means of two simple operations: concatenations and repetitions. The only syntactical difference between our arithmetic and Ferreira's is the presence of a predicate $\Flip$, which we will discuss later.
+%
+However, the main difference between our bounded arithmetic and Ferreira's or Buss' ones lies within its semantics: we defined a novel quantitative semantics which associates to each formula a measurable set of functions, which can be used to associate a degree of probability to each formula our bounded arithmetic.
+%
+This Randomized Bounded Arithmetic (RBA) is based on a new first-order ``probabilistic language'' called $\Lpw$,
+and is aimed to capture the class of $\PPT$ functions by means of a slightly
+modified notion of $\Sigma^b_i$-representability and the theory $\RS$: a variation on Buss' $S^1_2$ \cite{Buss86}.
+%
+To this aim, we define the class of \emph{polynomial-time oracle recursive functions}
+$\POR$ and a notion of arithmetical representability which extends Buss' and Ferreira's.
+Finally, we show that $\POR$ functions are exactly the $\Sigma^b_1$-representable ones.
+%
+However, we will not examine the details of the proofs, but we will only
+outline their high-level structure. This because the main focus of this work
+is on my personal contributions to this research, while the proofs of the
+aforementioned results have been mainly developed by my collaborators Melissa Antonelli, Ugo Dal Lago, Isabel Oitavem and Paolo Pistone.
+%
+For the detailed proofs of the results within this section, we invite the reader
+to consult \cite{RBA}, an unpublished set of notes, describing exhaustively and
+extensively the details of this research.
+%
+This chapter is structured as follows:
+
+\begin{enumerate}
+\itemsep0em
+\item In Section~\ref{sec:PORandLpw}, we
+define the first-order language $\Lpw$ together with
+its semantics and the $\POR$ class of functions.
+
+\item In Section~\ref{sec:TaskA},
+we outline the proof that all functions
+in $\POR$ are $\Sigma^b_1$-representable
+in $\RS$.
+The proof is by induction on the
+structure of $\POR$ and is inspired
+by the
+encoding machinery
+from~\cite{Buss86,Ferreira90}.
+
+\item In Section~\ref{sec:TaskB}
+we outline the proof that all functions which
+are $\Sigma^b_1$-representable
+in $\RS$ are in $\POR$
+by way of realizability techniques
+similar to Cook and Urquhart's one~\cite{CookUrquhart}.
+\end{enumerate}
+
+These results --- namely Theorem \ref{thm:TaskAB} and \ref{cor:main2} --- prove that $\Sigma^b_1$ representable function of $\RS$ are exactly the $\POR$ functions, as stated by Theorem \ref{thm:TaskAB}.
+
+\begin{theorem}[$\Sigma^b_1$-Representability]
+  \label{thm:TaskAB}
+  Within $\Lpw$, the $\Sigma^b_1$-representable functions of $\RS$ are exactly the
+  $\POR$ functions.
+\end{theorem}
+\noindent
+In Chapter \ref{chap:sfptopor}, this result will be extended to the set of $\PPT$
+functions.
+
+\begin{restatable}[$\Sigma^b_1$-Representability of $\PPT$ Functions]{theorem}{pptrepr}
+  \label{thm:TaskABC}
+  It holds that:
+  \[
+  \forall G \in \Sigma^b_1.\RS \vdash \forall x \exists ! y. G(x, y) \to \exists f_G \in \PPT. \forall x, y \in \Ss.\mu\left(\llbracket G(x, y) \rrbracket\right)=Pr[f_G(x)=y]
+  \]
+  \noindent
+  and that:
+  \[
+  \forall f \in \PPT.\exists G_f \in \Sigma^b_1. .\RS \vdash \forall x \exists ! y. G(x, y)\land \forall x, y \in \Ss.\mu\left(\llbracket G(x, y) \rrbracket\right)=Pr[f_G(x)=y].
+  \]
+\end{restatable}

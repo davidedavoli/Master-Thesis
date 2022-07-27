@@ -1,0 +1,117 @@
+\documentclass[10pt]{book}
+\usepackage{geometry,xcolor,amsthm,amsmath,amssymb,stmaryrd, mathtools, hyperref, verbatim, bussproofs, bm, bbm, xifthen, tikz, mathrsfs}
+\usepackage{thmtools, thm-restate}
+\usepackage{pdfpages}
+\usetikzlibrary{automata, positioning, decorations,decorations.pathmorphing}
+\geometry{a4paper}
+
+\usepackage[backend=biber]{biblatex}
+\addbibresource{bibliography/bibliography.bib}
+\input{macros/macros.tex}
+
+\raggedbottom
+\allowdisplaybreaks
+
+\setcounter{secnumdepth}{4}
+\title{Bounded Arithmetic and Randomized Computation}
+\author{Davide Davoli}
+
+
+
+
+
+\begin{document}
+\includepdf{titlepage}
+% \begin{titlepage}
+% \thispagestyle{empty}
+% \begin{center}
+% {{\Large{\textsc{Alma Mater Studiorum $\cdot$ Universit\`a di
+% Bologna}}}} \rule[0.1cm]{15.8cm}{0.1mm}
+% \rule[0.5cm]{15.8cm}{0.6mm}
+% {\small{\bf SCUOLA DI SCIENZE\\
+% Corso di Laurea Magistrale in Informatica }}
+% \end{center}
+% \vspace{15mm}
+% \begin{center}
+%   {\LARGE{\bf Bounded Arithmetic and }} \\
+%   \vspace{3mm}
+%   {\LARGE{\bf Randomized Computation }
+% }\\
+% \end{center}
+% \vspace{95mm}
+% \par
+% \noindent
+% \begin{minipage}[t]{0.47\textwidth}
+% {\large{\bf Relatore:\\
+% Chiar.mo Prof.\\
+% Ugo Dal Lago}\\[1.5ex]
+% \large{\bf Correlatrice:\\
+% Dott.ssa Melissa Antonelli}
+% }
+% \end{minipage}
+% \hfill
+% \begin{minipage}[t]{0.47\textwidth}\raggedleft
+% {\large{\bf Presentata da:\\
+% Davide Davoli}}
+% \end{minipage}
+% \vspace{20mm}
+% \begin{center}
+% {\large{\bf Sessione 1\\%inserire il numero della sessione in cui ci si laurea
+% Anno Accademico 2021/2022}}%inserire l'anno accademico a cui si è iscritti
+% \end{center}
+% \end{titlepage}
+
+
+\def\level{\lextended}
+
+\chapter*{Acknowelgements}
+\input{acknowelgements/ack.tex}
+
+\tableofcontents
+
+\chapter*{Introduction}
+\input{introduction/introduction.tex}
+
+\chapter{Preliminaries}
+\label{chap:preliminaries}
+\input{preliminaries/preliminaries.tex}
+
+\chapter{A Randomized Bounded Arithmetic}
+\label{chap:RBA}
+\input{rba/rba.tex}
+\input{rba/porlpw.tex}
+\input{rba/TaskA.tex}
+\input{rba/TaskB.tex}
+
+\chapter{On the equivalence between $\PPT$ and $\POR$}
+\label{chap:sfptopor}
+\input{sfp-por/intro.tex}
+\input{sfp-por/bozza.tex}
+\input{por-sfp/chapter.tex}
+%\input{appC.tex}
+
+%\setlength\parindent{0pt}
+
+
+\chapter{On the equivalence between $\FP$ and Cobham's Algebra}
+\label{chap:cobham}
+\input{cobham/bozza.tex}
+%\input{appC.tex}
+
+\chapter{Characterizing complexity classes}
+\label{chap:characterization}
+\input{characterization/main.tex}
+
+\chapter{Omitted Concepts and Results}
+\label{chap:tech}
+\input{technicalresults/introduction}
+\input{technicalresults/encodings}
+\input{technicalresults/appendix}
+\input{technicalresults/sfp-por}
+
+\chapter{Conclusions}
+\input{conclusions/conclusions.tex}
+
+\printbibliography
+
+\end{document}

@@ -1,0 +1,52 @@
+\documentclass[10pt]{amsart}
+\usepackage{geometry,xcolor,amsthm,amsmath,amssymb,stmaryrd, mathtools, hyperref, verbatim, bussproofs, bm, bbm, xifthen}
+\geometry{a4paper}
+
+\usepackage[backend=biber]{biblatex}
+\addbibresource{bibliography.bib}
+\input{macros.tex}
+
+\newcommand{\always}{1 > 0}
+\newcommand{\everything}{1 > 0}
+\newcommand{\appendixorsup}{\equal{\level}{1} \OR \equal{\level}{2} \OR \equal{\level}{x}}
+\newcommand{\shortorsup}{\equal{\level}{0} \OR \equal{\level}{1} \OR \equal{\level}{2} \OR \equal{\level}{x}}
+\newcommand{\extendedorsup}{\equal{\level}{2} \OR \equal{\level}{x}}
+\newcommand{\onlyappendix}{\equal{\level}{1} \OR \equal{\level}{x}}
+\newcommand{\notappendix}{\equal{\level}{0} \OR \equal{\level}{2} \OR \equal{\level}{x}}
+
+
+\newenvironment{conditional}[1]%
+        {%
+            \ifthenelse{\NOT \(%
+              \(\equal{#1}{\always} \AND 1 > 0\) \OR%
+              \(\equal{#1}{\appendixorsup} \AND \(\equal{\level}{1} \OR \equal{\level}{2} \OR \equal{\level}{x}\)\) \OR%
+              \(\equal{#1}{\shortorsup} \AND \({\equal{\level}{0} \OR \equal{\level}{1} \equal{\level}{2} \OR \equal{\level}{x}\)\) \OR%
+              \(\equal{#1}{\extendedorsup} \AND \({\equal{\level}{2} \OR \equal{\level}{x}\)\) \OR%
+              \(\equal{#1}{\onlyappendix} \AND \({\equal{\level}{1} \OR \equal{\level}{x}\)\) \OR%
+              \(\equal{#1}{\notappendix} \AND \({\equal{\level}{0} \OR \equal{\level}{2} \OR \equal{\level}{x}\)\)%
+            \)}%
+                    {\setcounter{commenting}{1}\expandafter\comment}%
+                    {}%
+                    }%
+         {%
+            \ifthenelse{\value{commenting} = 1}%
+                    {\setcounter{commenting}{0}\expandafter\endcomment}%
+                    {}%
+          }
+
+
+\title{Task C}
+%%% BEGIN DOCUMENT
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+\def\level{1}
+
+\input{taskC.tex}
+\input{appC.tex}
+
+\printbibliography
+
+\end{document}
